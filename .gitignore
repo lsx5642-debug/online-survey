@@ -1,0 +1,28 @@
+# OS/editor files
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Local runtime/data output
+data/
+*.csv
+*.tsv
+*.xlsx
+*.psydat
+*.log
+
+# PsychoPy source/local exports not needed for the public Pages repo
+*.psyexp
+*_lastrun.py
+__pycache__/
+.pytest_cache/
+
+# Secrets and local configuration
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
