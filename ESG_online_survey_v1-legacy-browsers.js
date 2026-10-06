@@ -92,6 +92,88 @@ function setOptionalOpacity(component, opacity) {
         component.opacity = opacity;
     }
 }
+function getResponsiveLayoutScale() {
+    const widthScale = (window.innerWidth || 1920) / 1920.0;
+    const heightScale = (window.innerHeight || 1080) / 1080.0;
+    return Math.min(widthScale, heightScale, 1.0);
+}
+function scaleVisualValue(value, scale) {
+    if (typeof value === "number") {
+        return value * scale;
+    }
+    if (Array.isArray(value)) {
+        return value.map((item) => scaleVisualValue(item, scale));
+    }
+    return value;
+}
+function scaleVisualOptions(options) {
+    if (!options) {
+        return options;
+    }
+    const scale = getResponsiveLayoutScale();
+    if (scale >= 0.999) {
+        return options;
+    }
+    const scaledOptions = Object.assign({}, options);
+    const scaledKeys = ["pos", "size", "height", "width", "wrapWidth", "fontSize", "letterHeight", "padding", "borderWidth", "lineWidth", "vertices"];
+    for (const key of scaledKeys) {
+        if (Object.prototype.hasOwnProperty.call(scaledOptions, key)) {
+            scaledOptions[key] = scaleVisualValue(scaledOptions[key], scale);
+        }
+    }
+    return scaledOptions;
+}
+function setResponsiveComponentValue(component, key, value) {
+    const setterName = `set${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+    if (component && typeof component[setterName] === "function") {
+        component[setterName](value, false);
+    } else if (component) {
+        component[key] = value;
+        component[`_${key}`] = value;
+    }
+}
+function scaleComponentForResponsiveLayout(component) {
+    if (!component || component._responsiveLayoutScaled) {
+        return;
+    }
+    const scale = getResponsiveLayoutScale();
+    component._responsiveLayoutScaled = true;
+    if (scale >= 0.999) {
+        return;
+    }
+    const scaledKeys = ["pos", "size", "height", "width", "wrapWidth", "fontSize", "letterHeight", "padding", "borderWidth", "lineWidth", "vertices"];
+    for (const key of scaledKeys) {
+        const value = component[key];
+        if (value !== undefined && value !== null) {
+            setResponsiveComponentValue(component, key, scaleVisualValue(value, scale));
+        }
+    }
+}
+function wrapResponsiveAutoDraw(Constructor) {
+    if (!Constructor || !Constructor.prototype || Constructor.prototype._responsiveAutoDrawWrapped) {
+        return;
+    }
+    const originalSetAutoDraw = Constructor.prototype.setAutoDraw;
+    if (typeof originalSetAutoDraw !== "function") {
+        return;
+    }
+    Constructor.prototype.setAutoDraw = function(autoDraw, log) {
+        if (autoDraw) {
+            scaleComponentForResponsiveLayout(this);
+        }
+        return originalSetAutoDraw.call(this, autoDraw, log);
+    };
+    Constructor.prototype._responsiveAutoDrawWrapped = true;
+}
+function applyResponsiveScalingToVisualConstructors() {
+    const constructorNames = ["TextStim", "ButtonStim", "Slider", "TextBox", "Rect", "ShapeStim"];
+    for (const constructorName of constructorNames) {
+        if (visual[constructorName]) {
+            wrapResponsiveAutoDraw(visual[constructorName]);
+        }
+    }
+}
+applyResponsiveScalingToVisualConstructors();
 function safeSetText(component, text) {
     if (component && typeof component.setText === "function") {
         component.setText(text);
