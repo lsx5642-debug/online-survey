@@ -1164,7 +1164,7 @@ async function experimentInit() {
     text: '説明内容の確認',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0, 350], draggable: False, height: 38.0,  wrapWidth: 1640.0, ori: 0.0,
+    pos: [0, 410], draggable: False, height: 34.0,  wrapWidth: 1640.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
@@ -1176,7 +1176,7 @@ async function experimentInit() {
     text: 'Q1\u3000この実験で、あなたはどの立場で企業情報を確認しますか。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, 265], draggable: False, height: 24.0,  wrapWidth: 1440.0, ori: 0.0,
+    pos: [0.0, 320], draggable: False, height: 23.0,  wrapWidth: 1440.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
@@ -1185,8 +1185,8 @@ async function experimentInit() {
   check_q1 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q1',
     startValue: undefined,
-    size: [1320, 68], pos: [0, 200], ori: 0.0, units: psychoJS.window.units,
-    labels: ['個人投資家', '企業の従業員', '政府の規制担当者'], fontSize: 17.0, ticks: [],
+    size: [1220, 58], pos: [0, 255], ori: 0.0, units: psychoJS.window.units,
+    labels: ['個人投資家', '企業の従業員', '政府の規制担当者'], fontSize: 15.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
@@ -1199,7 +1199,7 @@ async function experimentInit() {
     text: 'Q2\u3000この実験で、あなたに求められている課題は何ですか。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, 105], draggable: False, height: 24.0,  wrapWidth: 1440.0, ori: 0.0,
+    pos: [0.0, 95], draggable: False, height: 23.0,  wrapWidth: 1440.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
@@ -1208,8 +1208,8 @@ async function experimentInit() {
   check_q2 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q2',
     startValue: undefined,
-    size: [1320, 68], pos: [0, 40], ori: 0.0, units: psychoJS.window.units,
-    labels: ['企業の広告表現を評価する', '表示されたESG項目名と報告値を確認し、その内容を理解する', '他の企業の情報を検索して比較する'], fontSize: 17.0, ticks: [],
+    size: [1220, 58], pos: [0, 30], ori: 0.0, units: psychoJS.window.units,
+    labels: ['企業の広告表現を評価する', '表示されたESG項目名と報告値を確認し、その内容を理解する', '他の企業の情報を検索して比較する'], fontSize: 13.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -4, 
@@ -1222,7 +1222,7 @@ async function experimentInit() {
     text: 'Q3\u3000ESG情報を確認した後、何について回答しますか。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, (- 55)], draggable: False, height: 24.0,  wrapWidth: 1440.0, ori: 0.0,
+    pos: [0.0, (- 130)], draggable: False, height: 23.0,  wrapWidth: 1440.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -5.0 
@@ -1231,8 +1231,8 @@ async function experimentInit() {
   check_q3 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q3',
     startValue: undefined,
-    size: [1320, 68], pos: [0, (- 120)], ori: 0.0, units: psychoJS.window.units,
-    labels: ['表示内容の理解、企業に対する評価および投資意向', 'ESG用語の暗記内容', '実験担当者の説明方法'], fontSize: 17.0, ticks: [],
+    size: [1220, 58], pos: [0, (- 195)], ori: 0.0, units: psychoJS.window.units,
+    labels: ['表示内容の理解、企業に対する評価および投資意向', 'ESG用語の暗記内容', '実験担当者の説明方法'], fontSize: 13.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -6, 
@@ -2861,7 +2861,7 @@ async function experimentInit() {
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -2958,7 +2958,7 @@ async function experimentInit() {
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -3055,7 +3055,7 @@ async function experimentInit() {
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -3152,7 +3152,7 @@ async function experimentInit() {
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -3249,7 +3249,7 @@ async function experimentInit() {
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
