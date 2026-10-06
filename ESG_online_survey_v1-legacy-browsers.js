@@ -5586,7 +5586,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_01.tStart = t;  // (not accounting for frame time here)
       table_hline_01.frameNStart = frameN;  // exact frame index
       
-      table_hline_01.setAutoDraw(true);
+      table_hline_01.setAutoDraw(false);
     }
     
     
@@ -5601,7 +5601,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_02.tStart = t;  // (not accounting for frame time here)
       table_hline_02.frameNStart = frameN;  // exact frame index
       
-      table_hline_02.setAutoDraw(true);
+      table_hline_02.setAutoDraw(false);
     }
     
     
@@ -5616,7 +5616,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_03.tStart = t;  // (not accounting for frame time here)
       table_hline_03.frameNStart = frameN;  // exact frame index
       
-      table_hline_03.setAutoDraw(true);
+      table_hline_03.setAutoDraw(false);
     }
     
     
@@ -5631,7 +5631,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_04.tStart = t;  // (not accounting for frame time here)
       table_hline_04.frameNStart = frameN;  // exact frame index
       
-      table_hline_04.setAutoDraw(true);
+      table_hline_04.setAutoDraw(false);
     }
     
     
@@ -5646,7 +5646,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_05.tStart = t;  // (not accounting for frame time here)
       table_hline_05.frameNStart = frameN;  // exact frame index
       
-      table_hline_05.setAutoDraw(true);
+      table_hline_05.setAutoDraw(false);
     }
     
     
@@ -5661,7 +5661,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_06.tStart = t;  // (not accounting for frame time here)
       table_hline_06.frameNStart = frameN;  // exact frame index
       
-      table_hline_06.setAutoDraw(true);
+      table_hline_06.setAutoDraw(false);
     }
     
     
@@ -5676,7 +5676,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_07.tStart = t;  // (not accounting for frame time here)
       table_hline_07.frameNStart = frameN;  // exact frame index
       
-      table_hline_07.setAutoDraw(true);
+      table_hline_07.setAutoDraw(false);
     }
     
     
@@ -5691,7 +5691,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_08.tStart = t;  // (not accounting for frame time here)
       table_hline_08.frameNStart = frameN;  // exact frame index
       
-      table_hline_08.setAutoDraw(true);
+      table_hline_08.setAutoDraw(false);
     }
     
     
@@ -5706,7 +5706,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_09.tStart = t;  // (not accounting for frame time here)
       table_hline_09.frameNStart = frameN;  // exact frame index
       
-      table_hline_09.setAutoDraw(true);
+      table_hline_09.setAutoDraw(false);
     }
     
     
@@ -5721,7 +5721,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_10.tStart = t;  // (not accounting for frame time here)
       table_hline_10.frameNStart = frameN;  // exact frame index
       
-      table_hline_10.setAutoDraw(true);
+      table_hline_10.setAutoDraw(false);
     }
     
     
@@ -5736,7 +5736,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_11.tStart = t;  // (not accounting for frame time here)
       table_hline_11.frameNStart = frameN;  // exact frame index
       
-      table_hline_11.setAutoDraw(true);
+      table_hline_11.setAutoDraw(false);
     }
     
     
@@ -5751,7 +5751,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_12.tStart = t;  // (not accounting for frame time here)
       table_hline_12.frameNStart = frameN;  // exact frame index
       
-      table_hline_12.setAutoDraw(true);
+      table_hline_12.setAutoDraw(false);
     }
     
     
@@ -5766,7 +5766,7 @@ function stimulus_tableRoutineEachFrame() {
       table_hline_13.tStart = t;  // (not accounting for frame time here)
       table_hline_13.frameNStart = frameN;  // exact frame index
       
-      table_hline_13.setAutoDraw(true);
+      table_hline_13.setAutoDraw(false);
     }
     
     
