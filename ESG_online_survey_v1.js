@@ -181,7 +181,47 @@ function applyResponsiveScalingToVisualConstructors() {
         }
     }
 }
-applyResponsiveScalingToVisualConstructors();
+const responsivePointerState = {
+    x: 0,
+    y: 0,
+    pressed: false,
+};
+function updateResponsivePointerPosition(event) {
+    const canvas = document.querySelector("canvas");
+    const rect = canvas ? canvas.getBoundingClientRect() : {left: 0, top: 0, width: window.innerWidth, height: window.innerHeight};
+    responsivePointerState.x = event.clientX - rect.left - (rect.width / 2);
+    responsivePointerState.y = (rect.height / 2) - (event.clientY - rect.top);
+}
+window.addEventListener("pointerdown", (event) => {
+    updateResponsivePointerPosition(event);
+    responsivePointerState.pressed = true;
+});
+window.addEventListener("pointermove", updateResponsivePointerPosition);
+window.addEventListener("pointerup", (event) => {
+    updateResponsivePointerPosition(event);
+    responsivePointerState.pressed = false;
+});
+function isButtonClickedResponsive(button) {
+    if (button && button.isClicked) {
+        return true;
+    }
+    if (!button || !responsivePointerState.pressed) {
+        return false;
+    }
+    const pos = button.pos || button._pos || [0, 0];
+    const size = button.size || button._size || [0, 0];
+    const width = Math.abs(Array.isArray(size) ? size[0] : 0);
+    const height = Math.abs(Array.isArray(size) ? size[1] : 0);
+    if (!width || !height) {
+        return false;
+    }
+    return (
+        responsivePointerState.x >= (pos[0] - (width / 2)) &&
+        responsivePointerState.x <= (pos[0] + (width / 2)) &&
+        responsivePointerState.y >= (pos[1] - (height / 2)) &&
+        responsivePointerState.y <= (pos[1] + (height / 2))
+    );
+}
 function safeSetText(component, text) {
     if (component && typeof component.setText === "function") {
         component.setText(text);
@@ -970,7 +1010,7 @@ async function experimentInit() {
   expInfo["pupil_clock_sync_error"] = pupil_clock_sync_error;
   // Initialize components for Routine "instruction"
   instructionClock = new util.Clock();
-  instruction_title = new visual.TextStim({
+  instruction_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'instruction_title',
     text: '実験について',
@@ -980,9 +1020,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  instruction_body = new visual.TextStim({
+  instruction_body = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'instruction_body',
     text: 'この実験では、企業が開示しているESG情報を確認し、その情報に基づいて企業を評価していただきます。\n\nこの後、ある企業が開示しているESG主要指標が表示されます。表示された項目名と報告値を、ご自身のペースで確認してください。\n\n確認後、表示された情報の内容、企業に対する評価、および投資意向に関する質問に回答していただきます。',
@@ -992,9 +1032,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  instruction_next_button = new visual.ButtonStim({
+  instruction_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'instruction_next_button',
     text: '次へ',
@@ -1015,12 +1055,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   instruction_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "role_instruction"
   role_instructionClock = new util.Clock();
-  role_instruction_title = new visual.TextStim({
+  role_instruction_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'role_instruction_title',
     text: '評価にあたって',
@@ -1030,9 +1070,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  role_paragraph_1 = new visual.TextStim({
+  role_paragraph_1 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'role_paragraph_1',
     text: 'あなたは、企業への投資を検討している個人投資家であると想定してください。',
@@ -1042,9 +1082,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  role_paragraph_2 = new visual.TextStim({
+  role_paragraph_2 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'role_paragraph_2',
     text: '次の画面では、ある企業が開示しているESGに関する主要指標が表示されます。',
@@ -1054,9 +1094,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -2.0 
-  });
+  }));
   
-  role_paragraph_3 = new visual.TextStim({
+  role_paragraph_3 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'role_paragraph_3',
     text: '時間制限はありません。',
@@ -1066,9 +1106,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  role_paragraph_4 = new visual.TextStim({
+  role_paragraph_4 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'role_paragraph_4',
     text: '表示された項目名と報告値を十分に確認し、内容を理解したうえで次に進んでください。',
@@ -1078,9 +1118,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
-  });
+  }));
   
-  role_paragraph_5 = new visual.TextStim({
+  role_paragraph_5 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'role_paragraph_5',
     text: 'その後、表示された情報に基づいて、企業に対する評価や投資意向などについて回答していただきます。',
@@ -1090,9 +1130,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -5.0 
-  });
+  }));
   
-  role_instruction_next_button = new visual.ButtonStim({
+  role_instruction_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'role_instruction_next_button',
     text: '次へ',
@@ -1113,12 +1153,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   role_instruction_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "comprehension_check"
   comprehension_checkClock = new util.Clock();
-  comprehension_check_title = new visual.TextStim({
+  comprehension_check_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'comprehension_check_title',
     text: '説明内容の確認',
@@ -1128,9 +1168,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  check_q1_question = new visual.TextStim({
+  check_q1_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'check_q1_question',
     text: 'Q1\u3000この実験で、あなたはどの立場で企業情報を確認しますか。',
@@ -1140,9 +1180,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  check_q1 = new visual.Slider({
+  check_q1 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q1',
     startValue: undefined,
     size: [1320, 68], pos: [0, 200], ori: 0.0, units: psychoJS.window.units,
@@ -1151,9 +1191,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  check_q2_question = new visual.TextStim({
+  check_q2_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'check_q2_question',
     text: 'Q2\u3000この実験で、あなたに求められている課題は何ですか。',
@@ -1163,9 +1203,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  check_q2 = new visual.Slider({
+  check_q2 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q2',
     startValue: undefined,
     size: [1320, 68], pos: [0, 40], ori: 0.0, units: psychoJS.window.units,
@@ -1174,9 +1214,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -4, 
     flip: false,
-  });
+  }));
   
-  check_q3_question = new visual.TextStim({
+  check_q3_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'check_q3_question',
     text: 'Q3\u3000ESG情報を確認した後、何について回答しますか。',
@@ -1186,9 +1226,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -5.0 
-  });
+  }));
   
-  check_q3 = new visual.Slider({
+  check_q3 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q3',
     startValue: undefined,
     size: [1320, 68], pos: [0, (- 120)], ori: 0.0, units: psychoJS.window.units,
@@ -1197,9 +1237,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -6, 
     flip: false,
-  });
+  }));
   
-  comprehension_error_text = new visual.TextStim({
+  comprehension_error_text = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'comprehension_error_text',
     text: '',
@@ -1209,9 +1249,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -7.0 
-  });
+  }));
   
-  comprehension_hint = new visual.TextStim({
+  comprehension_hint = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'comprehension_hint',
     text: '3問すべてを選択してから、「回答を確認」を押してください。',
@@ -1221,9 +1261,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#526070'),  opacity: undefined,
     depth: -8.0 
-  });
+  }));
   
-  check_button = new visual.ButtonStim({
+  check_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'check_button',
     text: '回答を確認',
@@ -1244,12 +1284,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   check_button.clock = new util.Clock();
   
   // Initialize components for Routine "stimulus_guidance"
   stimulus_guidanceClock = new util.Clock();
-  stimulus_guidance_title = new visual.TextStim({
+  stimulus_guidance_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'stimulus_guidance_title',
     text: 'ESG主要指標の確認',
@@ -1259,9 +1299,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  stimulus_guidance_body = new visual.TextStim({
+  stimulus_guidance_body = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'stimulus_guidance_body',
     text: '次の画面では、株式会社Aの2025年度および2024年度の報告書から抜粋したESG主要指標が表示されます。\n\nあわせて、2024年度から2025年度にかけて数値がどのように変化したかも示します。\n「＋」は前年からの増加、「ー」は前年からの減少を表しています。\nただし、増加や減少の記号だけで、その変化が望ましいかどうかを判断するものではありません。\n\n表示された項目名、報告値、変化の内容を確認し、指標が何を示しているかを考えながらご覧ください。\n\n確認後、この企業のESG面での全体的なパフォーマンスについて評価していただきます。\n表は、ご自身のペースで確認してください。\n「次へ」を押すと、表には戻れません。\n十分に確認してから、次へ進んでください。',
@@ -1271,9 +1311,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  stimulus_guidance_next_button = new visual.ButtonStim({
+  stimulus_guidance_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'stimulus_guidance_next_button',
     text: '次へ',
@@ -1294,12 +1334,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   stimulus_guidance_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "fixation"
   fixationClock = new util.Clock();
-  fixation_cross = new visual.TextStim({
+  fixation_cross = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'fixation_cross',
     text: '＋',
@@ -1309,11 +1349,11 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
   // Initialize components for Routine "stimulus_table"
   stimulus_tableClock = new util.Clock();
-  table_title = new visual.TextStim({
+  table_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'table_title',
     text: '株式会社A\u3000ESG主要指標（2025年度・2024年度）',
@@ -1323,9 +1363,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  table_outer = new visual.Rect ({
+  table_outer = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'table_outer', units : 'pix', 
     width: [1800, 760][0], height: [1800, 760][1],
     ori: 0.0, 
@@ -1339,9 +1379,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -2, 
     interpolate: true, 
-  });
+  }));
   
-  table_header = new visual.Rect ({
+  table_header = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'table_header', units : 'pix', 
     width: [1800, 56][0], height: [1800, 56][1],
     ori: 0.0, 
@@ -1355,9 +1395,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -3, 
     interpolate: true, 
-  });
+  }));
   
-  table_vline_1 = new visual.ShapeStim ({
+  table_vline_1 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_vline_1', units : 'pix', 
     vertices: [[-[1, 760][0]/2.0, 0], [+[1, 760][0]/2.0, 0]],
     ori: 0.0, 
@@ -1371,9 +1411,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -4, 
     interpolate: true, 
-  });
+  }));
   
-  table_vline_2 = new visual.ShapeStim ({
+  table_vline_2 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_vline_2', units : 'pix', 
     vertices: [[-[1, 760][0]/2.0, 0], [+[1, 760][0]/2.0, 0]],
     ori: 0.0, 
@@ -1387,9 +1427,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -5, 
     interpolate: true, 
-  });
+  }));
   
-  table_vline_3 = new visual.ShapeStim ({
+  table_vline_3 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_vline_3', units : 'pix', 
     vertices: [[-[1, 760][0]/2.0, 0], [+[1, 760][0]/2.0, 0]],
     ori: 0.0, 
@@ -1403,9 +1443,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -6, 
     interpolate: true, 
-  });
+  }));
   
-  table_vline_4 = new visual.ShapeStim ({
+  table_vline_4 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_vline_4', units : 'pix', 
     vertices: [[-[1, 760][0]/2.0, 0], [+[1, 760][0]/2.0, 0]],
     ori: 0.0, 
@@ -1419,9 +1459,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -7, 
     interpolate: true, 
-  });
+  }));
   
-  table_vline_5 = new visual.ShapeStim ({
+  table_vline_5 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_vline_5', units : 'pix', 
     vertices: [[-[1, 760][0]/2.0, 0], [+[1, 760][0]/2.0, 0]],
     ori: 0.0, 
@@ -1435,9 +1475,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -8, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_01 = new visual.ShapeStim ({
+  table_hline_01 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_01', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1451,9 +1491,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -9, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_02 = new visual.ShapeStim ({
+  table_hline_02 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_02', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1467,9 +1507,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -10, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_03 = new visual.ShapeStim ({
+  table_hline_03 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_03', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1483,9 +1523,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -11, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_04 = new visual.ShapeStim ({
+  table_hline_04 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_04', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1499,9 +1539,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -12, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_05 = new visual.ShapeStim ({
+  table_hline_05 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_05', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1515,9 +1555,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -13, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_06 = new visual.ShapeStim ({
+  table_hline_06 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_06', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1531,9 +1571,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -14, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_07 = new visual.ShapeStim ({
+  table_hline_07 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_07', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1547,9 +1587,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -15, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_08 = new visual.ShapeStim ({
+  table_hline_08 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_08', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1563,9 +1603,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -16, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_09 = new visual.ShapeStim ({
+  table_hline_09 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_09', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1579,9 +1619,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -17, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_10 = new visual.ShapeStim ({
+  table_hline_10 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_10', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1595,9 +1635,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -18, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_11 = new visual.ShapeStim ({
+  table_hline_11 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_11', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1611,9 +1651,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -19, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_12 = new visual.ShapeStim ({
+  table_hline_12 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_12', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1627,9 +1667,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -20, 
     interpolate: true, 
-  });
+  }));
   
-  table_hline_13 = new visual.ShapeStim ({
+  table_hline_13 = new visual.ShapeStim (scaleVisualOptions({
     win: psychoJS.window, name: 'table_hline_13', units : 'pix', 
     vertices: [[-[1800, 1][0]/2.0, 0], [+[1800, 1][0]/2.0, 0]],
     ori: 0.0, 
@@ -1643,9 +1683,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -21, 
     interpolate: true, 
-  });
+  }));
   
-  header_Nono = new visual.TextStim({
+  header_Nono = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'header_Nono',
     text: 'No.',
@@ -1655,9 +1695,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -22.0 
-  });
+  }));
   
-  header_GRI = new visual.TextStim({
+  header_GRI = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'header_GRI',
     text: 'GRI',
@@ -1667,9 +1707,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -23.0 
-  });
+  }));
   
-  header_開示項目名 = new visual.TextStim({
+  header_開示項目名 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'header_開示項目名',
     text: '開示項目名',
@@ -1679,9 +1719,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -24.0 
-  });
+  }));
   
-  header_2024year = new visual.TextStim({
+  header_2024year = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'header_2024year',
     text: '2024年度',
@@ -1691,9 +1731,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -25.0 
-  });
+  }));
   
-  header_2025year = new visual.TextStim({
+  header_2025year = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'header_2025year',
     text: '2025年度',
@@ -1703,9 +1743,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -26.0 
-  });
+  }));
   
-  header_変化 = new visual.TextStim({
+  header_変化 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'header_変化',
     text: '変化',
@@ -1715,9 +1755,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -27.0 
-  });
+  }));
   
-  row_fill_01 = new visual.Rect ({
+  row_fill_01 = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'row_fill_01', units : 'pix', 
     width: [1798, 54.15384615384615][0], height: [1798, 54.15384615384615][1],
     ori: 0.0, 
@@ -1731,9 +1771,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -28, 
     interpolate: true, 
-  });
+  }));
   
-  no_01 = new visual.TextStim({
+  no_01 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_01',
     text: '1',
@@ -1743,9 +1783,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -29.0 
-  });
+  }));
   
-  gri_01 = new visual.TextStim({
+  gri_01 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_01',
     text: '302-1',
@@ -1755,9 +1795,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -30.0 
-  });
+  }));
   
-  label_01 = new visual.TextStim({
+  label_01 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_01',
     text: '',
@@ -1767,9 +1807,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -31.0 
-  });
+  }));
   
-  value_2024_01 = new visual.TextStim({
+  value_2024_01 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_01',
     text: '239,340 MWh',
@@ -1779,9 +1819,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -32.0 
-  });
+  }));
   
-  value_2025_01 = new visual.TextStim({
+  value_2025_01 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_01',
     text: '240,704 MWh',
@@ -1791,9 +1831,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -33.0 
-  });
+  }));
   
-  change_01 = new visual.TextStim({
+  change_01 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_01',
     text: '+1,364 MWh',
@@ -1803,9 +1843,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -34.0 
-  });
+  }));
   
-  no_02 = new visual.TextStim({
+  no_02 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_02',
     text: '2',
@@ -1815,9 +1855,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -35.0 
-  });
+  }));
   
-  gri_02 = new visual.TextStim({
+  gri_02 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_02',
     text: '302-4',
@@ -1827,9 +1867,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -36.0 
-  });
+  }));
   
-  label_02 = new visual.TextStim({
+  label_02 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_02',
     text: '',
@@ -1839,9 +1879,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -37.0 
-  });
+  }));
   
-  value_2024_02 = new visual.TextStim({
+  value_2024_02 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_02',
     text: '2.19%',
@@ -1851,9 +1891,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -38.0 
-  });
+  }));
   
-  value_2025_02 = new visual.TextStim({
+  value_2025_02 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_02',
     text: '2.32%',
@@ -1863,9 +1903,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -39.0 
-  });
+  }));
   
-  change_02 = new visual.TextStim({
+  change_02 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_02',
     text: '+0.13%',
@@ -1875,9 +1915,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -40.0 
-  });
+  }));
   
-  row_fill_03 = new visual.Rect ({
+  row_fill_03 = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'row_fill_03', units : 'pix', 
     width: [1798, 54.15384615384615][0], height: [1798, 54.15384615384615][1],
     ori: 0.0, 
@@ -1891,9 +1931,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -41, 
     interpolate: true, 
-  });
+  }));
   
-  no_03 = new visual.TextStim({
+  no_03 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_03',
     text: '3',
@@ -1903,9 +1943,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -42.0 
-  });
+  }));
   
-  gri_03 = new visual.TextStim({
+  gri_03 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_03',
     text: '305-1',
@@ -1915,9 +1955,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -43.0 
-  });
+  }));
   
-  label_03 = new visual.TextStim({
+  label_03 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_03',
     text: '',
@@ -1927,9 +1967,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -44.0 
-  });
+  }));
   
-  value_2024_03 = new visual.TextStim({
+  value_2024_03 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_03',
     text: '3,512 t-CO2e',
@@ -1939,9 +1979,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -45.0 
-  });
+  }));
   
-  value_2025_03 = new visual.TextStim({
+  value_2025_03 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_03',
     text: '4006 t-CO2e',
@@ -1951,9 +1991,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -46.0 
-  });
+  }));
   
-  change_03 = new visual.TextStim({
+  change_03 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_03',
     text: '+494 t-CO2e',
@@ -1963,9 +2003,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -47.0 
-  });
+  }));
   
-  no_04 = new visual.TextStim({
+  no_04 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_04',
     text: '4',
@@ -1975,9 +2015,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -48.0 
-  });
+  }));
   
-  gri_04 = new visual.TextStim({
+  gri_04 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_04',
     text: '305-2',
@@ -1987,9 +2027,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -49.0 
-  });
+  }));
   
-  label_04 = new visual.TextStim({
+  label_04 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_04',
     text: '',
@@ -1999,9 +2039,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -50.0 
-  });
+  }));
   
-  value_2024_04 = new visual.TextStim({
+  value_2024_04 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_04',
     text: '128,054 t-CO2e',
@@ -2011,9 +2051,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -51.0 
-  });
+  }));
   
-  value_2025_04 = new visual.TextStim({
+  value_2025_04 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_04',
     text: '128,650 t-CO2e',
@@ -2023,9 +2063,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -52.0 
-  });
+  }));
   
-  change_04 = new visual.TextStim({
+  change_04 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_04',
     text: '+596 t-CO2e',
@@ -2035,9 +2075,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -53.0 
-  });
+  }));
   
-  row_fill_05 = new visual.Rect ({
+  row_fill_05 = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'row_fill_05', units : 'pix', 
     width: [1798, 54.15384615384615][0], height: [1798, 54.15384615384615][1],
     ori: 0.0, 
@@ -2051,9 +2091,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -54, 
     interpolate: true, 
-  });
+  }));
   
-  no_05 = new visual.TextStim({
+  no_05 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_05',
     text: '5',
@@ -2063,9 +2103,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -55.0 
-  });
+  }));
   
-  gri_05 = new visual.TextStim({
+  gri_05 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_05',
     text: '305-4',
@@ -2075,9 +2115,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -56.0 
-  });
+  }));
   
-  label_05 = new visual.TextStim({
+  label_05 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_05',
     text: '',
@@ -2087,9 +2127,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -57.0 
-  });
+  }));
   
-  value_2024_05 = new visual.TextStim({
+  value_2024_05 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_05',
     text: '4.90 t-CO2',
@@ -2099,9 +2139,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -58.0 
-  });
+  }));
   
-  value_2025_05 = new visual.TextStim({
+  value_2025_05 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_05',
     text: '4.88 t-CO2',
@@ -2111,9 +2151,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -59.0 
-  });
+  }));
   
-  change_05 = new visual.TextStim({
+  change_05 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_05',
     text: '-0.02 t-CO2',
@@ -2123,9 +2163,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -60.0 
-  });
+  }));
   
-  no_06 = new visual.TextStim({
+  no_06 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_06',
     text: '6',
@@ -2135,9 +2175,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -61.0 
-  });
+  }));
   
-  gri_06 = new visual.TextStim({
+  gri_06 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_06',
     text: '305-5',
@@ -2147,9 +2187,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -62.0 
-  });
+  }));
   
-  label_06 = new visual.TextStim({
+  label_06 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_06',
     text: '',
@@ -2159,9 +2199,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -63.0 
-  });
+  }));
   
-  value_2024_06 = new visual.TextStim({
+  value_2024_06 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_06',
     text: '-20.9%',
@@ -2171,9 +2211,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -64.0 
-  });
+  }));
   
-  value_2025_06 = new visual.TextStim({
+  value_2025_06 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_06',
     text: '-27.6%',
@@ -2183,9 +2223,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -65.0 
-  });
+  }));
   
-  change_06 = new visual.TextStim({
+  change_06 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_06',
     text: '-6.7%',
@@ -2195,9 +2235,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -66.0 
-  });
+  }));
   
-  row_fill_07 = new visual.Rect ({
+  row_fill_07 = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'row_fill_07', units : 'pix', 
     width: [1798, 54.15384615384615][0], height: [1798, 54.15384615384615][1],
     ori: 0.0, 
@@ -2211,9 +2251,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -67, 
     interpolate: true, 
-  });
+  }));
   
-  no_07 = new visual.TextStim({
+  no_07 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_07',
     text: '7',
@@ -2223,9 +2263,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -68.0 
-  });
+  }));
   
-  gri_07 = new visual.TextStim({
+  gri_07 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_07',
     text: '306-3',
@@ -2235,9 +2275,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -69.0 
-  });
+  }));
   
-  label_07 = new visual.TextStim({
+  label_07 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_07',
     text: '',
@@ -2247,9 +2287,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -70.0 
-  });
+  }));
   
-  value_2024_07 = new visual.TextStim({
+  value_2024_07 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_07',
     text: '14,206 t',
@@ -2259,9 +2299,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -71.0 
-  });
+  }));
   
-  value_2025_07 = new visual.TextStim({
+  value_2025_07 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_07',
     text: '14267 t',
@@ -2271,9 +2311,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -72.0 
-  });
+  }));
   
-  change_07 = new visual.TextStim({
+  change_07 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_07',
     text: '+61 t',
@@ -2283,9 +2323,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -73.0 
-  });
+  }));
   
-  no_08 = new visual.TextStim({
+  no_08 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_08',
     text: '8',
@@ -2295,9 +2335,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -74.0 
-  });
+  }));
   
-  gri_08 = new visual.TextStim({
+  gri_08 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_08',
     text: '401-1',
@@ -2307,9 +2347,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -75.0 
-  });
+  }));
   
-  label_08 = new visual.TextStim({
+  label_08 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_08',
     text: '',
@@ -2319,9 +2359,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -76.0 
-  });
+  }));
   
-  value_2024_08 = new visual.TextStim({
+  value_2024_08 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_08',
     text: '採用63名/離職率2.0%',
@@ -2331,9 +2371,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -77.0 
-  });
+  }));
   
-  value_2025_08 = new visual.TextStim({
+  value_2025_08 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_08',
     text: '採用58名/離職率2.5%',
@@ -2343,9 +2383,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -78.0 
-  });
+  }));
   
-  change_08 = new visual.TextStim({
+  change_08 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_08',
     text: '採用-5名/離職率+0.5%',
@@ -2355,9 +2395,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -79.0 
-  });
+  }));
   
-  row_fill_09 = new visual.Rect ({
+  row_fill_09 = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'row_fill_09', units : 'pix', 
     width: [1798, 54.15384615384615][0], height: [1798, 54.15384615384615][1],
     ori: 0.0, 
@@ -2371,9 +2411,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -80, 
     interpolate: true, 
-  });
+  }));
   
-  no_09 = new visual.TextStim({
+  no_09 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_09',
     text: '9',
@@ -2383,9 +2423,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -81.0 
-  });
+  }));
   
-  gri_09 = new visual.TextStim({
+  gri_09 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_09',
     text: '401-3',
@@ -2395,9 +2435,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -82.0 
-  });
+  }));
   
-  label_09 = new visual.TextStim({
+  label_09 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_09',
     text: '',
@@ -2407,9 +2447,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -83.0 
-  });
+  }));
   
-  value_2024_09 = new visual.TextStim({
+  value_2024_09 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_09',
     text: '624名',
@@ -2419,9 +2459,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -84.0 
-  });
+  }));
   
-  value_2025_09 = new visual.TextStim({
+  value_2025_09 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_09',
     text: '668名',
@@ -2431,9 +2471,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -85.0 
-  });
+  }));
   
-  change_09 = new visual.TextStim({
+  change_09 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_09',
     text: '+44名',
@@ -2443,9 +2483,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -86.0 
-  });
+  }));
   
-  no_10 = new visual.TextStim({
+  no_10 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_10',
     text: '10',
@@ -2455,9 +2495,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -87.0 
-  });
+  }));
   
-  gri_10 = new visual.TextStim({
+  gri_10 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_10',
     text: '403-9',
@@ -2467,9 +2507,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -88.0 
-  });
+  }));
   
-  label_10 = new visual.TextStim({
+  label_10 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_10',
     text: '',
@@ -2479,9 +2519,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -89.0 
-  });
+  }));
   
-  value_2024_10 = new visual.TextStim({
+  value_2024_10 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_10',
     text: '7.01%',
@@ -2491,9 +2531,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -90.0 
-  });
+  }));
   
-  value_2025_10 = new visual.TextStim({
+  value_2025_10 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_10',
     text: '6.80%',
@@ -2503,9 +2543,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -91.0 
-  });
+  }));
   
-  change_10 = new visual.TextStim({
+  change_10 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_10',
     text: '-0.21%',
@@ -2515,9 +2555,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -92.0 
-  });
+  }));
   
-  row_fill_11 = new visual.Rect ({
+  row_fill_11 = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'row_fill_11', units : 'pix', 
     width: [1798, 54.15384615384615][0], height: [1798, 54.15384615384615][1],
     ori: 0.0, 
@@ -2531,9 +2571,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -93, 
     interpolate: true, 
-  });
+  }));
   
-  no_11 = new visual.TextStim({
+  no_11 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_11',
     text: '11',
@@ -2543,9 +2583,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -94.0 
-  });
+  }));
   
-  gri_11 = new visual.TextStim({
+  gri_11 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_11',
     text: '404-1',
@@ -2555,9 +2595,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -95.0 
-  });
+  }));
   
-  label_11 = new visual.TextStim({
+  label_11 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_11',
     text: '',
@@ -2567,9 +2607,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -96.0 
-  });
+  }));
   
-  value_2024_11 = new visual.TextStim({
+  value_2024_11 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_11',
     text: '49時間/人',
@@ -2579,9 +2619,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -97.0 
-  });
+  }));
   
-  value_2025_11 = new visual.TextStim({
+  value_2025_11 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_11',
     text: '44時間/人',
@@ -2591,9 +2631,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -98.0 
-  });
+  }));
   
-  change_11 = new visual.TextStim({
+  change_11 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_11',
     text: '-5時間/人',
@@ -2603,9 +2643,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -99.0 
-  });
+  }));
   
-  no_12 = new visual.TextStim({
+  no_12 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_12',
     text: '12',
@@ -2615,9 +2655,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -100.0 
-  });
+  }));
   
-  gri_12 = new visual.TextStim({
+  gri_12 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_12',
     text: '405-2',
@@ -2627,9 +2667,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -101.0 
-  });
+  }));
   
-  label_12 = new visual.TextStim({
+  label_12 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_12',
     text: '',
@@ -2639,9 +2679,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -102.0 
-  });
+  }));
   
-  value_2024_12 = new visual.TextStim({
+  value_2024_12 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_12',
     text: '67.2%',
@@ -2651,9 +2691,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -103.0 
-  });
+  }));
   
-  value_2025_12 = new visual.TextStim({
+  value_2025_12 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_12',
     text: '67.8%',
@@ -2663,9 +2703,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -104.0 
-  });
+  }));
   
-  change_12 = new visual.TextStim({
+  change_12 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_12',
     text: '+0.6%',
@@ -2675,9 +2715,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -105.0 
-  });
+  }));
   
-  row_fill_13 = new visual.Rect ({
+  row_fill_13 = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'row_fill_13', units : 'pix', 
     width: [1798, 54.15384615384615][0], height: [1798, 54.15384615384615][1],
     ori: 0.0, 
@@ -2691,9 +2731,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -106, 
     interpolate: true, 
-  });
+  }));
   
-  no_13 = new visual.TextStim({
+  no_13 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'no_13',
     text: '13',
@@ -2703,9 +2743,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -107.0 
-  });
+  }));
   
-  gri_13 = new visual.TextStim({
+  gri_13 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_13',
     text: '2-21',
@@ -2715,9 +2755,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -108.0 
-  });
+  }));
   
-  label_13 = new visual.TextStim({
+  label_13 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_13',
     text: '',
@@ -2727,9 +2767,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -109.0 
-  });
+  }));
   
-  value_2024_13 = new visual.TextStim({
+  value_2024_13 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2024_13',
     text: '20.1倍',
@@ -2739,9 +2779,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -110.0 
-  });
+  }));
   
-  value_2025_13 = new visual.TextStim({
+  value_2025_13 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'value_2025_13',
     text: '14.5倍',
@@ -2751,9 +2791,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -111.0 
-  });
+  }));
   
-  change_13 = new visual.TextStim({
+  change_13 = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'change_13',
     text: '-5.6倍',
@@ -2763,9 +2803,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -112.0 
-  });
+  }));
   
-  stimulus_table_next_button = new visual.ButtonStim({
+  stimulus_table_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'stimulus_table_next_button',
     text: '次へ',
@@ -2786,12 +2826,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   stimulus_table_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "esg_performance_screen"
   esg_performance_screenClock = new util.Clock();
-  esg_performance_screen_title = new visual.TextStim({
+  esg_performance_screen_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_performance_screen_title',
     text: 'ESGパフォーマンス評価',
@@ -2801,9 +2841,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  esg_performance_question = new visual.TextStim({
+  esg_performance_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_performance_question',
     text: '提示された情報を踏まえて、この企業のESGパフォーマンスを総合的に評価してください。',
@@ -2813,9 +2853,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  esg_performance = new visual.Slider({
+  esg_performance = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'esg_performance',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
@@ -2824,9 +2864,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  esg_performance_left = new visual.TextStim({
+  esg_performance_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_performance_left',
     text: '0 = 非常に低い',
@@ -2836,9 +2876,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  esg_performance_right = new visual.TextStim({
+  esg_performance_right = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_performance_right',
     text: '100 = 非常に高い',
@@ -2848,9 +2888,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
-  });
+  }));
   
-  esg_performance_screen_validation = new visual.TextStim({
+  esg_performance_screen_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_performance_screen_validation',
     text: '',
@@ -2860,9 +2900,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -5.0 
-  });
+  }));
   
-  esg_performance_screen_next_button = new visual.ButtonStim({
+  esg_performance_screen_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_performance_screen_next_button',
     text: '次へ',
@@ -2883,12 +2923,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   esg_performance_screen_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "esg_difficulty_screen"
   esg_difficulty_screenClock = new util.Clock();
-  esg_difficulty_screen_title = new visual.TextStim({
+  esg_difficulty_screen_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_difficulty_screen_title',
     text: 'ESG情報評価の難易度',
@@ -2898,9 +2938,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  esg_difficulty_question = new visual.TextStim({
+  esg_difficulty_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_difficulty_question',
     text: '提示されたESG情報をもとに、この企業の社会面および環境面のパフォーマンスを評価することは、どの程度難しかったですか。',
@@ -2910,9 +2950,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  esg_difficulty = new visual.Slider({
+  esg_difficulty = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'esg_difficulty',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
@@ -2921,9 +2961,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  esg_difficulty_left = new visual.TextStim({
+  esg_difficulty_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_difficulty_left',
     text: '0 = 全く難しくなかった',
@@ -2933,9 +2973,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  esg_difficulty_right = new visual.TextStim({
+  esg_difficulty_right = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_difficulty_right',
     text: '100 = 非常に難しかった',
@@ -2945,9 +2985,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
-  });
+  }));
   
-  esg_difficulty_screen_validation = new visual.TextStim({
+  esg_difficulty_screen_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_difficulty_screen_validation',
     text: '',
@@ -2957,9 +2997,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -5.0 
-  });
+  }));
   
-  esg_difficulty_screen_next_button = new visual.ButtonStim({
+  esg_difficulty_screen_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_difficulty_screen_next_button',
     text: '次へ',
@@ -2980,12 +3020,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   esg_difficulty_screen_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "label_difficulty_screen"
   label_difficulty_screenClock = new util.Clock();
-  label_difficulty_screen_title = new visual.TextStim({
+  label_difficulty_screen_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_difficulty_screen_title',
     text: 'ESG項目名の理解の難易度',
@@ -2995,9 +3035,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  label_difficulty_question = new visual.TextStim({
+  label_difficulty_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_difficulty_question',
     text: '表示された各ESG項目名の意味を理解することは、どの程度難しかったですか。',
@@ -3007,9 +3047,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  label_difficulty = new visual.Slider({
+  label_difficulty = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'label_difficulty',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
@@ -3018,9 +3058,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  label_difficulty_left = new visual.TextStim({
+  label_difficulty_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_difficulty_left',
     text: '0 = 全く難しくなかった',
@@ -3030,9 +3070,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  label_difficulty_right = new visual.TextStim({
+  label_difficulty_right = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_difficulty_right',
     text: '100 = 非常に難しかった',
@@ -3042,9 +3082,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
-  });
+  }));
   
-  label_difficulty_screen_validation = new visual.TextStim({
+  label_difficulty_screen_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_difficulty_screen_validation',
     text: '',
@@ -3054,9 +3094,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -5.0 
-  });
+  }));
   
-  label_difficulty_screen_next_button = new visual.ButtonStim({
+  label_difficulty_screen_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'label_difficulty_screen_next_button',
     text: '次へ',
@@ -3077,12 +3117,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   label_difficulty_screen_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "investment_intention_screen"
   investment_intention_screenClock = new util.Clock();
-  investment_intention_screen_title = new visual.TextStim({
+  investment_intention_screen_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_intention_screen_title',
     text: '投資意向',
@@ -3092,9 +3132,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  investment_intention_question = new visual.TextStim({
+  investment_intention_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_intention_question',
     text: 'この企業にどの程度投資したいと思いますか。',
@@ -3104,9 +3144,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  investment_intention = new visual.Slider({
+  investment_intention = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'investment_intention',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
@@ -3115,9 +3155,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  investment_intention_left = new visual.TextStim({
+  investment_intention_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_intention_left',
     text: '0 = 全く投資したくない',
@@ -3127,9 +3167,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  investment_intention_right = new visual.TextStim({
+  investment_intention_right = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_intention_right',
     text: '100 = 非常に投資したい',
@@ -3139,9 +3179,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
-  });
+  }));
   
-  investment_intention_screen_validation = new visual.TextStim({
+  investment_intention_screen_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_intention_screen_validation',
     text: '',
@@ -3151,9 +3191,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -5.0 
-  });
+  }));
   
-  investment_intention_screen_next_button = new visual.ButtonStim({
+  investment_intention_screen_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_intention_screen_next_button',
     text: '次へ',
@@ -3174,12 +3214,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   investment_intention_screen_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "perceived_standardization_screen"
   perceived_standardization_screenClock = new util.Clock();
-  perceived_standardization_screen_title = new visual.TextStim({
+  perceived_standardization_screen_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'perceived_standardization_screen_title',
     text: '項目名の標準化について',
@@ -3189,9 +3229,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  perceived_standardization_question = new visual.TextStim({
+  perceived_standardization_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'perceived_standardization_question',
     text: '表示されたESG項目名は、統一された基準やルールがあると感じましたか。',
@@ -3201,9 +3241,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  perceived_standardization = new visual.Slider({
+  perceived_standardization = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'perceived_standardization',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
@@ -3212,9 +3252,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  perceived_standardization_left = new visual.TextStim({
+  perceived_standardization_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'perceived_standardization_left',
     text: '0 = 全くそう感じなかった',
@@ -3224,9 +3264,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  perceived_standardization_right = new visual.TextStim({
+  perceived_standardization_right = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'perceived_standardization_right',
     text: '100 = 非常にそう感じた',
@@ -3236,9 +3276,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
-  });
+  }));
   
-  perceived_standardization_screen_validation = new visual.TextStim({
+  perceived_standardization_screen_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'perceived_standardization_screen_validation',
     text: '',
@@ -3248,9 +3288,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -5.0 
-  });
+  }));
   
-  perceived_standardization_screen_next_button = new visual.ButtonStim({
+  perceived_standardization_screen_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'perceived_standardization_screen_next_button',
     text: '次へ',
@@ -3271,12 +3311,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   perceived_standardization_screen_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "esg_familiarity_screen"
   esg_familiarity_screenClock = new util.Clock();
-  esg_familiarity_screen_title = new visual.TextStim({
+  esg_familiarity_screen_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_familiarity_screen_title',
     text: 'ESG 馴染み',
@@ -3286,9 +3326,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  esg_familiarity_question = new visual.TextStim({
+  esg_familiarity_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_familiarity_question',
     text: 'ESG情報について、どの程度知っていますか。',
@@ -3298,9 +3338,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  esg_familiarity = new visual.Slider({
+  esg_familiarity = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'esg_familiarity',
     startValue: undefined,
     size: [1400, 120], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
@@ -3309,9 +3349,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  esg_familiarity_screen_validation = new visual.TextStim({
+  esg_familiarity_screen_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_familiarity_screen_validation',
     text: '',
@@ -3321,9 +3361,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  esg_familiarity_screen_next_button = new visual.ButtonStim({
+  esg_familiarity_screen_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_familiarity_screen_next_button',
     text: '次へ',
@@ -3344,12 +3384,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   esg_familiarity_screen_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "gri_familiarity_screen"
   gri_familiarity_screenClock = new util.Clock();
-  gri_familiarity_screen_title = new visual.TextStim({
+  gri_familiarity_screen_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_familiarity_screen_title',
     text: 'GRI 馴染み',
@@ -3359,9 +3399,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  gri_familiarity_question = new visual.TextStim({
+  gri_familiarity_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_familiarity_question',
     text: 'GRIスタンダードについて、どの程度知っていますか。',
@@ -3371,9 +3411,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  gri_familiarity = new visual.Slider({
+  gri_familiarity = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'gri_familiarity',
     startValue: undefined,
     size: [1400, 120], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
@@ -3382,9 +3422,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  gri_familiarity_screen_validation = new visual.TextStim({
+  gri_familiarity_screen_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_familiarity_screen_validation',
     text: '',
@@ -3394,9 +3434,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  gri_familiarity_screen_next_button = new visual.ButtonStim({
+  gri_familiarity_screen_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gri_familiarity_screen_next_button',
     text: '次へ',
@@ -3417,12 +3457,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   gri_familiarity_screen_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "investment_experience"
   investment_experienceClock = new util.Clock();
-  investment_experience_title = new visual.TextStim({
+  investment_experience_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_experience_title',
     text: '投資経験',
@@ -3432,9 +3472,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  investment_question = new visual.TextStim({
+  investment_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_question',
     text: 'Q1\u3000これまでに、金融商品の投資経験はありますか。',
@@ -3444,9 +3484,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  investment_experience_response = new visual.Slider({
+  investment_experience_response = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'investment_experience_response',
     startValue: undefined,
     size: [700, 90], pos: [0, 95], ori: 0.0, units: psychoJS.window.units,
@@ -3455,9 +3495,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  investment_experience_validation = new visual.TextStim({
+  investment_experience_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_experience_validation',
     text: '',
@@ -3467,9 +3507,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  investment_experience_next_button = new visual.ButtonStim({
+  investment_experience_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_experience_next_button',
     text: '次へ',
@@ -3490,12 +3530,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   investment_experience_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "investment_years"
   investment_yearsClock = new util.Clock();
-  investment_years_title = new visual.TextStim({
+  investment_years_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_years_title',
     text: '投資経験',
@@ -3505,9 +3545,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  investment_years_question = new visual.TextStim({
+  investment_years_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_years_question',
     text: 'Q2\u3000投資経験年数はどのくらいですか。',
@@ -3517,9 +3557,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  investment_years_response = new visual.Slider({
+  investment_years_response = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'investment_years_response',
     startValue: undefined,
     size: [1250, 100], pos: [0, 95], ori: 0.0, units: psychoJS.window.units,
@@ -3528,9 +3568,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#172033'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  investment_years_validation = new visual.TextStim({
+  investment_years_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_years_validation',
     text: '',
@@ -3540,9 +3580,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  investment_years_next_button = new visual.ButtonStim({
+  investment_years_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'investment_years_next_button',
     text: '次へ',
@@ -3563,12 +3603,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   investment_years_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "finance_education"
   finance_educationClock = new util.Clock();
-  finance_education_title = new visual.TextStim({
+  finance_education_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'finance_education_title',
     text: '会計・金融の学習経験',
@@ -3578,9 +3618,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  finance_question = new visual.TextStim({
+  finance_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'finance_question',
     text: 'Q1\u3000大学の授業等で、会計・財務・投資のいずれかについて学んだ経験はありますか。',
@@ -3590,9 +3630,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  finance_education_response = new visual.Slider({
+  finance_education_response = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'finance_education_response',
     startValue: undefined,
     size: [760, 90], pos: [0, 195], ori: 0.0, units: psychoJS.window.units,
@@ -3601,9 +3641,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  finance_education_validation = new visual.TextStim({
+  finance_education_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'finance_education_validation',
     text: '',
@@ -3613,9 +3653,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -3.0 
-  });
+  }));
   
-  finance_education_next_button = new visual.ButtonStim({
+  finance_education_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'finance_education_next_button',
     text: '次へ',
@@ -3636,12 +3676,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   finance_education_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "demographics_1"
   demographics_1Clock = new util.Clock();
-  demographics_1_title = new visual.TextStim({
+  demographics_1_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'demographics_1_title',
     text: '基本属性（1/2）',
@@ -3651,9 +3691,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  age_question = new visual.TextStim({
+  age_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'age_question',
     text: 'Q1\u3000年齢を入力してください。',
@@ -3663,9 +3703,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  age_input_box = new visual.Rect ({
+  age_input_box = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'age_input_box', units : 'pix', 
     width: [260, 65][0], height: [260, 65][1],
     ori: 0.0, 
@@ -3679,9 +3719,9 @@ async function experimentInit() {
     opacity: undefined, 
     depth: -2, 
     interpolate: true, 
-  });
+  }));
   
-  age_textbox = new visual.TextBox({
+  age_textbox = new visual.TextBox(scaleVisualOptions({
     win: psychoJS.window,
     name: 'age_textbox',
     text: '',
@@ -3705,9 +3745,9 @@ async function experimentInit() {
     multiline: true,
     anchor: 'center',
     depth: -3.0 
-  });
+  }));
   
-  age_input_display = new visual.TextStim({
+  age_input_display = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'age_input_display',
     text: '',
@@ -3717,9 +3757,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
-  });
+  }));
   
-  age_suffix = new visual.TextStim({
+  age_suffix = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'age_suffix',
     text: '歳',
@@ -3729,9 +3769,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -5.0 
-  });
+  }));
   
-  age_hint = new visual.TextStim({
+  age_hint = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'age_hint',
     text: '数字をキーボードで入力してください（Backspaceで削除）。',
@@ -3741,9 +3781,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#526070'),  opacity: undefined,
     depth: -6.0 
-  });
+  }));
   
-  gender_question = new visual.TextStim({
+  gender_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'gender_question',
     text: 'Q2\u3000性別を選択してください。',
@@ -3753,9 +3793,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -7.0 
-  });
+  }));
   
-  gender = new visual.Slider({
+  gender = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'gender',
     startValue: undefined,
     size: [1250, 100], pos: [0, (- 80)], ori: 0.0, units: psychoJS.window.units,
@@ -3764,9 +3804,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -8, 
     flip: false,
-  });
+  }));
   
-  demographics_1_validation = new visual.TextStim({
+  demographics_1_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'demographics_1_validation',
     text: '',
@@ -3776,9 +3816,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -9.0 
-  });
+  }));
   
-  demographics_1_next_button = new visual.ButtonStim({
+  demographics_1_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'demographics_1_next_button',
     text: '次へ',
@@ -3799,12 +3839,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   demographics_1_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "demographics_2"
   demographics_2Clock = new util.Clock();
-  demographics_2_title = new visual.TextStim({
+  demographics_2_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'demographics_2_title',
     text: '基本属性（2/2）',
@@ -3814,9 +3854,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  status_question = new visual.TextStim({
+  status_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'status_question',
     text: 'Q\u3000現在のご職業・属性について、最も当てはまるものを1つお選びください。',
@@ -3826,9 +3866,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  occupation_attribute = new visual.Slider({
+  occupation_attribute = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'occupation_attribute',
     startValue: undefined,
     size: [1550, 95], pos: [0, 160], ori: 0.0, units: psychoJS.window.units,
@@ -3837,9 +3877,9 @@ async function experimentInit() {
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
-  });
+  }));
   
-  occupation_other_question = new visual.TextStim({
+  occupation_other_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'occupation_other_question',
     text: '「その他」を選択した方は、具体的に入力してください。',
@@ -3849,9 +3889,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: 0.0,
     depth: -3.0 
-  });
+  }));
   
-  occupation_other_textbox = new visual.TextBox({
+  occupation_other_textbox = new visual.TextBox(scaleVisualOptions({
     win: psychoJS.window,
     name: 'occupation_other_textbox',
     text: '',
@@ -3875,9 +3915,9 @@ async function experimentInit() {
     multiline: true,
     anchor: 'center',
     depth: -4.0 
-  });
+  }));
   
-  demographics_2_validation = new visual.TextStim({
+  demographics_2_validation = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'demographics_2_validation',
     text: '',
@@ -3887,9 +3927,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -5.0 
-  });
+  }));
   
-  demographics_2_next_button = new visual.ButtonStim({
+  demographics_2_next_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'demographics_2_next_button',
     text: '次へ',
@@ -3910,12 +3950,12 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   demographics_2_next_button.clock = new util.Clock();
   
   // Initialize components for Routine "end"
   endClock = new util.Clock();
-  end_title = new visual.TextStim({
+  end_title = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'end_title',
     text: '実験終了',
@@ -3925,9 +3965,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
-  });
+  }));
   
-  end_message = new visual.TextStim({
+  end_message = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'end_message',
     text: '実験は以上です。\n\nご協力いただき、ありがとうございました。',
@@ -3937,9 +3977,9 @@ async function experimentInit() {
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
-  });
+  }));
   
-  finish_button = new visual.ButtonStim({
+  finish_button = new visual.ButtonStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'finish_button',
     text: '終了',
@@ -3960,7 +4000,7 @@ async function experimentInit() {
     letterHeight: 24.0,
     bold: true,
     italic: false,
-  });
+  }));
   finish_button.clock = new util.Clock();
   
   // Create some handy timers
@@ -4158,7 +4198,7 @@ function instructionRoutineEachFrame() {
     
     if (instruction_next_button.status === PsychoJS.Status.STARTED) {
       // check whether instruction_next_button has been pressed
-      if (instruction_next_button.isClicked) {
+      if (isButtonClickedResponsive(instruction_next_button)) {
         if (!instruction_next_button.wasClicked) {
           // store time of first click
           instruction_next_button.timesOn.push(instruction_next_button.clock.getTime());
@@ -4390,7 +4430,7 @@ function role_instructionRoutineEachFrame() {
     
     if (role_instruction_next_button.status === PsychoJS.Status.STARTED) {
       // check whether role_instruction_next_button has been pressed
-      if (role_instruction_next_button.isClicked) {
+      if (isButtonClickedResponsive(role_instruction_next_button)) {
         if (!role_instruction_next_button.wasClicked) {
           // store time of first click
           role_instruction_next_button.timesOn.push(role_instruction_next_button.clock.getTime());
@@ -4665,7 +4705,7 @@ function comprehension_checkRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from comprehension_init
-    if (check_button.isClicked) {
+    if (isButtonClickedResponsive(check_button)) {
         if ((check_q1.getRating() !== undefined) && (check_q2.getRating() !== undefined) && (check_q3.getRating() !== undefined)) {
             comprehension_attempts += 1;
             let _q1 = String(check_q1.getRating());
@@ -4701,7 +4741,7 @@ function comprehension_checkRoutineEachFrame() {
     
     if (check_button.status === PsychoJS.Status.STARTED) {
       // check whether check_button has been pressed
-      if (check_button.isClicked) {
+      if (isButtonClickedResponsive(check_button)) {
         if (!check_button.wasClicked) {
           // store time of first click
           check_button.timesOn.push(check_button.clock.getTime());
@@ -4875,7 +4915,7 @@ function stimulus_guidanceRoutineEachFrame() {
     
     if (stimulus_guidance_next_button.status === PsychoJS.Status.STARTED) {
       // check whether stimulus_guidance_next_button has been pressed
-      if (stimulus_guidance_next_button.isClicked) {
+      if (isButtonClickedResponsive(stimulus_guidance_next_button)) {
         if (!stimulus_guidance_next_button.wasClicked) {
           // store time of first click
           stimulus_guidance_next_button.timesOn.push(stimulus_guidance_next_button.clock.getTime());
@@ -6928,7 +6968,7 @@ function stimulus_tableRoutineEachFrame() {
     
     if (stimulus_table_next_button.status === PsychoJS.Status.STARTED) {
       // check whether stimulus_table_next_button has been pressed
-      if (stimulus_table_next_button.isClicked) {
+      if (isButtonClickedResponsive(stimulus_table_next_button)) {
         if (!stimulus_table_next_button.wasClicked) {
           // store time of first click
           stimulus_table_next_button.timesOn.push(stimulus_table_next_button.clock.getTime());
@@ -7159,7 +7199,7 @@ function esg_performance_screenRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from esg_performance_screen_validation_code
-    if (esg_performance_screen_next_button.isClicked) {
+    if (isButtonClickedResponsive(esg_performance_screen_next_button)) {
         if (esg_performance.getRating() !== undefined) {
             continueRoutine = false;
         } else {
@@ -7183,7 +7223,7 @@ function esg_performance_screenRoutineEachFrame() {
     
     if (esg_performance_screen_next_button.status === PsychoJS.Status.STARTED) {
       // check whether esg_performance_screen_next_button has been pressed
-      if (esg_performance_screen_next_button.isClicked) {
+      if (isButtonClickedResponsive(esg_performance_screen_next_button)) {
         if (!esg_performance_screen_next_button.wasClicked) {
           // store time of first click
           esg_performance_screen_next_button.timesOn.push(esg_performance_screen_next_button.clock.getTime());
@@ -7408,7 +7448,7 @@ function esg_difficulty_screenRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from esg_difficulty_screen_validation_code
-    if (esg_difficulty_screen_next_button.isClicked) {
+    if (isButtonClickedResponsive(esg_difficulty_screen_next_button)) {
         if (esg_difficulty.getRating() !== undefined) {
             continueRoutine = false;
         } else {
@@ -7432,7 +7472,7 @@ function esg_difficulty_screenRoutineEachFrame() {
     
     if (esg_difficulty_screen_next_button.status === PsychoJS.Status.STARTED) {
       // check whether esg_difficulty_screen_next_button has been pressed
-      if (esg_difficulty_screen_next_button.isClicked) {
+      if (isButtonClickedResponsive(esg_difficulty_screen_next_button)) {
         if (!esg_difficulty_screen_next_button.wasClicked) {
           // store time of first click
           esg_difficulty_screen_next_button.timesOn.push(esg_difficulty_screen_next_button.clock.getTime());
@@ -7657,7 +7697,7 @@ function label_difficulty_screenRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from label_difficulty_screen_validation_code
-    if (label_difficulty_screen_next_button.isClicked) {
+    if (isButtonClickedResponsive(label_difficulty_screen_next_button)) {
         if (label_difficulty.getRating() !== undefined) {
             continueRoutine = false;
         } else {
@@ -7681,7 +7721,7 @@ function label_difficulty_screenRoutineEachFrame() {
     
     if (label_difficulty_screen_next_button.status === PsychoJS.Status.STARTED) {
       // check whether label_difficulty_screen_next_button has been pressed
-      if (label_difficulty_screen_next_button.isClicked) {
+      if (isButtonClickedResponsive(label_difficulty_screen_next_button)) {
         if (!label_difficulty_screen_next_button.wasClicked) {
           // store time of first click
           label_difficulty_screen_next_button.timesOn.push(label_difficulty_screen_next_button.clock.getTime());
@@ -7906,7 +7946,7 @@ function investment_intention_screenRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from investment_intention_screen_validation_code
-    if (investment_intention_screen_next_button.isClicked) {
+    if (isButtonClickedResponsive(investment_intention_screen_next_button)) {
         if (investment_intention.getRating() !== undefined) {
             continueRoutine = false;
         } else {
@@ -7930,7 +7970,7 @@ function investment_intention_screenRoutineEachFrame() {
     
     if (investment_intention_screen_next_button.status === PsychoJS.Status.STARTED) {
       // check whether investment_intention_screen_next_button has been pressed
-      if (investment_intention_screen_next_button.isClicked) {
+      if (isButtonClickedResponsive(investment_intention_screen_next_button)) {
         if (!investment_intention_screen_next_button.wasClicked) {
           // store time of first click
           investment_intention_screen_next_button.timesOn.push(investment_intention_screen_next_button.clock.getTime());
@@ -8155,7 +8195,7 @@ function perceived_standardization_screenRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from perceived_standardization_screen_validation_code
-    if (perceived_standardization_screen_next_button.isClicked) {
+    if (isButtonClickedResponsive(perceived_standardization_screen_next_button)) {
         if (perceived_standardization.getRating() !== undefined) {
             continueRoutine = false;
         } else {
@@ -8179,7 +8219,7 @@ function perceived_standardization_screenRoutineEachFrame() {
     
     if (perceived_standardization_screen_next_button.status === PsychoJS.Status.STARTED) {
       // check whether perceived_standardization_screen_next_button has been pressed
-      if (perceived_standardization_screen_next_button.isClicked) {
+      if (isButtonClickedResponsive(perceived_standardization_screen_next_button)) {
         if (!perceived_standardization_screen_next_button.wasClicked) {
           // store time of first click
           perceived_standardization_screen_next_button.timesOn.push(perceived_standardization_screen_next_button.clock.getTime());
@@ -8372,7 +8412,7 @@ function esg_familiarity_screenRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from esg_familiarity_screen_validation_code
-    if (esg_familiarity_screen_next_button.isClicked) {
+    if (isButtonClickedResponsive(esg_familiarity_screen_next_button)) {
         if (esg_familiarity.getRating() !== undefined) {
             continueRoutine = false;
         } else {
@@ -8396,7 +8436,7 @@ function esg_familiarity_screenRoutineEachFrame() {
     
     if (esg_familiarity_screen_next_button.status === PsychoJS.Status.STARTED) {
       // check whether esg_familiarity_screen_next_button has been pressed
-      if (esg_familiarity_screen_next_button.isClicked) {
+      if (isButtonClickedResponsive(esg_familiarity_screen_next_button)) {
         if (!esg_familiarity_screen_next_button.wasClicked) {
           // store time of first click
           esg_familiarity_screen_next_button.timesOn.push(esg_familiarity_screen_next_button.clock.getTime());
@@ -8589,7 +8629,7 @@ function gri_familiarity_screenRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from gri_familiarity_screen_validation_code
-    if (gri_familiarity_screen_next_button.isClicked) {
+    if (isButtonClickedResponsive(gri_familiarity_screen_next_button)) {
         if (gri_familiarity.getRating() !== undefined) {
             continueRoutine = false;
         } else {
@@ -8613,7 +8653,7 @@ function gri_familiarity_screenRoutineEachFrame() {
     
     if (gri_familiarity_screen_next_button.status === PsychoJS.Status.STARTED) {
       // check whether gri_familiarity_screen_next_button has been pressed
-      if (gri_familiarity_screen_next_button.isClicked) {
+      if (isButtonClickedResponsive(gri_familiarity_screen_next_button)) {
         if (!gri_familiarity_screen_next_button.wasClicked) {
           // store time of first click
           gri_familiarity_screen_next_button.timesOn.push(gri_familiarity_screen_next_button.clock.getTime());
@@ -8807,7 +8847,7 @@ function investment_experienceRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from investment_experience_validation_code
-    if (investment_experience_next_button.isClicked) {
+    if (isButtonClickedResponsive(investment_experience_next_button)) {
         let investment_rating = investment_experience_response.getRating();
         if (investment_rating === undefined) {
             validation_message = "投資経験について回答してください。";
@@ -8836,7 +8876,7 @@ function investment_experienceRoutineEachFrame() {
     
     if (investment_experience_next_button.status === PsychoJS.Status.STARTED) {
       // check whether investment_experience_next_button has been pressed
-      if (investment_experience_next_button.isClicked) {
+      if (isButtonClickedResponsive(investment_experience_next_button)) {
         if (!investment_experience_next_button.wasClicked) {
           // store time of first click
           investment_experience_next_button.timesOn.push(investment_experience_next_button.clock.getTime());
@@ -9032,7 +9072,7 @@ function investment_yearsRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from investment_years_code
-    if (investment_years_next_button.isClicked) {
+    if (isButtonClickedResponsive(investment_years_next_button)) {
         if (investment_years_response.getRating() === undefined) {
             validation_message = "投資経験年数を選択してください。";
         } else {
@@ -9057,7 +9097,7 @@ function investment_yearsRoutineEachFrame() {
     
     if (investment_years_next_button.status === PsychoJS.Status.STARTED) {
       // check whether investment_years_next_button has been pressed
-      if (investment_years_next_button.isClicked) {
+      if (isButtonClickedResponsive(investment_years_next_button)) {
         if (!investment_years_next_button.wasClicked) {
           // store time of first click
           investment_years_next_button.timesOn.push(investment_years_next_button.clock.getTime());
@@ -9250,7 +9290,7 @@ function finance_educationRoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from finance_education_validation_code
-    if (finance_education_next_button.isClicked) {
+    if (isButtonClickedResponsive(finance_education_next_button)) {
         if (finance_education_response.getRating() !== undefined) {
             continueRoutine = false;
         } else {
@@ -9274,7 +9314,7 @@ function finance_educationRoutineEachFrame() {
     
     if (finance_education_next_button.status === PsychoJS.Status.STARTED) {
       // check whether finance_education_next_button has been pressed
-      if (finance_education_next_button.isClicked) {
+      if (isButtonClickedResponsive(finance_education_next_button)) {
         if (!finance_education_next_button.wasClicked) {
           // store time of first click
           finance_education_next_button.timesOn.push(finance_education_next_button.clock.getTime());
@@ -9612,7 +9652,7 @@ function demographics_1RoutineEachFrame() {
         }
     }
     age_text_normalized = normalize_age_text(age_text);
-    if (demographics_1_next_button.isClicked) {
+    if (isButtonClickedResponsive(demographics_1_next_button)) {
         let age_raw_text = age_text.trim();
         let age_normalized = normalize_age_text(age_raw_text);
         if ((!age_raw_text) || (!age_text_is_valid(age_raw_text))) {
@@ -9643,7 +9683,7 @@ function demographics_1RoutineEachFrame() {
     
     if (demographics_1_next_button.status === PsychoJS.Status.STARTED) {
       // check whether demographics_1_next_button has been pressed
-      if (demographics_1_next_button.isClicked) {
+      if (isButtonClickedResponsive(demographics_1_next_button)) {
         if (!demographics_1_next_button.wasClicked) {
           // store time of first click
           demographics_1_next_button.timesOn.push(demographics_1_next_button.clock.getTime());
@@ -9917,7 +9957,7 @@ function demographics_2RoutineEachFrame() {
     occupation_other_visible = (occupation_text === "その他");
     setOptionalOpacity(occupation_other_question, occupation_other_visible ? 1.0 : 0.0);
     setOptionalOpacity(occupation_other_textbox, occupation_other_visible ? 1.0 : 0.0);
-    if (demographics_2_next_button.isClicked) {
+    if (isButtonClickedResponsive(demographics_2_next_button)) {
         let occupation_other_text = getTextboxText(occupation_other_textbox);
         if (occupation_rating === undefined) {
             validation_message = "職業・属性を選択してください。";
@@ -9946,7 +9986,7 @@ function demographics_2RoutineEachFrame() {
     
     if (demographics_2_next_button.status === PsychoJS.Status.STARTED) {
       // check whether demographics_2_next_button has been pressed
-      if (demographics_2_next_button.isClicked) {
+      if (isButtonClickedResponsive(demographics_2_next_button)) {
         if (!demographics_2_next_button.wasClicked) {
           // store time of first click
           demographics_2_next_button.timesOn.push(demographics_2_next_button.clock.getTime());
@@ -10127,7 +10167,7 @@ function endRoutineEachFrame() {
     
     if (finish_button.status === PsychoJS.Status.STARTED) {
       // check whether finish_button has been pressed
-      if (finish_button.isClicked) {
+      if (isButtonClickedResponsive(finish_button)) {
         if (!finish_button.wasClicked) {
           // store time of first click
           finish_button.timesOn.push(finish_button.clock.getTime());
