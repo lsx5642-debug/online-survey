@@ -144,7 +144,7 @@ function createZeroHundredSliderGuide(name, y = 20) {
         width: [1490, 170][0], height: [1490, 170][1],
         ori: 0.0, pos: [0, y], draggable: false, anchor: 'center',
         lineWidth: 0.0, lineColor: new util.Color('white'), fillColor: new util.Color('white'),
-        colorSpace: 'rgb', opacity: 1.0, depth: -60, interpolate: true,
+        colorSpace: 'rgb', opacity: 0.0, depth: -60, interpolate: true,
     }));
     components.push(mask);
     const line = new visual.Rect(scaleVisualOptions({
@@ -231,9 +231,8 @@ function scaleVisualValue(value, scale) {
     return value;
 }
 function scaleTextVisualValue(value, scale) {
-    const textScale = Math.max(scale, 0.85);
     if (typeof value === "number") {
-        return Math.max(1, Math.round(value * textScale));
+        return Math.max(1, Math.round(value * scale));
     }
     if (Array.isArray(value)) {
         return value.map((item) => scaleTextVisualValue(item, scale));
@@ -1163,7 +1162,7 @@ async function experimentInit() {
   instruction_body = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'instruction_body',
-    text: 'この実験では、企業が開示しているESG情報を確認し、その情報に基づいて企業を評価していただきます。\n\nこの後、ある企業が開示しているESG主要指標が表示されます。表示された項目名と報告値を、ご自身のペースで確認してください。\n\n確認後、表示された情報の内容、企業に対する評価、および投資意向に関する質問に回答していただきます。',
+    text: 'この実験では、企業が開示しているESG情報を確認し、\nその情報に基づいて企業を評価していただきます。\n\nこの後、ある企業が開示しているESG主要指標が表示されます。\n表示された項目名と報告値を、ご自身のペースで確認してください。\n\n確認後、表示された情報の内容、企業に対する評価、\nおよび投資意向に関する質問に回答していただきます。',
     font: 'Meiryo',
     units: 'pix', 
     pos: [0, 40], draggable: False, height: 29.0,  wrapWidth: 1560.0, ori: 0.0,
@@ -1302,7 +1301,7 @@ async function experimentInit() {
     text: '説明内容の確認',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0, 420], draggable: False, height: 42.0,  wrapWidth: 1640.0, ori: 0.0,
+    pos: [0, 455], draggable: False, height: 36.0,  wrapWidth: 1640.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
@@ -1314,7 +1313,7 @@ async function experimentInit() {
     text: 'Q1\u3000この実験で、あなたはどの立場で企業情報を確認しますか。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, 340], draggable: False, height: 29.0,  wrapWidth: 1440.0, ori: 0.0,
+    pos: [0.0, 345], draggable: False, height: 27.0,  wrapWidth: 1500.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
@@ -1323,11 +1322,11 @@ async function experimentInit() {
   check_q1 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q1',
     startValue: undefined,
-    size: [1260, 70], pos: [0, 260], ori: 0.0, units: psychoJS.window.units,
-    labels: ['個人投資家', '企業の従業員', '政府の規制担当者'], fontSize: 20.0, ticks: [],
+    size: [1260, 60], pos: [0, 250], ori: 0.0, units: psychoJS.window.units,
+    labels: ['個人投資家', '企業の従業員', '政府の規制担当者'], fontSize: 18.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: undefined, font: 'Meiryo', bold: false, italic: false, depth: -2, 
     flip: false,
   }));
   
@@ -1337,7 +1336,7 @@ async function experimentInit() {
     text: 'Q2\u3000この実験で、あなたに求められている課題は何ですか。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, 130], draggable: False, height: 29.0,  wrapWidth: 1440.0, ori: 0.0,
+    pos: [0.0, 80], draggable: False, height: 27.0,  wrapWidth: 1500.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
@@ -1346,11 +1345,11 @@ async function experimentInit() {
   check_q2 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q2',
     startValue: undefined,
-    size: [1260, 70], pos: [0, 50], ori: 0.0, units: psychoJS.window.units,
+    size: [1260, 60], pos: [0, (- 15)], ori: 0.0, units: psychoJS.window.units,
     labels: ['広告表現を評価する', 'ESG項目名と報告値を確認・理解する', '他社情報を検索・比較する'], fontSize: 18.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -4, 
+    opacity: undefined, font: 'Meiryo', bold: false, italic: false, depth: -4, 
     flip: false,
   }));
   
@@ -1360,7 +1359,7 @@ async function experimentInit() {
     text: 'Q3\u3000ESG情報を確認した後、何について回答しますか。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, (- 85)], draggable: False, height: 29.0,  wrapWidth: 1440.0, ori: 0.0,
+    pos: [0.0, (- 185)], draggable: False, height: 27.0,  wrapWidth: 1500.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -5.0 
@@ -1369,11 +1368,11 @@ async function experimentInit() {
   check_q3 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q3',
     startValue: undefined,
-    size: [1260, 70], pos: [0, (- 165)], ori: 0.0, units: psychoJS.window.units,
+    size: [1260, 60], pos: [0, (- 280)], ori: 0.0, units: psychoJS.window.units,
     labels: ['理解・企業評価・投資意向', 'ESG用語の暗記', '説明方法'], fontSize: 18.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -6, 
+    opacity: undefined, font: 'Meiryo', bold: false, italic: false, depth: -6, 
     flip: false,
   }));
   
@@ -1383,7 +1382,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0, (- 290)], draggable: False, height: 18.0,  wrapWidth: 1300.0, ori: 0.0,
+    pos: [0, (- 355)], draggable: False, height: 18.0,  wrapWidth: 1300.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#B42318'),  opacity: undefined,
     depth: -7.0 
@@ -1395,7 +1394,7 @@ async function experimentInit() {
     text: '3問すべてを選択してから、「回答を確認」を押してください。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0, (- 315)], draggable: False, height: 19.0,  wrapWidth: 1300.0, ori: 0.0,
+    pos: [0, (- 385)], draggable: False, height: 18.0,  wrapWidth: 1300.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#526070'),  opacity: undefined,
     depth: -8.0 
@@ -1406,7 +1405,7 @@ async function experimentInit() {
     name: 'check_button',
     text: '回答を確認',
     font: 'Meiryo',
-    pos: [0, (- 420)],
+    pos: [0, (- 455)],
     size: [230, 56],
     padding: 8.0,
     anchor: 'center',
@@ -1433,7 +1432,7 @@ async function experimentInit() {
     text: 'ESG主要指標の確認',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, 470], draggable: False, height: 36.0,  wrapWidth: 1640.0, ori: 0.0,
+    pos: [0.0, 455], draggable: False, height: 36.0,  wrapWidth: 1640.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
@@ -1442,10 +1441,10 @@ async function experimentInit() {
   stimulus_guidance_body = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'stimulus_guidance_body',
-    text: '次の画面では、株式会社Aの2025年度および2024年度の報告書から抜粋したESG主要指標が表示されます。\n\nあわせて、2024年度から2025年度にかけて数値がどのように変化したかも示します。\n「＋」は前年からの増加、「ー」は前年からの減少を表しています。\nただし、増加や減少の記号だけで、その変化が望ましいかどうかを判断するものではありません。\n\n表示された項目名、報告値、変化の内容を確認し、指標が何を示しているかを考えながらご覧ください。\n\n確認後、この企業のESG面での全体的なパフォーマンスについて評価していただきます。\n表は、ご自身のペースで確認してください。\n「次へ」を押すと、表には戻れません。\n十分に確認してから、次へ進んでください。',
+    text: '次の画面では、株式会社Aの2025年度および2024年度の報告書から\n抜粋したESG主要指標が表示されます。\n\nあわせて、2024年度から2025年度にかけて数値がどのように変化したかも示します。\n「＋」は前年からの増加、「ー」は前年からの減少を表しています。\nただし、増加や減少の記号だけで、その変化が望ましいかどうかを\n判断するものではありません。\n\n表示された項目名、報告値、変化の内容を確認し、\n指標が何を示しているかを考えながらご覧ください。\n\n確認後、この企業のESG面での全体的なパフォーマンスについて\n評価していただきます。\n表は、ご自身のペースで確認してください。\n「次へ」を押すと、表には戻れません。\n十分に確認してから、次へ進んでください。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0, 40], draggable: False, height: 29.0,  wrapWidth: 1560.0, ori: 0.0,
+    pos: [0, 15], draggable: False, height: 24.0,  wrapWidth: 1500.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
@@ -1497,7 +1496,7 @@ async function experimentInit() {
     text: '株式会社A\u3000ESG主要指標（2025年度・2024年度）',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, 485], draggable: False, height: 34.0,  wrapWidth: 1800.0, ori: 0.0,
+    pos: [0.0, 485], draggable: False, height: 30.0,  wrapWidth: 1800.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
@@ -1829,7 +1828,7 @@ async function experimentInit() {
     text: 'No.',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), 382], draggable: False, height: 22.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), 382], draggable: False, height: 19.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -22.0 
@@ -1841,7 +1840,7 @@ async function experimentInit() {
     text: 'GRI',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), 382], draggable: False, height: 22.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), 382], draggable: False, height: 19.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -23.0 
@@ -1853,7 +1852,7 @@ async function experimentInit() {
     text: '開示項目名',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), 382], draggable: False, height: 22.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), 382], draggable: False, height: 19.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -24.0 
@@ -1865,7 +1864,7 @@ async function experimentInit() {
     text: '2024年度',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, 382], draggable: False, height: 22.0,  wrapWidth: 260.0, ori: 0.0,
+    pos: [235, 382], draggable: False, height: 19.0,  wrapWidth: 260.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -25.0 
@@ -1877,7 +1876,7 @@ async function experimentInit() {
     text: '2025年度',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, 382], draggable: False, height: 22.0,  wrapWidth: 260.0, ori: 0.0,
+    pos: [505, 382], draggable: False, height: 19.0,  wrapWidth: 260.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -26.0 
@@ -1889,7 +1888,7 @@ async function experimentInit() {
     text: '変化',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, 382], draggable: False, height: 22.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, 382], draggable: False, height: 19.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -27.0 
@@ -1917,7 +1916,7 @@ async function experimentInit() {
     text: '1',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), 326.9230769230769], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), 326.9230769230769], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -29.0 
@@ -1929,7 +1928,7 @@ async function experimentInit() {
     text: '302-1',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), 326.9230769230769], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), 326.9230769230769], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -30.0 
@@ -1941,7 +1940,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), 326.9230769230769], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), 326.9230769230769], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -31.0 
@@ -1953,7 +1952,7 @@ async function experimentInit() {
     text: '239,340 MWh',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, 326.9230769230769], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, 326.9230769230769], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -32.0 
@@ -1965,7 +1964,7 @@ async function experimentInit() {
     text: '240,704 MWh',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, 326.9230769230769], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, 326.9230769230769], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -33.0 
@@ -1977,7 +1976,7 @@ async function experimentInit() {
     text: '+1,364 MWh',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, 326.9230769230769], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, 326.9230769230769], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -34.0 
@@ -1989,7 +1988,7 @@ async function experimentInit() {
     text: '2',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), 272.7692307692308], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), 272.7692307692308], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -35.0 
@@ -2001,7 +2000,7 @@ async function experimentInit() {
     text: '302-4',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), 272.7692307692308], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), 272.7692307692308], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -36.0 
@@ -2013,7 +2012,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), 272.7692307692308], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), 272.7692307692308], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -37.0 
@@ -2025,7 +2024,7 @@ async function experimentInit() {
     text: '2.19%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, 272.7692307692308], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, 272.7692307692308], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -38.0 
@@ -2037,7 +2036,7 @@ async function experimentInit() {
     text: '2.32%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, 272.7692307692308], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, 272.7692307692308], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -39.0 
@@ -2049,7 +2048,7 @@ async function experimentInit() {
     text: '+0.13%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, 272.7692307692308], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, 272.7692307692308], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -40.0 
@@ -2077,7 +2076,7 @@ async function experimentInit() {
     text: '3',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), 218.6153846153846], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), 218.6153846153846], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -42.0 
@@ -2089,7 +2088,7 @@ async function experimentInit() {
     text: '305-1',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), 218.6153846153846], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), 218.6153846153846], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -43.0 
@@ -2101,7 +2100,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), 218.6153846153846], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), 218.6153846153846], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -44.0 
@@ -2113,7 +2112,7 @@ async function experimentInit() {
     text: '3,512 t-CO2e',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, 218.6153846153846], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, 218.6153846153846], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -45.0 
@@ -2125,7 +2124,7 @@ async function experimentInit() {
     text: '4006 t-CO2e',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, 218.6153846153846], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, 218.6153846153846], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -46.0 
@@ -2137,7 +2136,7 @@ async function experimentInit() {
     text: '+494 t-CO2e',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, 218.6153846153846], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, 218.6153846153846], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -47.0 
@@ -2149,7 +2148,7 @@ async function experimentInit() {
     text: '4',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), 164.46153846153845], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), 164.46153846153845], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -48.0 
@@ -2161,7 +2160,7 @@ async function experimentInit() {
     text: '305-2',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), 164.46153846153845], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), 164.46153846153845], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -49.0 
@@ -2173,7 +2172,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), 164.46153846153845], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), 164.46153846153845], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -50.0 
@@ -2185,7 +2184,7 @@ async function experimentInit() {
     text: '128,054 t-CO2e',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, 164.46153846153845], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, 164.46153846153845], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -51.0 
@@ -2197,7 +2196,7 @@ async function experimentInit() {
     text: '128,650 t-CO2e',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, 164.46153846153845], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, 164.46153846153845], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -52.0 
@@ -2209,7 +2208,7 @@ async function experimentInit() {
     text: '+596 t-CO2e',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, 164.46153846153845], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, 164.46153846153845], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -53.0 
@@ -2237,7 +2236,7 @@ async function experimentInit() {
     text: '5',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), 110.30769230769232], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), 110.30769230769232], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -55.0 
@@ -2249,7 +2248,7 @@ async function experimentInit() {
     text: '305-4',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), 110.30769230769232], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), 110.30769230769232], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -56.0 
@@ -2261,7 +2260,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), 110.30769230769232], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), 110.30769230769232], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -57.0 
@@ -2273,7 +2272,7 @@ async function experimentInit() {
     text: '4.90 t-CO2',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, 110.30769230769232], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, 110.30769230769232], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -58.0 
@@ -2285,7 +2284,7 @@ async function experimentInit() {
     text: '4.88 t-CO2',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, 110.30769230769232], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, 110.30769230769232], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -59.0 
@@ -2297,7 +2296,7 @@ async function experimentInit() {
     text: '-0.02 t-CO2',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, 110.30769230769232], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, 110.30769230769232], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -60.0 
@@ -2309,7 +2308,7 @@ async function experimentInit() {
     text: '6',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), 56.15384615384613], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), 56.15384615384613], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -61.0 
@@ -2321,7 +2320,7 @@ async function experimentInit() {
     text: '305-5',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), 56.15384615384613], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), 56.15384615384613], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -62.0 
@@ -2333,7 +2332,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), 56.15384615384613], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), 56.15384615384613], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -63.0 
@@ -2345,7 +2344,7 @@ async function experimentInit() {
     text: '-20.9%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, 56.15384615384613], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, 56.15384615384613], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -64.0 
@@ -2357,7 +2356,7 @@ async function experimentInit() {
     text: '-27.6%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, 56.15384615384613], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, 56.15384615384613], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -65.0 
@@ -2369,7 +2368,7 @@ async function experimentInit() {
     text: '-6.7%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, 56.15384615384613], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, 56.15384615384613], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -66.0 
@@ -2397,7 +2396,7 @@ async function experimentInit() {
     text: '7',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), 2.0], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), 2.0], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -68.0 
@@ -2409,7 +2408,7 @@ async function experimentInit() {
     text: '306-3',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), 2.0], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), 2.0], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -69.0 
@@ -2421,7 +2420,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), 2.0], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), 2.0], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -70.0 
@@ -2433,7 +2432,7 @@ async function experimentInit() {
     text: '14,206 t',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, 2.0], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, 2.0], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -71.0 
@@ -2445,7 +2444,7 @@ async function experimentInit() {
     text: '14267 t',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, 2.0], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, 2.0], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -72.0 
@@ -2457,7 +2456,7 @@ async function experimentInit() {
     text: '+61 t',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, 2.0], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, 2.0], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -73.0 
@@ -2469,7 +2468,7 @@ async function experimentInit() {
     text: '8',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), (- 52.15384615384613)], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), (- 52.15384615384613)], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -74.0 
@@ -2481,7 +2480,7 @@ async function experimentInit() {
     text: '401-1',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), (- 52.15384615384613)], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), (- 52.15384615384613)], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -75.0 
@@ -2493,7 +2492,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), (- 52.15384615384613)], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), (- 52.15384615384613)], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -76.0 
@@ -2505,7 +2504,7 @@ async function experimentInit() {
     text: '採用63名/離職率2.0%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, (- 52.15384615384613)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, (- 52.15384615384613)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -77.0 
@@ -2517,7 +2516,7 @@ async function experimentInit() {
     text: '採用58名/離職率2.5%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, (- 52.15384615384613)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, (- 52.15384615384613)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -78.0 
@@ -2529,7 +2528,7 @@ async function experimentInit() {
     text: '採用-5名/離職率+0.5%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, (- 52.15384615384613)], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, (- 52.15384615384613)], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -79.0 
@@ -2557,7 +2556,7 @@ async function experimentInit() {
     text: '9',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), (- 106.30769230769232)], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), (- 106.30769230769232)], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -81.0 
@@ -2569,7 +2568,7 @@ async function experimentInit() {
     text: '401-3',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), (- 106.30769230769232)], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), (- 106.30769230769232)], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -82.0 
@@ -2581,7 +2580,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), (- 106.30769230769232)], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), (- 106.30769230769232)], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -83.0 
@@ -2593,7 +2592,7 @@ async function experimentInit() {
     text: '624名',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, (- 106.30769230769232)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, (- 106.30769230769232)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -84.0 
@@ -2605,7 +2604,7 @@ async function experimentInit() {
     text: '668名',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, (- 106.30769230769232)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, (- 106.30769230769232)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -85.0 
@@ -2617,7 +2616,7 @@ async function experimentInit() {
     text: '+44名',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, (- 106.30769230769232)], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, (- 106.30769230769232)], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -86.0 
@@ -2629,7 +2628,7 @@ async function experimentInit() {
     text: '10',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), (- 160.46153846153845)], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), (- 160.46153846153845)], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -87.0 
@@ -2641,7 +2640,7 @@ async function experimentInit() {
     text: '403-9',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), (- 160.46153846153845)], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), (- 160.46153846153845)], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -88.0 
@@ -2653,7 +2652,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), (- 160.46153846153845)], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), (- 160.46153846153845)], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -89.0 
@@ -2665,7 +2664,7 @@ async function experimentInit() {
     text: '7.01%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, (- 160.46153846153845)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, (- 160.46153846153845)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -90.0 
@@ -2677,7 +2676,7 @@ async function experimentInit() {
     text: '6.80%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, (- 160.46153846153845)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, (- 160.46153846153845)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -91.0 
@@ -2689,7 +2688,7 @@ async function experimentInit() {
     text: '-0.21%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, (- 160.46153846153845)], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, (- 160.46153846153845)], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -92.0 
@@ -2717,7 +2716,7 @@ async function experimentInit() {
     text: '11',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), (- 214.61538461538464)], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), (- 214.61538461538464)], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -94.0 
@@ -2729,7 +2728,7 @@ async function experimentInit() {
     text: '404-1',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), (- 214.61538461538464)], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), (- 214.61538461538464)], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -95.0 
@@ -2741,7 +2740,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), (- 214.61538461538464)], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), (- 214.61538461538464)], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -96.0 
@@ -2753,7 +2752,7 @@ async function experimentInit() {
     text: '49時間/人',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, (- 214.61538461538464)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, (- 214.61538461538464)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -97.0 
@@ -2765,7 +2764,7 @@ async function experimentInit() {
     text: '44時間/人',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, (- 214.61538461538464)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, (- 214.61538461538464)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -98.0 
@@ -2777,7 +2776,7 @@ async function experimentInit() {
     text: '-5時間/人',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, (- 214.61538461538464)], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, (- 214.61538461538464)], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -99.0 
@@ -2789,7 +2788,7 @@ async function experimentInit() {
     text: '12',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), (- 268.7692307692307)], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), (- 268.7692307692307)], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -100.0 
@@ -2801,7 +2800,7 @@ async function experimentInit() {
     text: '405-2',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), (- 268.7692307692307)], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), (- 268.7692307692307)], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -101.0 
@@ -2813,7 +2812,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), (- 268.7692307692307)], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), (- 268.7692307692307)], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -102.0 
@@ -2825,7 +2824,7 @@ async function experimentInit() {
     text: '67.2%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, (- 268.7692307692307)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, (- 268.7692307692307)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -103.0 
@@ -2837,7 +2836,7 @@ async function experimentInit() {
     text: '67.8%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, (- 268.7692307692307)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, (- 268.7692307692307)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -104.0 
@@ -2849,7 +2848,7 @@ async function experimentInit() {
     text: '+0.6%',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, (- 268.7692307692307)], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, (- 268.7692307692307)], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -105.0 
@@ -2877,7 +2876,7 @@ async function experimentInit() {
     text: '13',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), (- 322.9230769230769)], draggable: False, height: 20.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), (- 322.9230769230769)], draggable: False, height: 18.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -107.0 
@@ -2889,7 +2888,7 @@ async function experimentInit() {
     text: '2-21',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), (- 322.9230769230769)], draggable: False, height: 20.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), (- 322.9230769230769)], draggable: False, height: 18.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -108.0 
@@ -2901,7 +2900,7 @@ async function experimentInit() {
     text: '',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), (- 322.9230769230769)], draggable: False, height: 21.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), (- 322.9230769230769)], draggable: False, height: 18.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -109.0 
@@ -2913,7 +2912,7 @@ async function experimentInit() {
     text: '20.1倍',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, (- 322.9230769230769)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [235, (- 322.9230769230769)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -110.0 
@@ -2925,7 +2924,7 @@ async function experimentInit() {
     text: '14.5倍',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, (- 322.9230769230769)], draggable: False, height: 20.0,  wrapWidth: 255.0, ori: 0.0,
+    pos: [505, (- 322.9230769230769)], draggable: False, height: 18.0,  wrapWidth: 255.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -111.0 
@@ -2937,7 +2936,7 @@ async function experimentInit() {
     text: '-5.6倍',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, (- 322.9230769230769)], draggable: False, height: 20.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, (- 322.9230769230769)], draggable: False, height: 18.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -112.0 
@@ -3000,7 +2999,7 @@ async function experimentInit() {
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
     color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
-    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: 0.0, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   configureZeroHundredSliderForSurvey(esg_performance);
@@ -3083,7 +3082,7 @@ async function experimentInit() {
   esg_difficulty_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'esg_difficulty_question',
-    text: '提示されたESG情報をもとに、この企業の社会面および環境面のパフォーマンスを評価することは、どの程度難しかったですか。',
+    text: '提示されたESG情報をもとに、この企業の社会面および環境面の\nパフォーマンスを評価することは、どの程度難しかったですか。',
     font: 'Meiryo',
     units: 'pix', 
     pos: [0, 240], draggable: False, height: 31.0,  wrapWidth: 1600.0, ori: 0.0,
@@ -3099,7 +3098,7 @@ async function experimentInit() {
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
     color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
-    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: 0.0, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   configureZeroHundredSliderForSurvey(esg_difficulty);
@@ -3198,7 +3197,7 @@ async function experimentInit() {
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
     color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
-    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: 0.0, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   configureZeroHundredSliderForSurvey(label_difficulty);
@@ -3297,7 +3296,7 @@ async function experimentInit() {
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
     color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
-    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: 0.0, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   configureZeroHundredSliderForSurvey(investment_intention);
@@ -3396,7 +3395,7 @@ async function experimentInit() {
     labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
     color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
-    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: 0.0, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   configureZeroHundredSliderForSurvey(perceived_standardization);
@@ -3713,7 +3712,7 @@ async function experimentInit() {
     size: [1250, 100], pos: [0, 95], ori: 0.0, units: psychoJS.window.units,
     labels: ['1年未満', '1年以上5年未満', '5年以上10年未満', '10年以上'], fontSize: 25.0, ticks: [],
     granularity: 1, style: ['RADIO'],
-    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#172033'), 
+    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -3992,7 +3991,7 @@ async function experimentInit() {
   status_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'status_question',
-    text: 'Q\u3000現在のご職業・属性について、最も当てはまるものを1つお選びください。',
+    text: 'Q\u3000現在のご職業・属性について、\n最も当てはまるものを1つお選びください。',
     font: 'Meiryo',
     units: 'pix', 
     pos: [0, 300], draggable: False, height: 28.0,  wrapWidth: 700.0, ori: 0.0,
@@ -4004,11 +4003,11 @@ async function experimentInit() {
   occupation_attribute = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'occupation_attribute',
     startValue: undefined,
-    size: [1550, 95], pos: [0, 160], ori: 0.0, units: psychoJS.window.units,
-    labels: ['会社員', '公務員', '教員', '自営業・自由業', 'パート・アルバイト', '専業主婦・主夫', '学生', '無職', 'その他'], fontSize: 23.0, ticks: [],
+    size: [1720, 105], pos: [0, 150], ori: 0.0, units: psychoJS.window.units,
+    labels: ['会社員', '公務員', '教員', '自営業・\n自由業', 'パート・\nアルバイト', '専業主婦・\n主夫', '学生', '無職', 'その他'], fontSize: 17.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: undefined, font: 'Meiryo', bold: false, italic: false, depth: -2, 
     flip: false,
   }));
   
