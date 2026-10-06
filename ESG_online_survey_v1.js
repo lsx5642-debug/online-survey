@@ -1164,7 +1164,7 @@ async function experimentInit() {
     text: '説明内容の確認',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0, 410], draggable: False, height: 34.0,  wrapWidth: 1640.0, ori: 0.0,
+    pos: [0, 420], draggable: False, height: 42.0,  wrapWidth: 1640.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
@@ -1176,7 +1176,7 @@ async function experimentInit() {
     text: 'Q1\u3000この実験で、あなたはどの立場で企業情報を確認しますか。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, 320], draggable: False, height: 23.0,  wrapWidth: 1440.0, ori: 0.0,
+    pos: [0.0, 340], draggable: False, height: 29.0,  wrapWidth: 1440.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
@@ -1185,8 +1185,8 @@ async function experimentInit() {
   check_q1 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q1',
     startValue: undefined,
-    size: [1220, 58], pos: [0, 255], ori: 0.0, units: psychoJS.window.units,
-    labels: ['個人投資家', '企業の従業員', '政府の規制担当者'], fontSize: 15.0, ticks: [],
+    size: [1260, 70], pos: [0, 260], ori: 0.0, units: psychoJS.window.units,
+    labels: ['個人投資家', '企業の従業員', '政府の規制担当者'], fontSize: 20.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
@@ -1199,7 +1199,7 @@ async function experimentInit() {
     text: 'Q2\u3000この実験で、あなたに求められている課題は何ですか。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, 95], draggable: False, height: 23.0,  wrapWidth: 1440.0, ori: 0.0,
+    pos: [0.0, 130], draggable: False, height: 29.0,  wrapWidth: 1440.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
@@ -1208,8 +1208,8 @@ async function experimentInit() {
   check_q2 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q2',
     startValue: undefined,
-    size: [1220, 58], pos: [0, 30], ori: 0.0, units: psychoJS.window.units,
-    labels: ['企業の広告表現を評価する', '表示されたESG項目名と報告値を確認し、その内容を理解する', '他の企業の情報を検索して比較する'], fontSize: 13.0, ticks: [],
+    size: [1260, 70], pos: [0, 50], ori: 0.0, units: psychoJS.window.units,
+    labels: ['広告表現を評価する', 'ESG項目名と報告値を確認・理解する', '他社情報を検索・比較する'], fontSize: 18.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -4, 
@@ -1222,7 +1222,7 @@ async function experimentInit() {
     text: 'Q3\u3000ESG情報を確認した後、何について回答しますか。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, (- 130)], draggable: False, height: 23.0,  wrapWidth: 1440.0, ori: 0.0,
+    pos: [0.0, (- 85)], draggable: False, height: 29.0,  wrapWidth: 1440.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -5.0 
@@ -1231,8 +1231,8 @@ async function experimentInit() {
   check_q3 = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'check_q3',
     startValue: undefined,
-    size: [1220, 58], pos: [0, (- 195)], ori: 0.0, units: psychoJS.window.units,
-    labels: ['表示内容の理解、企業に対する評価および投資意向', 'ESG用語の暗記内容', '実験担当者の説明方法'], fontSize: 13.0, ticks: [],
+    size: [1260, 70], pos: [0, (- 165)], ori: 0.0, units: psychoJS.window.units,
+    labels: ['理解・企業評価・投資意向', 'ESG用語の暗記', '説明方法'], fontSize: 18.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -6, 
@@ -1257,7 +1257,7 @@ async function experimentInit() {
     text: '3問すべてを選択してから、「回答を確認」を押してください。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0, (- 330)], draggable: False, height: 17.0,  wrapWidth: 1300.0, ori: 0.0,
+    pos: [0, (- 315)], draggable: False, height: 19.0,  wrapWidth: 1300.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#526070'),  opacity: undefined,
     depth: -8.0 
@@ -1268,7 +1268,7 @@ async function experimentInit() {
     name: 'check_button',
     text: '回答を確認',
     font: 'Meiryo',
-    pos: [0, (- 410)],
+    pos: [0, (- 420)],
     size: [230, 56],
     padding: 8.0,
     anchor: 'center',
@@ -2859,9 +2859,9 @@ async function experimentInit() {
     win: psychoJS.window, name: 'esg_performance',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
-    granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    labels: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'], fontSize: 22.0, ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    granularity: 10.0, style: ['RADIO'],
+    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -2956,9 +2956,9 @@ async function experimentInit() {
     win: psychoJS.window, name: 'esg_difficulty',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
-    granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    labels: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'], fontSize: 22.0, ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    granularity: 10.0, style: ['RADIO'],
+    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -3053,9 +3053,9 @@ async function experimentInit() {
     win: psychoJS.window, name: 'label_difficulty',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
-    granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    labels: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'], fontSize: 22.0, ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    granularity: 10.0, style: ['RADIO'],
+    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -3150,9 +3150,9 @@ async function experimentInit() {
     win: psychoJS.window, name: 'investment_intention',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
-    granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    labels: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'], fontSize: 22.0, ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    granularity: 10.0, style: ['RADIO'],
+    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -3247,9 +3247,9 @@ async function experimentInit() {
     win: psychoJS.window, name: 'perceived_standardization',
     startValue: undefined,
     size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 20.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
-    granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#D8E2EF'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    labels: ['0', '10', '20', '30', '40', '50', '60', '70', '80', '90', '100'], fontSize: 22.0, ticks: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
+    granularity: 10.0, style: ['RADIO'],
+    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
     opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
@@ -3696,10 +3696,10 @@ async function experimentInit() {
   age_question = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'age_question',
-    text: 'Q1\u3000年齢を入力してください。',
+    text: 'Q1\u3000年齢を選択してください。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 310.0), 300], draggable: False, height: 27.0,  wrapWidth: 900.0, ori: 0.0,
+    pos: [0.0, 315], draggable: False, height: 29.0,  wrapWidth: 1200.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -1.0 
@@ -3716,35 +3716,20 @@ async function experimentInit() {
     lineColor: new util.Color('#8A98A8'), 
     fillColor: new util.Color('white'), 
     colorSpace: 'rgb', 
-    opacity: undefined, 
+    opacity: 0.0, 
     depth: -2, 
     interpolate: true, 
   }));
   
-  age_textbox = new visual.TextBox(scaleVisualOptions({
-    win: psychoJS.window,
-    name: 'age_textbox',
-    text: '',
-    placeholder: undefined,
-    font: 'Meiryo',
-    pos: [(- 350), 190], 
-    draggable: False,
-    letterHeight: 30.0,
-    lineSpacing: 1.05,
-    size: [260, 65],  units: 'pix', 
-    ori: 0.0,
-    color: '#172033', colorSpace: 'rgb',
-    fillColor: 'white', borderColor: '#8A98A8',
-    languageStyle: 'LTR',
-    bold: false, italic: false,
-    opacity: 0.0,
-    padding: 6.0,
-    alignment: 'center',
-    overflow: 'hidden',
-    editable: false,
-    multiline: true,
-    anchor: 'center',
-    depth: -3.0 
+  age_textbox = new visual.Slider(scaleVisualOptions({
+    win: psychoJS.window, name: 'age_textbox',
+    startValue: undefined,
+    size: [1450, 90], pos: [0, 205], ori: 0.0, units: psychoJS.window.units,
+    labels: ['10-19歳', '20-29歳', '30-39歳', '40-49歳', '50-59歳', '60-69歳', '70歳以上'], fontSize: 22.0, ticks: [],
+    granularity: 1, style: ['RADIO'],
+    color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
+    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -3, 
+    flip: false,
   }));
   
   age_input_display = new visual.TextStim(scaleVisualOptions({
@@ -3755,14 +3740,14 @@ async function experimentInit() {
     units: 'pix', 
     pos: [(- 350), 190], draggable: False, height: 30.0,  wrapWidth: 240.0, ori: 0.0,
     languageStyle: 'LTR',
-    color: new util.Color('#172033'),  opacity: undefined,
+    color: new util.Color('#172033'),  opacity: 0.0,
     depth: -4.0 
   }));
   
   age_suffix = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'age_suffix',
-    text: '歳',
+    text: '',
     font: 'Meiryo',
     units: 'pix', 
     pos: [(- 145.0), 190], draggable: False, height: 27.0,  wrapWidth: 80.0, ori: 0.0,
@@ -3774,7 +3759,7 @@ async function experimentInit() {
   age_hint = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'age_hint',
-    text: '数字をキーボードで入力してください（Backspaceで削除）。',
+    text: '',
     font: 'Meiryo',
     units: 'pix', 
     pos: [(- 210.0), 135], draggable: False, height: 16.0,  wrapWidth: 1100.0, ori: 0.0,
@@ -3789,7 +3774,7 @@ async function experimentInit() {
     text: 'Q2\u3000性別を選択してください。',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 310.0), 70], draggable: False, height: 27.0,  wrapWidth: 900.0, ori: 0.0,
+    pos: [0.0, 45], draggable: False, height: 29.0,  wrapWidth: 1200.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -7.0 
@@ -4712,8 +4697,8 @@ function comprehension_checkRoutineEachFrame() {
             let _q2 = String(check_q2.getRating());
             let _q3 = String(check_q3.getRating());
             let _q1_ok = ["個人投資家", "1", "0"].includes(_q1);
-            let _q2_ok = ["表示されたESG項目名と報告値を確認し、その内容を理解する", "2", "1"].includes(_q2);
-            let _q3_ok = ["表示内容の理解、企業に対する評価および投資意向", "1", "0"].includes(_q3);
+            let _q2_ok = ["表示されたESG項目名と報告値を確認し、その内容を理解する", "ESG項目名と報告値を確認・理解する", "2", "1"].includes(_q2);
+            let _q3_ok = ["表示内容の理解、企業に対する評価および投資意向", "理解・企業評価・投資意向", "1", "0"].includes(_q3);
             if (_q1_ok && _q2_ok && _q3_ok) {
                 comprehension_error = "";
                 continueRoutine = false;
@@ -9425,30 +9410,18 @@ function demographics_1RoutineBegin(snapshot) {
     demographics_1_next_clicked = false;
     age_text = "";
     age_text_normalized = "";
+    const ageOptions = ["10-19歳", "20-29歳", "30-39歳", "40-49歳", "50-59歳", "60-69歳", "70歳以上"];
     normalize_age_text = function(rawText) {
-        let text = String((rawText === undefined || rawText === null) ? "" : rawText).normalize("NFKC").trim();
-        return text.replace("歳", "").trim();
+        return String((rawText === undefined || rawText === null) ? "" : rawText).normalize("NFKC").trim();
     };
     age_text_is_valid = function(rawText) {
-        return /^\d{1,3}$/.test(normalize_age_text(rawText));
+        return ageOptions.includes(normalize_age_text(rawText));
     };
     age_group_from_text = function(rawText) {
-        let ageInt = Number.parseInt(normalize_age_text(rawText), 10);
-        if (ageInt <= 24) {
-            return "18-24歳";
-        } else if (ageInt <= 34) {
-            return "25-34歳";
-        } else if (ageInt <= 44) {
-            return "35-44歳";
-        } else if (ageInt <= 54) {
-            return "45-54歳";
-        } else if (ageInt <= 64) {
-            return "55-64歳";
-        } else {
-            return "65歳以上";
-        }
+        return normalize_age_text(rawText);
     };
     // reset demographics_1_next_button to account for continued clicks & clear times on/off
+    age_textbox.reset()
     demographics_1_next_button.reset()
     psychoJS.experiment.addData('demographics_1.started', globalClock.getTime());
     demographics_1MaxDuration = None
@@ -9640,25 +9613,12 @@ function demographics_1RoutineEachFrame() {
     }
     
     // Run 'Each Frame' code from age_input_code
-    let ageKeys = psychoJS.eventManager.getKeys({keyList: ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "num_0", "num_1", "num_2", "num_3", "num_4", "num_5", "num_6", "num_7", "num_8", "num_9", "backspace", "delete"]});
-    for (let _key of ageKeys) {
-        if (["backspace", "delete"].includes(_key)) {
-            age_text = age_text.slice(0, -1);
-        } else {
-            let digit = _key.startsWith("num_") ? _key.slice(-1) : _key;
-            if (age_text.length < 3) {
-                age_text += digit;
-            }
-        }
-    }
+    age_text = (age_textbox.getRating() === undefined) ? "" : String(age_textbox.getRating());
     age_text_normalized = normalize_age_text(age_text);
     if (isButtonClickedResponsive(demographics_1_next_button)) {
-        let age_raw_text = age_text.trim();
-        let age_normalized = normalize_age_text(age_raw_text);
-        if ((!age_raw_text) || (!age_text_is_valid(age_raw_text))) {
-            validation_message = "年齢を数字で入力してください。";
-        } else if (Number.parseInt(age_normalized, 10) < 18) {
-            validation_message = "18歳以上の方のみ回答できます。";
+        let age_normalized = normalize_age_text(age_text);
+        if (!age_text_is_valid(age_normalized)) {
+            validation_message = "年齢を選択してください。";
         } else if (gender.getRating() === undefined) {
             validation_message = "性別を選択してください。";
         } else {
