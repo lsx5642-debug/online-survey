@@ -238,33 +238,70 @@ function scaleVisualValue(value, scale) {
     }
     return value;
 }
-function scaleTextVisualValue(value, scale) {
+function getResponsiveTextScale(scale, componentName = "") {
+    const viewportWidth = window.innerWidth || 1920;
+    const name = String(componentName || "");
+
+    // On phones / very narrow windows, keep text and geometry proportional
+    // so the layout does not overflow.
+    if (viewportWidth < 1000) {
+        return scale;
+    }
+
+    // Dense table cells need to stay compact to avoid column collisions.
+    const compactTableText = /^(header_|no_|gri_|label_\d+|value_2024_|value_2025_|change_)/.test(name);
+    if (compactTableText) {
+        return Math.min(1.0, Math.max(scale, 0.78));
+    }
+
+    // On desktop/laptop screens, preserve a readable Japanese font size.
+    // Geometry still scales normally, but text does not shrink below 90%.
+    return Math.min(1.0, Math.max(scale, 0.90));
+}
+
+function scaleTextVisualValue(value, scale, componentName = "") {
+    const textScale = getResponsiveTextScale(scale, componentName);
+
     if (typeof value === "number") {
-        return Math.max(1, Math.round(value * scale));
+        return Math.max(1, Math.round(value * textScale));
     }
+
     if (Array.isArray(value)) {
-        return value.map((item) => scaleTextVisualValue(item, scale));
+        return value.map((item) =>
+            scaleTextVisualValue(item, scale, componentName)
+        );
     }
+
     return value;
 }
+
 function scaleVisualOptions(options) {
     if (!options) {
         return options;
     }
+
     const scale = getResponsiveLayoutScale();
     const scaledOptions = Object.assign({}, options);
+    const componentName = scaledOptions.name || "";
     const geometryKeys = ["pos", "size", "width", "wrapWidth", "padding", "borderWidth", "lineWidth", "vertices"];
     const textSizeKeys = ["height", "fontSize", "letterHeight"];
+
     for (const key of geometryKeys) {
         if (Object.prototype.hasOwnProperty.call(scaledOptions, key)) {
             scaledOptions[key] = scaleVisualValue(scaledOptions[key], scale);
         }
     }
+
     for (const key of textSizeKeys) {
         if (Object.prototype.hasOwnProperty.call(scaledOptions, key)) {
-            scaledOptions[key] = scaleTextVisualValue(scaledOptions[key], scale);
+            scaledOptions[key] = scaleTextVisualValue(
+                scaledOptions[key],
+                scale,
+                componentName
+            );
         }
     }
+
     return scaledOptions;
 }
 function setResponsiveComponentValue(component, key, value) {
@@ -293,7 +330,11 @@ function scaleComponentForResponsiveLayout(component) {
     for (const key of textSizeKeys) {
         const value = component[key];
         if (value !== undefined && value !== null) {
-            setResponsiveComponentValue(component, key, scaleTextVisualValue(value, scale));
+            setResponsiveComponentValue(
+                component,
+                key,
+                scaleTextVisualValue(value, scale, component.name || component._name || "")
+            );
         }
     }
 }
