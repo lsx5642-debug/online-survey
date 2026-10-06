@@ -234,20 +234,40 @@ function getResponsiveTextScale(scale, componentName = "") {
     const viewportWidth = window.innerWidth || 1920;
     const name = String(componentName || "");
 
-    // On phones / very narrow windows, keep text and geometry proportional
-    // so the layout does not overflow.
+    // On phones / very narrow windows, keep text and geometry proportional.
     if (viewportWidth < 1000) {
         return scale;
     }
 
-    // Dense table cells need to stay compact to avoid column collisions.
-    const compactTableText = /^(header_|no_|gri_|label_\d+|value_2024_|value_2025_|change_)/.test(name);
-    if (compactTableText) {
-        return Math.min(1.0, Math.max(scale, 0.78));
+    // Long instruction page: keep text proportional to the available space.
+    if (
+        name === "stimulus_guidance_title" ||
+        name === "stimulus_guidance_body"
+    ) {
+        return scale;
     }
 
-    // On desktop/laptop screens, preserve a readable Japanese font size.
-    // Geometry still scales normally, but text does not shrink below 90%.
+    // Table text must stay proportional to row/column geometry.
+    const tableText =
+        name === "table_title" ||
+        /^(header_|no_|gri_|label_\d+|value_2024_|value_2025_|change_)/.test(name);
+
+    if (tableText) {
+        // Row 8 contains unusually long values; make only those three cells
+        // slightly smaller so they remain inside their columns.
+        if (
+            name === "value_2024_08" ||
+            name === "value_2025_08" ||
+            name === "change_08"
+        ) {
+            return scale * 0.78;
+        }
+
+        return scale;
+    }
+
+    // Other desktop/laptop pages keep the larger readable text introduced
+    // in slider14.
     return Math.min(1.0, Math.max(scale, 0.90));
 }
 
@@ -394,72 +414,6 @@ function isButtonClickedResponsive(button) {
         responsivePointerState.y >= (pos[1] - (height / 2)) &&
         responsivePointerState.y <= (pos[1] + (height / 2))
     );
-}
-
-// Improve PsychoJS / PixiJS text sharpness without changing layout or response logic.
-function sharpenPixiTextTree(node) {
-    if (!node) {
-        return;
-    }
-
-    const targetResolution = Math.min(
-        3,
-        Math.max(2, Math.ceil(window.devicePixelRatio || 1))
-    );
-
-    const looksLikeText =
-        (typeof node.text === "string") &&
-        node.style &&
-        (("resolution" in node) || ("roundPixels" in node));
-
-    if (looksLikeText) {
-        if ("roundPixels" in node) {
-            node.roundPixels = true;
-        }
-
-        if ("resolution" in node && node.resolution !== targetResolution) {
-            node.resolution = targetResolution;
-        }
-    }
-
-    if (Array.isArray(node.children)) {
-        for (const child of node.children) {
-            sharpenPixiTextTree(child);
-        }
-    }
-}
-
-function wrapConstructorForSharpText(Constructor) {
-    if (
-        !Constructor ||
-        !Constructor.prototype ||
-        Constructor.prototype._sharpTextRenderingWrapped
-    ) {
-        return;
-    }
-
-    const originalUpdateIfNeeded = Constructor.prototype._updateIfNeeded;
-    if (typeof originalUpdateIfNeeded !== "function") {
-        return;
-    }
-
-    Constructor.prototype._updateIfNeeded = function(...args) {
-        const result = originalUpdateIfNeeded.apply(this, args);
-        sharpenPixiTextTree(this._pixi);
-        return result;
-    };
-
-    Constructor.prototype._sharpTextRenderingWrapped = true;
-}
-
-function applySharpTextRendering() {
-    const constructorNames = ["TextStim", "ButtonStim", "Slider", "TextBox"];
-
-    for (const constructorName of constructorNames) {
-        if (visual[constructorName]) {
-            wrapConstructorForSharpText(visual[constructorName]);
-        }
-    }
 }
 
 function safeSetText(component, text) {
@@ -840,7 +794,6 @@ psychoJS.openWindow({
   backgroundImage: '',
   backgroundFit: 'none',
 });
-applySharpTextRendering();
 const flowScheduler = new Scheduler(psychoJS);
 const dialogCancelScheduler = new Scheduler(psychoJS);
 psychoJS.schedule(flowScheduler);
@@ -1541,7 +1494,7 @@ async function experimentInit() {
     text: 'ESG主要指標の確認',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [0.0, 455], draggable: False, height: 36.0,  wrapWidth: 1640.0, ori: 0.0,
+    pos: [0.0, 485], draggable: False, height: 36.0,  wrapWidth: 1640.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: 0.0 
@@ -1550,7 +1503,7 @@ async function experimentInit() {
   stimulus_guidance_body = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'stimulus_guidance_body',
-    text: '次の画面では、株式会社Aの2025年度および2024年度の報告書から\n抜粋したESG主要指標が表示されます。\n\nあわせて、2024年度から2025年度にかけて数値がどのように変化したかも示します。\n「＋」は前年からの増加、「ー」は前年からの減少を表しています。\nただし、増加や減少の記号だけで、その変化が望ましいかどうかを\n判断するものではありません。\n\n表示された項目名、報告値、変化の内容を確認し、\n指標が何を示しているかを考えながらご覧ください。\n\n確認後、この企業のESG面での全体的なパフォーマンスについて\n評価していただきます。\n表は、ご自身のペースで確認してください。\n「次へ」を押すと、表には戻れません。\n十分に確認してから、次へ進んでください。',
+    text: '次の画面では、株式会社Aの2025年度および2024年度の報告書から抜粋した\nESG主要指標が表示されます。\n\nあわせて、2024年度から2025年度にかけて数値がどのように変化したかも示します。\n「＋」は前年からの増加、「ー」は前年からの減少を表しています。\nただし、増加や減少の記号だけで、その変化が望ましいかどうかを判断するものではありません。\n\n表示された項目名、報告値、変化の内容を確認し、指標が何を示しているかを考えながらご覧ください。\n\n確認後、この企業のESG面での全体的なパフォーマンスについて評価していただきます。\n表は、ご自身のペースで確認してください。\n「次へ」を押すと、表には戻れません。\n十分に確認してから、次へ進んでください。',
     font: 'Meiryo',
     units: 'pix', 
     pos: [0, 15], draggable: False, height: 24.0,  wrapWidth: 1500.0, ori: 0.0,
