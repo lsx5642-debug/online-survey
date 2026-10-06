@@ -570,7 +570,7 @@ function updateEndUploadDisplay() {
     setOptionalOpacity(finish_button, 1.0);
     if (dataUploadSucceeded) {
         safeSetText(end_title, "実験終了");
-        safeSetText(end_message, `データ送信が完了しました。\n\n以下の completion code を Yahoo!クラウドソーシングの回答欄に入力してください。\n\n${completionCode}\n\nご協力いただき、ありがとうございました。`);
+        safeSetText(end_message, "ご協力いただき、ありがとうございます。");
         safeSetText(finish_button, "終了");
         return;
     }
@@ -3962,7 +3962,7 @@ async function experimentInit() {
   end_message = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
     name: 'end_message',
-    text: '実験は以上です。\n\nご協力いただき、ありがとうございました。',
+    text: 'ご協力いただき、ありがとうございます。',
     font: 'Meiryo',
     units: 'pix', 
     pos: [0, 70], draggable: False, height: 36.0,  wrapWidth: 1450.0, ori: 0.0,
