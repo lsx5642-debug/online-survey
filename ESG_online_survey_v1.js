@@ -1691,9 +1691,8 @@ async function experimentInit() {
     pos: [0, 299.84615384615387], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1708,9 +1707,8 @@ async function experimentInit() {
     pos: [0, 245.69230769230768], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1725,9 +1723,8 @@ async function experimentInit() {
     pos: [0, 191.53846153846155], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1742,9 +1739,8 @@ async function experimentInit() {
     pos: [0, 137.3846153846154], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1759,9 +1755,8 @@ async function experimentInit() {
     pos: [0, 83.23076923076923], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1776,9 +1771,8 @@ async function experimentInit() {
     pos: [0, 29.076923076923094], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1793,9 +1787,8 @@ async function experimentInit() {
     pos: [0, (- 25.076923076923094)], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1810,9 +1803,8 @@ async function experimentInit() {
     pos: [0, (- 79.23076923076923)], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1827,9 +1819,8 @@ async function experimentInit() {
     pos: [0, (- 133.38461538461536)], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1844,9 +1835,8 @@ async function experimentInit() {
     pos: [0, (- 187.53846153846155)], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1861,9 +1851,8 @@ async function experimentInit() {
     pos: [0, (- 241.69230769230774)], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1878,9 +1867,8 @@ async function experimentInit() {
     pos: [0, (- 295.8461538461538)], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -1895,9 +1883,8 @@ async function experimentInit() {
     pos: [0, (- 350.0)], 
     draggable: False, 
     anchor: 'center', 
-    lineWidth: 1.0, 
+    lineWidth: 0.0, 
     lineColor: new util.Color('#B5C2D0'), 
-    opacity: 0.0,
     fillColor: undefined, 
     colorSpace: 'rgb', 
     opacity: undefined, 
@@ -5365,19 +5352,6 @@ function stimulus_tableRoutineBegin(snapshot) {
     stimulus_tableComponents.push(table_vline_3);
     stimulus_tableComponents.push(table_vline_4);
     stimulus_tableComponents.push(table_vline_5);
-    stimulus_tableComponents.push(table_hline_01);
-    stimulus_tableComponents.push(table_hline_02);
-    stimulus_tableComponents.push(table_hline_03);
-    stimulus_tableComponents.push(table_hline_04);
-    stimulus_tableComponents.push(table_hline_05);
-    stimulus_tableComponents.push(table_hline_06);
-    stimulus_tableComponents.push(table_hline_07);
-    stimulus_tableComponents.push(table_hline_08);
-    stimulus_tableComponents.push(table_hline_09);
-    stimulus_tableComponents.push(table_hline_10);
-    stimulus_tableComponents.push(table_hline_11);
-    stimulus_tableComponents.push(table_hline_12);
-    stimulus_tableComponents.push(table_hline_13);
     stimulus_tableComponents.push(header_Nono);
     stimulus_tableComponents.push(header_GRI);
     stimulus_tableComponents.push(header_開示項目名);
