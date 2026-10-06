@@ -72,6 +72,50 @@ var dataUploadError;
 var dataUploadResult;
 var dataUploadPromise;
 var completionCode;
+const ZERO_HUNDRED_SLIDER_TICKS = [
+    0, 5, 10, 15, 20,
+    25, 30, 35, 40,
+    45, 50, 55, 60,
+    65, 70, 75, 80,
+    85, 90, 95, 100
+];
+const ZERO_HUNDRED_SLIDER_LABELS = [
+    '0',
+    '',
+    '',
+    '',
+    '20',
+    '',
+    '',
+    '',
+    '40',
+    '',
+    '',
+    '',
+    '60',
+    '',
+    '',
+    '',
+    '80',
+    '',
+    '',
+    '',
+    '100'
+];
+function configureZeroHundredSliderForSurvey(slider) {
+    if (!slider) {
+        return;
+    }
+    slider._ticks = ZERO_HUNDRED_SLIDER_TICKS.slice();
+    slider._labels = ZERO_HUNDRED_SLIDER_LABELS.slice();
+    slider._granularity = 5;
+    slider._rating = undefined;
+    slider._markerPos = undefined;
+    slider._history = [];
+    slider._needPixiUpdate = true;
+    slider._needMarkerUpdate = true;
+    slider._needUpdate = true;
+}
 function getOccupationTextFromRating(rating) {
     if (rating === undefined) {
         return "";
@@ -100,6 +144,86 @@ function setOptionalOpacity(component, opacity) {
         component.opacity = opacity;
     }
 }
+function createZeroHundredSliderGuide(name, y = 20) {
+    const width = 1450;
+    const components = [];
+    const mask = new visual.Rect(scaleVisualOptions({
+        win: psychoJS.window, name: name + '_mask', units: 'pix',
+        width: [1490, 170][0], height: [1490, 170][1],
+        ori: 0.0, pos: [0, y], draggable: false, anchor: 'center',
+        lineWidth: 0.0, lineColor: new util.Color('white'), fillColor: new util.Color('white'),
+        colorSpace: 'rgb', opacity: 1.0, depth: -60, interpolate: true,
+    }));
+    components.push(mask);
+    const line = new visual.Rect(scaleVisualOptions({
+        win: psychoJS.window, name: name + '_line', units: 'pix',
+        width: [width, 4][0], height: [width, 4][1],
+        ori: 0.0, pos: [0, y], draggable: false, anchor: 'center',
+        lineWidth: 0.0, lineColor: new util.Color('#53657A'), fillColor: new util.Color('#53657A'),
+        colorSpace: 'rgb', opacity: 1.0, depth: -61, interpolate: true,
+    }));
+    components.push(line);
+    for (let i = 0; i <= 20; i++) {
+        const isMajor = (i % 4) === 0;
+        const x = (-width / 2) + ((width * i) / 20);
+        const tick = new visual.Rect(scaleVisualOptions({
+            win: psychoJS.window, name: name + '_tick_' + i, units: 'pix',
+            width: [isMajor ? 4 : 3, isMajor ? 48 : 30][0], height: [isMajor ? 4 : 3, isMajor ? 48 : 30][1],
+            ori: 0.0, pos: [x, y], draggable: false, anchor: 'center',
+            lineWidth: 0.0, lineColor: new util.Color('#53657A'), fillColor: new util.Color('#53657A'),
+            colorSpace: 'rgb', opacity: 1.0, depth: -62, interpolate: true,
+        }));
+        components.push(tick);
+    }
+    for (const value of [0, 20, 40, 60, 80, 100]) {
+        const x = (-width / 2) + ((width * value) / 100);
+        const label = new visual.TextStim(scaleVisualOptions({
+            win: psychoJS.window,
+            name: name + '_label_' + value,
+            text: String(value),
+            font: 'Meiryo',
+            units: 'pix',
+            pos: [x, y - 58], draggable: false, height: 26.0, wrapWidth: 140.0, ori: 0.0,
+            languageStyle: 'LTR',
+            color: new util.Color('#172033'), opacity: undefined,
+            depth: -63.0
+        }));
+        components.push(label);
+    }
+    const marker = new visual.Rect(scaleVisualOptions({
+        win: psychoJS.window, name: name + '_marker', units: 'pix',
+        width: [30, 30][0], height: [30, 30][1],
+        ori: 0.0, pos: [0, y], draggable: false, anchor: 'center',
+        lineWidth: 4.0, lineColor: new util.Color('white'), fillColor: new util.Color('#1F5D99'),
+        colorSpace: 'rgb', opacity: 0.0, depth: -64, interpolate: true,
+    }));
+    components.push(marker);
+    return { components, marker, width, y, active: false };
+}
+function setSliderGuideAutoDraw(guide, autoDraw) {
+    if (!guide || guide.active === autoDraw) {
+        return;
+    }
+    for (const component of guide.components) {
+        component.setAutoDraw(autoDraw);
+    }
+    guide.active = autoDraw;
+}
+function updateZeroHundredSliderGuide(guide, slider) {
+    if (!guide || !slider) {
+        return;
+    }
+    setSliderGuideAutoDraw(guide, true);
+    const rating = slider.getRating();
+    if (rating === undefined || rating === null || Number.isNaN(Number(rating))) {
+        setOptionalOpacity(guide.marker, 0.0);
+        return;
+    }
+    const value = Math.max(0, Math.min(100, Number(rating)));
+    const x = (-guide.width / 2) + ((guide.width * value) / 100);
+    setResponsiveComponentValue(guide.marker, 'pos', scaleVisualValue([x, guide.y], getResponsiveLayoutScale()));
+    setOptionalOpacity(guide.marker, 1.0);
+}
 function getResponsiveLayoutScale() {
     const widthScale = (window.innerWidth || 1920) / 1920.0;
     const heightScale = (window.innerHeight || 1080) / 1080.0;
@@ -114,19 +238,32 @@ function scaleVisualValue(value, scale) {
     }
     return value;
 }
+function scaleTextVisualValue(value, scale) {
+    const textScale = Math.max(scale, 0.85);
+    if (typeof value === "number") {
+        return Math.max(1, Math.round(value * textScale));
+    }
+    if (Array.isArray(value)) {
+        return value.map((item) => scaleTextVisualValue(item, scale));
+    }
+    return value;
+}
 function scaleVisualOptions(options) {
     if (!options) {
         return options;
     }
     const scale = getResponsiveLayoutScale();
-    if (scale >= 0.999) {
-        return options;
-    }
     const scaledOptions = Object.assign({}, options);
-    const scaledKeys = ["pos", "size", "height", "width", "wrapWidth", "fontSize", "letterHeight", "padding", "borderWidth", "lineWidth", "vertices"];
-    for (const key of scaledKeys) {
+    const geometryKeys = ["pos", "size", "width", "wrapWidth", "padding", "borderWidth", "lineWidth", "vertices"];
+    const textSizeKeys = ["height", "fontSize", "letterHeight"];
+    for (const key of geometryKeys) {
         if (Object.prototype.hasOwnProperty.call(scaledOptions, key)) {
             scaledOptions[key] = scaleVisualValue(scaledOptions[key], scale);
+        }
+    }
+    for (const key of textSizeKeys) {
+        if (Object.prototype.hasOwnProperty.call(scaledOptions, key)) {
+            scaledOptions[key] = scaleTextVisualValue(scaledOptions[key], scale);
         }
     }
     return scaledOptions;
@@ -146,14 +283,18 @@ function scaleComponentForResponsiveLayout(component) {
     }
     const scale = getResponsiveLayoutScale();
     component._responsiveLayoutScaled = true;
-    if (scale >= 0.999) {
-        return;
-    }
-    const scaledKeys = ["pos", "size", "height", "width", "wrapWidth", "fontSize", "letterHeight", "padding", "borderWidth", "lineWidth", "vertices"];
-    for (const key of scaledKeys) {
+    const geometryKeys = ["pos", "size", "width", "wrapWidth", "padding", "borderWidth", "lineWidth", "vertices"];
+    const textSizeKeys = ["height", "fontSize", "letterHeight"];
+    for (const key of geometryKeys) {
         const value = component[key];
         if (value !== undefined && value !== null) {
             setResponsiveComponentValue(component, key, scaleVisualValue(value, scale));
+        }
+    }
+    for (const key of textSizeKeys) {
+        const value = component[key];
+        if (value !== undefined && value !== null) {
+            setResponsiveComponentValue(component, key, scaleTextVisualValue(value, scale));
         }
     }
 }
@@ -911,6 +1052,11 @@ var perceived_standardization_question;
 var perceived_standardization;
 var perceived_standardization_left;
 var perceived_standardization_right;
+var esg_performance_guide;
+var esg_difficulty_guide;
+var label_difficulty_guide;
+var investment_intention_guide;
+var perceived_standardization_guide;
 var perceived_standardization_screen_validation;
 var perceived_standardization_screen_next_button;
 var esg_familiarity_screenClock;
@@ -1189,7 +1335,7 @@ async function experimentInit() {
     labels: ['個人投資家', '企業の従業員', '政府の規制担当者'], fontSize: 20.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   
@@ -1212,7 +1358,7 @@ async function experimentInit() {
     labels: ['広告表現を評価する', 'ESG項目名と報告値を確認・理解する', '他社情報を検索・比較する'], fontSize: 18.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -4, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -4, 
     flip: false,
   }));
   
@@ -1235,7 +1381,7 @@ async function experimentInit() {
     labels: ['理解・企業評価・投資意向', 'ESG用語の暗記', '説明方法'], fontSize: 18.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -6, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -6, 
     flip: false,
   }));
   
@@ -2858,13 +3004,15 @@ async function experimentInit() {
   esg_performance = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'esg_performance',
     startValue: undefined,
-    size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 24.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+    size: [1450, 55], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
+    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#E6ECF3'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
+  configureZeroHundredSliderForSurvey(esg_performance);
+  esg_performance_guide = createZeroHundredSliderGuide('esg_performance_guide');
   
   esg_performance_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
@@ -2872,7 +3020,7 @@ async function experimentInit() {
     text: '0 = 非常に低い',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 375.0), 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [(- 375.0), 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
@@ -2884,7 +3032,7 @@ async function experimentInit() {
     text: '100 = 非常に高い',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [375.0, 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [375.0, 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
@@ -2955,13 +3103,15 @@ async function experimentInit() {
   esg_difficulty = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'esg_difficulty',
     startValue: undefined,
-    size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 24.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+    size: [1450, 55], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
+    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#E6ECF3'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
+  configureZeroHundredSliderForSurvey(esg_difficulty);
+  esg_difficulty_guide = createZeroHundredSliderGuide('esg_difficulty_guide');
   
   esg_difficulty_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
@@ -2969,7 +3119,7 @@ async function experimentInit() {
     text: '0 = 全く難しくなかった',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 375.0), 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [(- 375.0), 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
@@ -2981,7 +3131,7 @@ async function experimentInit() {
     text: '100 = 非常に難しかった',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [375.0, 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [375.0, 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
@@ -3052,13 +3202,15 @@ async function experimentInit() {
   label_difficulty = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'label_difficulty',
     startValue: undefined,
-    size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 24.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+    size: [1450, 55], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
+    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#E6ECF3'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
+  configureZeroHundredSliderForSurvey(label_difficulty);
+  label_difficulty_guide = createZeroHundredSliderGuide('label_difficulty_guide');
   
   label_difficulty_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
@@ -3066,7 +3218,7 @@ async function experimentInit() {
     text: '0 = 全く難しくなかった',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 375.0), 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [(- 375.0), 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
@@ -3078,7 +3230,7 @@ async function experimentInit() {
     text: '100 = 非常に難しかった',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [375.0, 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [375.0, 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
@@ -3149,13 +3301,15 @@ async function experimentInit() {
   investment_intention = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'investment_intention',
     startValue: undefined,
-    size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 24.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+    size: [1450, 55], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
+    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#E6ECF3'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
+  configureZeroHundredSliderForSurvey(investment_intention);
+  investment_intention_guide = createZeroHundredSliderGuide('investment_intention_guide');
   
   investment_intention_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
@@ -3163,7 +3317,7 @@ async function experimentInit() {
     text: '0 = 全く投資したくない',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 375.0), 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [(- 375.0), 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
@@ -3175,7 +3329,7 @@ async function experimentInit() {
     text: '100 = 非常に投資したい',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [375.0, 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [375.0, 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
@@ -3246,13 +3400,15 @@ async function experimentInit() {
   perceived_standardization = new visual.Slider(scaleVisualOptions({
     win: psychoJS.window, name: 'perceived_standardization',
     startValue: undefined,
-    size: [1450, 90], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
-    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 24.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+    size: [1450, 55], pos: [0, 20], ori: 0.0, units: psychoJS.window.units,
+    labels: ['0', '', '', '', '20', '', '', '', '40', '', '', '', '60', '', '', '', '80', '', '', '', '100'], fontSize: 26.0, ticks: [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
     granularity: 5.0, style: ['SLIDER'],
-    color: new util.Color('#E6ECF3'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    color: new util.Color('#172033'), markerColor: new util.Color('#1F5D99'), lineColor: new util.Color('#53657A'), 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
+  configureZeroHundredSliderForSurvey(perceived_standardization);
+  perceived_standardization_guide = createZeroHundredSliderGuide('perceived_standardization_guide');
   
   perceived_standardization_left = new visual.TextStim(scaleVisualOptions({
     win: psychoJS.window,
@@ -3260,7 +3416,7 @@ async function experimentInit() {
     text: '0 = 全くそう感じなかった',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 375.0), 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [(- 375.0), 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -3.0 
@@ -3272,7 +3428,7 @@ async function experimentInit() {
     text: '100 = 非常にそう感じた',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [375.0, 125], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
+    pos: [375.0, 170], draggable: False, height: 22.0,  wrapWidth: 650.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('#172033'),  opacity: undefined,
     depth: -4.0 
@@ -3347,7 +3503,7 @@ async function experimentInit() {
     labels: ['1\n全く知らない', '2', '3', '4', '5', '6', '7\n非常によく知っている'], fontSize: 24.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   
@@ -3420,7 +3576,7 @@ async function experimentInit() {
     labels: ['1\n全く知らない', '2', '3', '4', '5', '6', '7\n非常によく知っている'], fontSize: 24.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   
@@ -3493,7 +3649,7 @@ async function experimentInit() {
     labels: ['はい', 'いいえ'], fontSize: 25.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   
@@ -3566,7 +3722,7 @@ async function experimentInit() {
     labels: ['1年未満', '1年以上5年未満', '5年以上10年未満', '10年以上'], fontSize: 25.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#172033'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   
@@ -3639,7 +3795,7 @@ async function experimentInit() {
     labels: ['はい', 'いいえ'], fontSize: 25.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   
@@ -3728,7 +3884,7 @@ async function experimentInit() {
     labels: ['10-19歳', '20-29歳', '30-39歳', '40-49歳', '50-59歳', '60-69歳', '70歳以上'], fontSize: 22.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -3, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -3, 
     flip: false,
   }));
   
@@ -3787,7 +3943,7 @@ async function experimentInit() {
     labels: ['男性', '女性', 'その他', '回答しない'], fontSize: 22.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -8, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -8, 
     flip: false,
   }));
   
@@ -3860,7 +4016,7 @@ async function experimentInit() {
     labels: ['会社員', '公務員', '教員', '自営業・自由業', 'パート・アルバイト', '専業主婦・主夫', '学生', '無職', 'その他'], fontSize: 23.0, ticks: [],
     granularity: 1, style: ['RADIO'],
     color: new util.Color('#172033'), markerColor: new util.Color('#3E6591'), lineColor: new util.Color('#9FB2C8'), 
-    opacity: undefined, fontFamily: 'Meiryo', bold: true, italic: false, depth: -2, 
+    opacity: undefined, font: 'Meiryo', bold: true, italic: false, depth: -2, 
     flip: false,
   }));
   
@@ -7069,6 +7225,7 @@ function esg_performance_screenRoutineBegin(snapshot) {
     esg_performance_screenComponents.push(esg_performance_screen_title);
     esg_performance_screenComponents.push(esg_performance_question);
     esg_performance_screenComponents.push(esg_performance);
+    esg_performance_screenComponents = esg_performance_screenComponents.concat(esg_performance_guide.components);
     esg_performance_screenComponents.push(esg_performance_left);
     esg_performance_screenComponents.push(esg_performance_right);
     esg_performance_screenComponents.push(esg_performance_screen_validation);
@@ -7132,6 +7289,7 @@ function esg_performance_screenRoutineEachFrame() {
     
     // if esg_performance is active this frame...
     if (esg_performance.status === PsychoJS.Status.STARTED) {
+      updateZeroHundredSliderGuide(esg_performance_guide, esg_performance);
     }
     
     
@@ -7318,6 +7476,7 @@ function esg_difficulty_screenRoutineBegin(snapshot) {
     esg_difficulty_screenComponents.push(esg_difficulty_screen_title);
     esg_difficulty_screenComponents.push(esg_difficulty_question);
     esg_difficulty_screenComponents.push(esg_difficulty);
+    esg_difficulty_screenComponents = esg_difficulty_screenComponents.concat(esg_difficulty_guide.components);
     esg_difficulty_screenComponents.push(esg_difficulty_left);
     esg_difficulty_screenComponents.push(esg_difficulty_right);
     esg_difficulty_screenComponents.push(esg_difficulty_screen_validation);
@@ -7381,6 +7540,7 @@ function esg_difficulty_screenRoutineEachFrame() {
     
     // if esg_difficulty is active this frame...
     if (esg_difficulty.status === PsychoJS.Status.STARTED) {
+      updateZeroHundredSliderGuide(esg_difficulty_guide, esg_difficulty);
     }
     
     
@@ -7567,6 +7727,7 @@ function label_difficulty_screenRoutineBegin(snapshot) {
     label_difficulty_screenComponents.push(label_difficulty_screen_title);
     label_difficulty_screenComponents.push(label_difficulty_question);
     label_difficulty_screenComponents.push(label_difficulty);
+    label_difficulty_screenComponents = label_difficulty_screenComponents.concat(label_difficulty_guide.components);
     label_difficulty_screenComponents.push(label_difficulty_left);
     label_difficulty_screenComponents.push(label_difficulty_right);
     label_difficulty_screenComponents.push(label_difficulty_screen_validation);
@@ -7630,6 +7791,7 @@ function label_difficulty_screenRoutineEachFrame() {
     
     // if label_difficulty is active this frame...
     if (label_difficulty.status === PsychoJS.Status.STARTED) {
+      updateZeroHundredSliderGuide(label_difficulty_guide, label_difficulty);
     }
     
     
@@ -7816,6 +7978,7 @@ function investment_intention_screenRoutineBegin(snapshot) {
     investment_intention_screenComponents.push(investment_intention_screen_title);
     investment_intention_screenComponents.push(investment_intention_question);
     investment_intention_screenComponents.push(investment_intention);
+    investment_intention_screenComponents = investment_intention_screenComponents.concat(investment_intention_guide.components);
     investment_intention_screenComponents.push(investment_intention_left);
     investment_intention_screenComponents.push(investment_intention_right);
     investment_intention_screenComponents.push(investment_intention_screen_validation);
@@ -7879,6 +8042,7 @@ function investment_intention_screenRoutineEachFrame() {
     
     // if investment_intention is active this frame...
     if (investment_intention.status === PsychoJS.Status.STARTED) {
+      updateZeroHundredSliderGuide(investment_intention_guide, investment_intention);
     }
     
     
@@ -8065,6 +8229,7 @@ function perceived_standardization_screenRoutineBegin(snapshot) {
     perceived_standardization_screenComponents.push(perceived_standardization_screen_title);
     perceived_standardization_screenComponents.push(perceived_standardization_question);
     perceived_standardization_screenComponents.push(perceived_standardization);
+    perceived_standardization_screenComponents = perceived_standardization_screenComponents.concat(perceived_standardization_guide.components);
     perceived_standardization_screenComponents.push(perceived_standardization_left);
     perceived_standardization_screenComponents.push(perceived_standardization_right);
     perceived_standardization_screenComponents.push(perceived_standardization_screen_validation);
@@ -8128,6 +8293,7 @@ function perceived_standardization_screenRoutineEachFrame() {
     
     // if perceived_standardization is active this frame...
     if (perceived_standardization.status === PsychoJS.Status.STARTED) {
+      updateZeroHundredSliderGuide(perceived_standardization_guide, perceived_standardization);
     }
     
     
