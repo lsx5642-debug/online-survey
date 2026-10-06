@@ -1582,9 +1582,9 @@ async function experimentInit() {
   
   table_header = new visual.Rect (scaleVisualOptions({
     win: psychoJS.window, name: 'table_header', units : 'pix', 
-    width: [1900, 56][0], height: [1800, 56][1],
+    width: [1900, 40][0], height: [1800, 40][1],
     ori: 0.0, 
-    pos: [0, 382], 
+    pos: [0, 389], 
     draggable: False, 
     anchor: 'center', 
     lineWidth: 1.0, 
@@ -1890,7 +1890,7 @@ async function experimentInit() {
     text: 'No.',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 860), 382], draggable: False, height: 27.0,  wrapWidth: 78.0, ori: 0.0,
+    pos: [(- 860), 389], draggable: False, height: 27.0,  wrapWidth: 78.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -22.0 
@@ -1902,7 +1902,7 @@ async function experimentInit() {
     text: 'GRI',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 750), 382], draggable: False, height: 27.0,  wrapWidth: 135.0, ori: 0.0,
+    pos: [(- 750), 389], draggable: False, height: 27.0,  wrapWidth: 135.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -23.0 
@@ -1914,7 +1914,7 @@ async function experimentInit() {
     text: '開示項目名',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [(- 290), 382], draggable: False, height: 27.0,  wrapWidth: 760.0, ori: 0.0,
+    pos: [(- 290), 389], draggable: False, height: 27.0,  wrapWidth: 760.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -24.0 
@@ -1926,7 +1926,7 @@ async function experimentInit() {
     text: '2024年度',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [235, 382], draggable: False, height: 27.0,  wrapWidth: 260.0, ori: 0.0,
+    pos: [235, 389], draggable: False, height: 27.0,  wrapWidth: 260.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -25.0 
@@ -1938,7 +1938,7 @@ async function experimentInit() {
     text: '2025年度',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [505, 382], draggable: False, height: 27.0,  wrapWidth: 260.0, ori: 0.0,
+    pos: [505, 389], draggable: False, height: 27.0,  wrapWidth: 260.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -26.0 
@@ -1950,7 +1950,7 @@ async function experimentInit() {
     text: '変化',
     font: 'Meiryo',
     units: 'pix', 
-    pos: [770, 382], draggable: False, height: 27.0,  wrapWidth: 245.0, ori: 0.0,
+    pos: [770, 389], draggable: False, height: 27.0,  wrapWidth: 245.0, ori: 0.0,
     languageStyle: 'LTR',
     color: new util.Color('white'),  opacity: undefined,
     depth: -27.0 
@@ -1967,7 +1967,7 @@ async function experimentInit() {
     lineColor: undefined, 
     fillColor: new util.Color('#E7EEF7'), 
     colorSpace: 'rgb', 
-    opacity: undefined, 
+    opacity: 0.0, 
     depth: -2.5, 
     interpolate: true, 
   }));
@@ -2127,7 +2127,7 @@ async function experimentInit() {
     lineColor: undefined, 
     fillColor: new util.Color('#E7EEF7'), 
     colorSpace: 'rgb', 
-    opacity: undefined, 
+    opacity: 0.0, 
     depth: -2.5, 
     interpolate: true, 
   }));
@@ -2287,7 +2287,7 @@ async function experimentInit() {
     lineColor: undefined, 
     fillColor: new util.Color('#E7EEF7'), 
     colorSpace: 'rgb', 
-    opacity: undefined, 
+    opacity: 0.0, 
     depth: -2.5, 
     interpolate: true, 
   }));
@@ -2447,7 +2447,7 @@ async function experimentInit() {
     lineColor: undefined, 
     fillColor: new util.Color('#E7EEF7'), 
     colorSpace: 'rgb', 
-    opacity: undefined, 
+    opacity: 0.0, 
     depth: -2.5, 
     interpolate: true, 
   }));
@@ -2607,7 +2607,7 @@ async function experimentInit() {
     lineColor: undefined, 
     fillColor: new util.Color('#E7EEF7'), 
     colorSpace: 'rgb', 
-    opacity: undefined, 
+    opacity: 0.0, 
     depth: -2.5, 
     interpolate: true, 
   }));
@@ -2767,7 +2767,7 @@ async function experimentInit() {
     lineColor: undefined, 
     fillColor: new util.Color('#E7EEF7'), 
     colorSpace: 'rgb', 
-    opacity: undefined, 
+    opacity: 0.0, 
     depth: -2.5, 
     interpolate: true, 
   }));
@@ -2927,7 +2927,7 @@ async function experimentInit() {
     lineColor: undefined, 
     fillColor: new util.Color('#E7EEF7'), 
     colorSpace: 'rgb', 
-    opacity: undefined, 
+    opacity: 0.0, 
     depth: -2.5, 
     interpolate: true, 
   }));
