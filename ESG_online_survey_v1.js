@@ -362,6 +362,73 @@ function isButtonClickedResponsive(button) {
         responsivePointerState.y <= (pos[1] + (height / 2))
     );
 }
+
+// Improve PsychoJS / PixiJS text sharpness without changing layout or response logic.
+function sharpenPixiTextTree(node) {
+    if (!node) {
+        return;
+    }
+
+    const targetResolution = Math.min(
+        3,
+        Math.max(2, Math.ceil(window.devicePixelRatio || 1))
+    );
+
+    const looksLikeText =
+        (typeof node.text === "string") &&
+        node.style &&
+        (("resolution" in node) || ("roundPixels" in node));
+
+    if (looksLikeText) {
+        if ("roundPixels" in node) {
+            node.roundPixels = true;
+        }
+
+        if ("resolution" in node && node.resolution !== targetResolution) {
+            node.resolution = targetResolution;
+        }
+    }
+
+    if (Array.isArray(node.children)) {
+        for (const child of node.children) {
+            sharpenPixiTextTree(child);
+        }
+    }
+}
+
+function wrapConstructorForSharpText(Constructor) {
+    if (
+        !Constructor ||
+        !Constructor.prototype ||
+        Constructor.prototype._sharpTextRenderingWrapped
+    ) {
+        return;
+    }
+
+    const originalUpdateIfNeeded = Constructor.prototype._updateIfNeeded;
+    if (typeof originalUpdateIfNeeded !== "function") {
+        return;
+    }
+
+    Constructor.prototype._updateIfNeeded = function(...args) {
+        const result = originalUpdateIfNeeded.apply(this, args);
+        sharpenPixiTextTree(this._pixi);
+        return result;
+    };
+
+    Constructor.prototype._sharpTextRenderingWrapped = true;
+}
+
+function applySharpTextRendering() {
+    const constructorNames = ["TextStim", "ButtonStim", "Slider", "TextBox"];
+
+    for (const constructorName of constructorNames) {
+        if (visual[constructorName]) {
+            wrapConstructorForSharpText(visual[constructorName]);
+        }
+    }
+}
+
 function safeSetText(component, text) {
     if (component && typeof component.setText === "function") {
         component.setText(text);
@@ -740,6 +807,7 @@ psychoJS.openWindow({
   backgroundImage: '',
   backgroundFit: 'none',
 });
+applySharpTextRendering();
 const flowScheduler = new Scheduler(psychoJS);
 const dialogCancelScheduler = new Scheduler(psychoJS);
 psychoJS.schedule(flowScheduler);
