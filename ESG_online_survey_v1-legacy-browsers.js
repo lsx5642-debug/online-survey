@@ -8,7 +8,6 @@ let expName = 'ESG_screen_based_demo';  // from the Builder filename that create
 let expInfo = {
     'participant': '',
     'session': '001',
-    'condition': ['A', 'B'],
 };
 let PILOTING = util.getUrlParameters().has('__pilotToken');
 
@@ -106,6 +105,50 @@ function getUrlParameterValue(name) {
     } catch (error) {
         return "";
     }
+}
+function getConditionOverride() {
+    const override = getUrlParameterValue("condition").trim().toUpperCase();
+    return (["A", "B"].includes(override) ? override : "");
+}
+async function assignConditionBeforeStart() {
+    const override = getConditionOverride();
+    if (override) {
+        condition = override;
+        expInfo["condition"] = condition;
+        expInfo["condition_assignment_source"] = "url_override";
+        return Scheduler.Event.NEXT;
+    }
+    const experimentID = getDataPipeExperimentId();
+    if (!experimentID) {
+        document.body.innerHTML = "<p>実験を開始できません。DataPipe Experiment ID が設定されていません。</p>";
+        throw new Error("DataPipe Experiment ID is required for condition assignment.");
+    }
+    const response = await fetch("https://pipe.jspsych.org/api/condition/", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({experimentID: experimentID})
+    });
+    let responseBody = {};
+    try {
+        responseBody = await response.json();
+    } catch (error) {
+        responseBody = {};
+    }
+    if (!response.ok) {
+        const errorMessage = responseBody.message || responseBody.error || response.statusText || "Unknown condition assignment error";
+        document.body.innerHTML = `<p>実験を開始できません。条件割り当てに失敗しました。</p><p>${errorMessage}</p>`;
+        throw new Error(`Condition assignment failed (${response.status}): ${errorMessage}`);
+    }
+    const assignedNumber = Number.parseInt(String(responseBody.condition), 10);
+    if (Number.isNaN(assignedNumber)) {
+        document.body.innerHTML = "<p>実験を開始できません。条件割り当ての応答が不正です。</p>";
+        throw new Error("Condition assignment response did not include a numeric condition.");
+    }
+    condition = ((assignedNumber % 2) === 0) ? "A" : "B";
+    expInfo["condition"] = condition;
+    expInfo["datapipe_condition_number"] = assignedNumber;
+    expInfo["condition_assignment_source"] = "datapipe_sequence";
+    return Scheduler.Event.NEXT;
 }
 function createAnonymousParticipantId() {
     if (window.crypto && typeof window.crypto.randomUUID === "function") {
@@ -427,17 +470,12 @@ psychoJS.openWindow({
   backgroundImage: '',
   backgroundFit: 'none',
 });
-// schedule the experiment:
-psychoJS.schedule(psychoJS.gui.DlgFromDict({
-  dictionary: expInfo,
-  title: expName
-}));
-
 const flowScheduler = new Scheduler(psychoJS);
 const dialogCancelScheduler = new Scheduler(psychoJS);
-psychoJS.scheduleCondition(function() { return (psychoJS.gui.dialogComponent.button === 'OK'); },flowScheduler, dialogCancelScheduler);
+psychoJS.schedule(flowScheduler);
 
 // flowScheduler gets run if the participants presses OK
+flowScheduler.add(assignConditionBeforeStart);
 flowScheduler.add(updateInfo); // add timeStamp
 flowScheduler.add(experimentInit);
 flowScheduler.add(exp_setupRoutineBegin());
@@ -805,7 +843,7 @@ async function experimentInit() {
   // Initialize components for Routine "exp_setup"
   exp_setupClock = new util.Clock();
   // Run 'Begin Experiment' code from exp_setup_code
-  condition = String(expInfo["condition"] || "A").trim().toUpperCase();
+  condition = String(expInfo["condition"] || condition || "A").trim().toUpperCase();
   if (!["A", "B"].includes(condition)) {
       condition = "A";
   }
