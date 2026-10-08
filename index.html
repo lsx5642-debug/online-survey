@@ -66,16 +66,21 @@
 .esm-ticks {display:flex; justify-content:space-between; align-items:flex-start; margin:-7px 58px 7px; height:12px; pointer-events:none;}
 .esm-tick {width:1px; height:8px; background:#667c94;}
 .esm-tick.major {width:2px; height:12px; background:#3e6591;}
-.esm-range-labels { display:flex;justify-content:space-between;font-size:13px;padding:0 58px; margin:0 0 10px; }
-.esm-selected-value {display:block; text-align:center; font-size:15px; color:#365c84; margin-top:12px; min-height:26px;}
-.esm-data-card { border:1px solid #d1dce7; border-radius:12px; margin:0 0 14px; padding:14px 15px; background:#fff; }
-.esm-data-meta { color:#3e6591;font-weight:700;font-size:14px; margin-bottom:6px; }
-.esm-data-label { display:flex; flex-direction:column; margin-bottom:10px; }
-.esm-data-label>span,.esm-data-values span {color:#58697c;font-size:13px;}
-.esm-data-label strong {font-size:16px;font-weight:600;line-height:1.55;overflow-wrap:anywhere;}
-.esm-data-values {display:grid; grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
-.esm-data-values>div {display:flex;flex-direction:column;gap:4px;min-width:0;}
-.esm-data-values strong {font-size:14px;font-weight:500;line-height:1.5;overflow-wrap:anywhere;}
+.esm-range-labels { display:grid; grid-template-columns:repeat(21,minmax(0,1fr)); font-size:10px; padding:0 58px; margin:0 0 2px; gap:0; color:#4f6277; }
+.esm-range-labels span { text-align:center; white-space:nowrap; transform:translateX(-50%); }
+.esm-range-labels span:first-child { transform:none; text-align:left; }
+.esm-range-labels span:last-child { transform:none; text-align:right; }
+.esm-selected-value {display:none;}
+.esm-table-wrap { width:100%; overflow-x:auto; -webkit-overflow-scrolling:touch; border:1px solid #d1dce7; border-radius:12px; background:#fff; }
+.esm-data-table { width:100%; min-width:860px; border-collapse:collapse; table-layout:fixed; }
+.esm-data-table thead th { background:#3E6591; color:#fff; font-size:14px; font-weight:700; padding:10px 8px; text-align:center; white-space:nowrap; }
+.esm-data-table tbody td { padding:9px 8px; font-size:13px; line-height:1.45; color:#172033; text-align:center; vertical-align:middle; border-top:1px solid #e7edf3; }
+.esm-data-table tbody tr:first-child td { border-top:none; }
+.esm-data-table th:nth-child(1), .esm-data-table td:nth-child(1) { width:56px; }
+.esm-data-table th:nth-child(2), .esm-data-table td:nth-child(2) { width:90px; }
+.esm-data-table th:nth-child(3), .esm-data-table td:nth-child(3) { width:340px; text-align:left; }
+.esm-data-table th:nth-child(4), .esm-data-table td:nth-child(4), .esm-data-table th:nth-child(5), .esm-data-table td:nth-child(5), .esm-data-table th:nth-child(6), .esm-data-table td:nth-child(6) { width:124px; }
+.esm-data-table td.esm-col-label { font-weight:600; }
 .esm-other {margin:18px auto 0;max-width:780px;}
 .esm-other[hidden] {display:none}
 .esm-other label {display:block;margin-bottom:8px;}
@@ -86,7 +91,6 @@
  .esm-options {grid-template-columns:repeat(2,minmax(0,1fr));}
  .esm-question {margin-bottom:20px;}
  .esm-paragraph {margin-bottom:12px;}
- .esm-data-values strong {font-size:16px;}
  .esm-footer {padding-top:7px;padding-bottom:max(7px,env(safe-area-inset-bottom));}
  .esm-next {min-height:44px;}
 }
@@ -99,8 +103,8 @@
     <script src="./lib/jquery-3.6.0.min.js"></script>
     <script src="./lib/jquery-ui-1.12.1.min.js"></script>
     <script src="./lib/preloadjs-1.0.1.min.js"></script>
-    <script src="./ESG_online_survey_v1.js?v=20261008-mobile23" type="module"></script>
+    <script src="./ESG_online_survey_v1.js?v=20261008-mobile24" type="module"></script>
     <script src="./lib/psychojs-2026.1.3.iife.js" nomodule></script>
-    <script src="./ESG_online_survey_v1-legacy-browsers.js?v=20261008-mobile23" nomodule></script>
+    <script src="./ESG_online_survey_v1-legacy-browsers.js?v=20261008-mobile24" nomodule></script>
   </body>
 </html>
