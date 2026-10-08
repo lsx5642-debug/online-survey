@@ -532,21 +532,24 @@ function mobileSurveyRange(slider, endpoints) {
     input.setAttribute('aria-label','0から100まで、5点刻みで選択');
     const labels = document.createElement('div');
     labels.className='esm-range-labels';
-    labels.innerHTML = [0,20,40,60,80,100].map(v=>'<span>'+v+'</span>').join('');
+    labels.innerHTML = Array.from({length:21}, (_,i)=>'<span>'+(i*5)+'</span>').join('');
     const minorTicks=document.createElement('div');
     minorTicks.className='esm-ticks';
     for(let i=0;i<=20;i++){const tick=document.createElement('span');tick.className='esm-tick'+((i%4===0)?' major':'');minorTicks.appendChild(tick);}
     const value = document.createElement('output');
     value.className='esm-selected-value';
-    value.textContent='目盛りをタップするか、スライダーを動かして選択してください。';
+    value.textContent='';
     const setValue = raw => {
         const next = Math.max(0,Math.min(100,5*Math.round(Number(raw)/5)));
         input.value=String(next);
         input.classList.remove('untouched');
-        value.textContent='選択した値：'+next;
         mobileSurveyRecord(slider,next);
     };
+    if (slider.getRating() !== undefined && slider.getRating() !== null) {
+        setValue(slider.getRating());
+    }
     input.addEventListener('input',()=>setValue(input.value));
+    input.addEventListener('change',()=>setValue(input.value));
     const minus = document.createElement('button');
     minus.type='button'; minus.className='esm-step'; minus.textContent='−5';
     minus.setAttribute('aria-label','5点下げる');
@@ -561,27 +564,28 @@ function mobileSurveyRange(slider, endpoints) {
 }
 function mobileSurveyTable() {
     const wrap = document.createElement('div');
-    wrap.className='esm-table-items';
+    wrap.className='esm-table-wrap';
+    const table = document.createElement('table');
+    table.className='esm-data-table';
+    table.innerHTML = '<thead><tr><th>No.</th><th>GRI</th><th>開示項目名</th><th>2024年度</th><th>2025年度</th><th>変化</th></tr></thead>';
+    const tbody = document.createElement('tbody');
     for (let i=1;i<=13;i++) {
-        const suffix=String(i).padStart(2,'0');
-        // Read the actual condition-specific label from PsychoJS, not a
-        // separately-maintained copy of the experiment stimulus.
         const currentLabel = mobileSurveyText([label_01,label_02,label_03,label_04,label_05,label_06,label_07,label_08,label_09,label_10,label_11,label_12,label_13][i-1]);
         const gri = [gri_01,gri_02,gri_03,gri_04,gri_05,gri_06,gri_07,gri_08,gri_09,gri_10,gri_11,gri_12,gri_13][i-1];
         const oldValue = [value_2024_01,value_2024_02,value_2024_03,value_2024_04,value_2024_05,value_2024_06,value_2024_07,value_2024_08,value_2024_09,value_2024_10,value_2024_11,value_2024_12,value_2024_13][i-1];
         const newValue = [value_2025_01,value_2025_02,value_2025_03,value_2025_04,value_2025_05,value_2025_06,value_2025_07,value_2025_08,value_2025_09,value_2025_10,value_2025_11,value_2025_12,value_2025_13][i-1];
         const changeValue=[change_01,change_02,change_03,change_04,change_05,change_06,change_07,change_08,change_09,change_10,change_11,change_12,change_13][i-1];
-        const card=document.createElement('article');
-        card.className='esm-data-card';
-        card.innerHTML='<div class="esm-data-meta">No. '+i+'　/　GRI '+mobileSurveyEscape(mobileSurveyText(gri))+'</div>'+
-            '<div class="esm-data-label"><span>開示項目名</span><strong>'+mobileSurveyEscape(currentLabel)+'</strong></div>'+
-            '<div class="esm-data-values">'+
-            '<div><span>2024年度</span><strong>'+mobileSurveyEscape(mobileSurveyText(oldValue))+'</strong></div>'+
-            '<div><span>2025年度</span><strong>'+mobileSurveyEscape(mobileSurveyText(newValue))+'</strong></div>'+
-            '<div><span>変化</span><strong>'+mobileSurveyEscape(mobileSurveyText(changeValue))+'</strong></div>'+
-            '</div>';
-        wrap.appendChild(card);
+        const tr=document.createElement('tr');
+        tr.innerHTML='<td>'+i+'</td>'+
+            '<td>'+mobileSurveyEscape(mobileSurveyText(gri))+'</td>'+
+            '<td class="esm-col-label">'+mobileSurveyEscape(currentLabel)+'</td>'+
+            '<td>'+mobileSurveyEscape(mobileSurveyText(oldValue))+'</td>'+
+            '<td>'+mobileSurveyEscape(mobileSurveyText(newValue))+'</td>'+
+            '<td>'+mobileSurveyEscape(mobileSurveyText(changeValue))+'</td>';
+        tbody.appendChild(tr);
     }
+    table.appendChild(tbody);
+    wrap.appendChild(table);
     return wrap;
 }
 function mobileSurveyToggleOther() {
