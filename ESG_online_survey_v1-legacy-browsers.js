@@ -518,48 +518,59 @@ function mobileSurveyChoices(slider, idx) {
 function mobileSurveyRange(slider, endpoints) {
     const wrapper = document.createElement('section');
     wrapper.className = 'esm-rating';
-    if (endpoints && endpoints.length===2) {
-        const endBox = document.createElement('div');
-        endBox.className='esm-endpoints';
-        endBox.innerHTML = '<span>' + mobileSurveyEscape(mobileSurveyText(endpoints[0])) + '</span><span>' + mobileSurveyEscape(mobileSurveyText(endpoints[1])) + '</span>';
-        wrapper.appendChild(endBox);
-    }
     const row = document.createElement('div');
     row.className='esm-range-row';
     const input = document.createElement('input');
-    input.type = 'range'; input.min='0'; input.max='100'; input.step='5';
+    input.type='range'; input.min='0'; input.max='100'; input.step='5';
     input.value='50'; input.className='esm-range untouched';
     input.setAttribute('aria-label','0から100まで、5点刻みで選択');
-    const labels = document.createElement('div');
+    const ticks=document.createElement('div');
+    ticks.className='esm-ticks';
+    const labels=document.createElement('div');
     labels.className='esm-range-labels';
-    labels.innerHTML = Array.from({length:21}, (_,i)=>'<span>'+(i*5)+'</span>').join('');
-    const minorTicks=document.createElement('div');
-    minorTicks.className='esm-ticks';
-    for(let i=0;i<=20;i++){const tick=document.createElement('span');tick.className='esm-tick'+((i%4===0)?' major':'');minorTicks.appendChild(tick);}
-    const value = document.createElement('output');
-    value.className='esm-selected-value';
-    value.textContent='';
+    for (let i=0;i<=20;i++) {
+        const tick=document.createElement('span');
+        tick.className='esm-tick'+((i%4===0)?' major':'');
+        ticks.appendChild(tick);
+        const label=document.createElement('span');
+        label.textContent=String(i*5);
+        labels.appendChild(label);
+    }
     const setValue = raw => {
         const next = Math.max(0,Math.min(100,5*Math.round(Number(raw)/5)));
         input.value=String(next);
         input.classList.remove('untouched');
         mobileSurveyRecord(slider,next);
     };
-    if (slider.getRating() !== undefined && slider.getRating() !== null) {
-        setValue(slider.getRating());
+    // A native range has a visual default midpoint, but NO response is stored
+    // until the participant interacts with it.
+    const prior = slider.getRating();
+    if (prior !== undefined && prior !== null) {
+        input.value=String(prior);
+        input.classList.remove('untouched');
     }
     input.addEventListener('input',()=>setValue(input.value));
-    input.addEventListener('change',()=>setValue(input.value));
-    const minus = document.createElement('button');
-    minus.type='button'; minus.className='esm-step'; minus.textContent='−5';
+    // Do not record twice on change; input fires during both touch and drag.
+    row.appendChild(input);
+    const adjust=document.createElement('div');
+    adjust.className='esm-adjust';
+    const minus=document.createElement('button');
+    minus.type='button';minus.className='esm-step';minus.textContent='−5';
     minus.setAttribute('aria-label','5点下げる');
     minus.addEventListener('click',()=>setValue(input.classList.contains('untouched')?45:Number(input.value)-5));
-    const plus = document.createElement('button');
-    plus.type='button'; plus.className='esm-step'; plus.textContent='+5';
+    const plus=document.createElement('button');
+    plus.type='button';plus.className='esm-step';plus.textContent='+5';
     plus.setAttribute('aria-label','5点上げる');
     plus.addEventListener('click',()=>setValue(input.classList.contains('untouched')?55:Number(input.value)+5));
-    row.append(minus,input,plus);
-    wrapper.append(row,minorTicks,labels,value);
+    adjust.append(minus,plus);
+    wrapper.append(row,ticks,labels);
+    if (endpoints && endpoints.length===2) {
+        const endBox=document.createElement('div');
+        endBox.className='esm-endpoints';
+        endBox.innerHTML='<span>'+mobileSurveyEscape(mobileSurveyText(endpoints[0]))+'</span><span>'+mobileSurveyEscape(mobileSurveyText(endpoints[1]))+'</span>';
+        wrapper.appendChild(endBox);
+    }
+    wrapper.appendChild(adjust);
     return wrapper;
 }
 function mobileSurveyTable() {
@@ -640,8 +651,17 @@ function mobileSurveyShow(screen) {
             const questionBox=document.createElement('section');questionBox.className='esm-question';
             const prompt=document.createElement('h2');prompt.className='esm-prompt';
             prompt.textContent=mobileSurveyText(question);questionBox.appendChild(prompt);
-            const ratingType=slider._style || slider.style || [];
-            if (ratingType.includes('SLIDER') && slider._ticks && slider._ticks.length===21) {
+            // The five 0–100 tasks are identified by their stable routine names,
+            // not PsychoJS Slider._style (which can be represented differently
+            // across PsychoJS versions). All other questions remain RADIO.
+            const isHundredPointRating = (
+                screen === 'esg_performance_screen' ||
+                screen === 'esg_difficulty_screen' ||
+                screen === 'label_difficulty_screen' ||
+                screen === 'investment_intention_screen' ||
+                screen === 'perceived_standardization_screen'
+            );
+            if (isHundredPointRating) {
                 questionBox.appendChild(mobileSurveyRange(slider,def.endpoints));
             } else {
                 questionBox.appendChild(mobileSurveyChoices(slider,idx));
