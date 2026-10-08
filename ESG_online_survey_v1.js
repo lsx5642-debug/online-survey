@@ -403,6 +403,7 @@ window.addEventListener("pointerup", (event) => {
     responsivePointerState.pressed = false;
 });
 function isButtonClickedResponsive(button) {
+    if (mobileSurveyMode) return mobileSurveyButtonPressed(button);
     if (button && button.isClicked) {
         return true;
     }
@@ -422,6 +423,282 @@ function isButtonClickedResponsive(button) {
         responsivePointerState.y >= (pos[1] - (height / 2)) &&
         responsivePointerState.y <= (pos[1] + (height / 2))
     );
+}
+
+
+// ----------------------------------------------------------------------
+// Mobile accessibility layer for the original PsychoJS study.
+// It DOES NOT advance the experiment scheduler or rewrite any data fields.
+// All responses are written to the original Slider via recordRating(),
+// and the original validation and navigation code remains authoritative.
+// ----------------------------------------------------------------------
+const mobileSurveyMode = window.matchMedia('(max-width: 1180px)').matches;
+if (mobileSurveyMode) {
+    document.documentElement.classList.add('esg-mobile-mode');
+}
+let mobileSurveyCurrent = null;
+let mobileSurveyClick = null;
+let mobileSurveyAlert = '';
+
+function mobileSurveyText(stim) {
+    const value = stim ? ((typeof stim.text !== 'undefined') ? stim.text : stim._text) : '';
+    return value === undefined || value === null ? '' : String(value);
+}
+function mobileSurveyEscape(value) {
+    return String(value === undefined || value === null ? '' : value)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function mobileSurveyParagraphs(stims) {
+    return stims.map(stim => '<p class="esm-paragraph">' + mobileSurveyEscape(mobileSurveyText(stim)) + '</p>').join('');
+}
+function mobileSurveyScreenDefinition(screen) {
+    switch (screen) {
+        case 'instruction': return {title: instruction_title, paragraphs:[instruction_body], button:instruction_next_button};
+        case 'role_instruction': return {title: role_instruction_title, paragraphs:[role_paragraph_1,role_paragraph_2,role_paragraph_3,role_paragraph_4,role_paragraph_5], button:role_instruction_next_button};
+        case 'comprehension_check': return {title:comprehension_check_title, questions:[[check_q1_question, check_q1],[check_q2_question,check_q2],[check_q3_question,check_q3]], button:check_button, hint:comprehension_hint, error:'comprehension'};
+        case 'stimulus_guidance': return {title:stimulus_guidance_title, paragraphs:[stimulus_guidance_body], button:stimulus_guidance_next_button};
+        case 'fixation': return {fixation:true};
+        case 'stimulus_table': return {title:table_title, table:true, button:stimulus_table_next_button};
+        case 'esg_performance_screen': return {title:esg_performance_screen_title, questions:[[esg_performance_question,esg_performance]], endpoints:[esg_performance_left,esg_performance_right], button:esg_performance_screen_next_button, error:'validation'};
+        case 'esg_difficulty_screen': return {title:esg_difficulty_screen_title, questions:[[esg_difficulty_question,esg_difficulty]], endpoints:[esg_difficulty_left,esg_difficulty_right], button:esg_difficulty_screen_next_button, error:'validation'};
+        case 'label_difficulty_screen': return {title:label_difficulty_screen_title, questions:[[label_difficulty_question,label_difficulty]], endpoints:[label_difficulty_left,label_difficulty_right], button:label_difficulty_screen_next_button, error:'validation'};
+        case 'investment_intention_screen': return {title:investment_intention_screen_title, questions:[[investment_intention_question,investment_intention]], endpoints:[investment_intention_left,investment_intention_right], button:investment_intention_screen_next_button, error:'validation'};
+        case 'perceived_standardization_screen': return {title:perceived_standardization_screen_title, questions:[[perceived_standardization_question,perceived_standardization]], endpoints:[perceived_standardization_left,perceived_standardization_right], button:perceived_standardization_screen_next_button, error:'validation'};
+        case 'esg_familiarity_screen': return {title:esg_familiarity_screen_title, questions:[[esg_familiarity_question,esg_familiarity]], button:esg_familiarity_screen_next_button, error:'validation'};
+        case 'gri_familiarity_screen': return {title:gri_familiarity_screen_title, questions:[[gri_familiarity_question,gri_familiarity]], button:gri_familiarity_screen_next_button, error:'validation'};
+        case 'investment_experience': return {title:investment_experience_title,questions:[[investment_question,investment_experience_response]],button:investment_experience_next_button,error:'validation'};
+        case 'investment_years': return {title:investment_years_title,questions:[[investment_years_question,investment_years_response]],button:investment_years_next_button,error:'validation'};
+        case 'finance_education': return {title:finance_education_title,questions:[[finance_question,finance_education_response]],button:finance_education_next_button,error:'validation'};
+        case 'demographics_1': return {title:demographics_1_title,questions:[[age_question,age_textbox],[gender_question,gender]],button:demographics_1_next_button,error:'validation'};
+        case 'demographics_2': return {title:demographics_2_title,questions:[[status_question,occupation_attribute]],other:occupation_other_textbox,otherPrompt:occupation_other_question,button:demographics_2_next_button,error:'validation'};
+        case 'end': return {title:end_title,paragraphs:[end_message],button:finish_button,upload:true};
+        default: return null;
+    }
+}
+function mobileSurveyRoot() {
+    let root = document.getElementById('esg-mobile-survey');
+    if (!root) {
+        root = document.createElement('div');
+        root.id = 'esg-mobile-survey';
+        root.setAttribute('lang', 'ja');
+        root.innerHTML = '<main class="esm-main" id="esm-content"></main><footer class="esm-footer" id="esm-footer"></footer>';
+        document.body.appendChild(root);
+    }
+    return root;
+}
+function mobileSurveyRecord(slider, value) {
+    // recordRating is the PsychoJS API used by native mouse/touch interactions;
+    // it populates getRating(), getRT(), and the original experiment dataset.
+    if (!slider || typeof slider.recordRating !== 'function') return;
+    slider.recordRating(value);
+    mobileSurveyAlert = '';
+    const alert = document.getElementById('esm-error');
+    if (alert) alert.textContent = '';
+}
+function mobileSurveyChoices(slider, idx) {
+    const labels = slider._labels || slider.labels || [];
+    const grid = document.createElement('div');
+    grid.className = 'esm-options';
+    grid.setAttribute('role','radiogroup');
+    grid.setAttribute('aria-label','回答を選択');
+    const buttons = [];
+    labels.forEach((rawLabel, i) => {
+        const option = document.createElement('button');
+        option.type = 'button';
+        option.className = 'esm-option';
+        option.setAttribute('role','radio');
+        option.setAttribute('aria-checked','false');
+        option.textContent = String(rawLabel).replace(/\n/g, ' ');
+        option.addEventListener('click', () => {
+            mobileSurveyRecord(slider, i);
+            buttons.forEach((button, j) => {
+                button.classList.toggle('selected',j === i);
+                button.setAttribute('aria-checked',String(j===i));
+            });
+            if (mobileSurveyCurrent === 'demographics_2') mobileSurveyToggleOther();
+        });
+        buttons.push(option);
+        grid.appendChild(option);
+    });
+    return grid;
+}
+function mobileSurveyRange(slider, endpoints) {
+    const wrapper = document.createElement('section');
+    wrapper.className = 'esm-rating';
+    if (endpoints && endpoints.length===2) {
+        const endBox = document.createElement('div');
+        endBox.className='esm-endpoints';
+        endBox.innerHTML = '<span>' + mobileSurveyEscape(mobileSurveyText(endpoints[0])) + '</span><span>' + mobileSurveyEscape(mobileSurveyText(endpoints[1])) + '</span>';
+        wrapper.appendChild(endBox);
+    }
+    const row = document.createElement('div');
+    row.className='esm-range-row';
+    const input = document.createElement('input');
+    input.type = 'range'; input.min='0'; input.max='100'; input.step='5';
+    input.value='50'; input.className='esm-range untouched';
+    input.setAttribute('aria-label','0から100まで、5点刻みで選択');
+    const labels = document.createElement('div');
+    labels.className='esm-range-labels';
+    labels.innerHTML = [0,20,40,60,80,100].map(v=>'<span>'+v+'</span>').join('');
+    const minorTicks=document.createElement('div');
+    minorTicks.className='esm-ticks';
+    for(let i=0;i<=20;i++){const tick=document.createElement('span');tick.className='esm-tick'+((i%4===0)?' major':'');minorTicks.appendChild(tick);}
+    const value = document.createElement('output');
+    value.className='esm-selected-value';
+    value.textContent='目盛りをタップするか、スライダーを動かして選択してください。';
+    const setValue = raw => {
+        const next = Math.max(0,Math.min(100,5*Math.round(Number(raw)/5)));
+        input.value=String(next);
+        input.classList.remove('untouched');
+        value.textContent='選択した値：'+next;
+        mobileSurveyRecord(slider,next);
+    };
+    input.addEventListener('input',()=>setValue(input.value));
+    const minus = document.createElement('button');
+    minus.type='button'; minus.className='esm-step'; minus.textContent='−5';
+    minus.setAttribute('aria-label','5点下げる');
+    minus.addEventListener('click',()=>setValue(input.classList.contains('untouched')?45:Number(input.value)-5));
+    const plus = document.createElement('button');
+    plus.type='button'; plus.className='esm-step'; plus.textContent='+5';
+    plus.setAttribute('aria-label','5点上げる');
+    plus.addEventListener('click',()=>setValue(input.classList.contains('untouched')?55:Number(input.value)+5));
+    row.append(minus,input,plus);
+    wrapper.append(row,minorTicks,labels,value);
+    return wrapper;
+}
+function mobileSurveyTable() {
+    const wrap = document.createElement('div');
+    wrap.className='esm-table-items';
+    for (let i=1;i<=13;i++) {
+        const suffix=String(i).padStart(2,'0');
+        // Read the actual condition-specific label from PsychoJS, not a
+        // separately-maintained copy of the experiment stimulus.
+        const currentLabel = mobileSurveyText([label_01,label_02,label_03,label_04,label_05,label_06,label_07,label_08,label_09,label_10,label_11,label_12,label_13][i-1]);
+        const gri = [gri_01,gri_02,gri_03,gri_04,gri_05,gri_06,gri_07,gri_08,gri_09,gri_10,gri_11,gri_12,gri_13][i-1];
+        const oldValue = [value_2024_01,value_2024_02,value_2024_03,value_2024_04,value_2024_05,value_2024_06,value_2024_07,value_2024_08,value_2024_09,value_2024_10,value_2024_11,value_2024_12,value_2024_13][i-1];
+        const newValue = [value_2025_01,value_2025_02,value_2025_03,value_2025_04,value_2025_05,value_2025_06,value_2025_07,value_2025_08,value_2025_09,value_2025_10,value_2025_11,value_2025_12,value_2025_13][i-1];
+        const changeValue=[change_01,change_02,change_03,change_04,change_05,change_06,change_07,change_08,change_09,change_10,change_11,change_12,change_13][i-1];
+        const card=document.createElement('article');
+        card.className='esm-data-card';
+        card.innerHTML='<div class="esm-data-meta">No. '+i+'　/　GRI '+mobileSurveyEscape(mobileSurveyText(gri))+'</div>'+
+            '<div class="esm-data-label"><span>開示項目名</span><strong>'+mobileSurveyEscape(currentLabel)+'</strong></div>'+
+            '<div class="esm-data-values">'+
+            '<div><span>2024年度</span><strong>'+mobileSurveyEscape(mobileSurveyText(oldValue))+'</strong></div>'+
+            '<div><span>2025年度</span><strong>'+mobileSurveyEscape(mobileSurveyText(newValue))+'</strong></div>'+
+            '<div><span>変化</span><strong>'+mobileSurveyEscape(mobileSurveyText(changeValue))+'</strong></div>'+
+            '</div>';
+        wrap.appendChild(card);
+    }
+    return wrap;
+}
+function mobileSurveyToggleOther() {
+    const box=document.getElementById('esm-other-field');
+    if (!box) return;
+    box.hidden=getOccupationTextFromRating(occupation_attribute.getRating()) !== 'その他';
+}
+function mobileSurveyPulse(button) {
+    if (!button) return;
+    mobileSurveyClick={button:button, frame:null};
+}
+function mobileSurveyButtonPressed(button) {
+    if (!mobileSurveyMode || !mobileSurveyClick || mobileSurveyClick.button !== button) return false;
+    if (mobileSurveyClick.frame === null) mobileSurveyClick.frame=frameN;
+    if (mobileSurveyClick.frame === frameN) return true;
+    mobileSurveyClick=null;
+    return false;
+}
+function mobileSurveyShow(screen) {
+    if (!mobileSurveyMode) return;
+    if (screen === 'investment_years' && !investment_yes) return;
+    const def=mobileSurveyScreenDefinition(screen);
+    if (!def) return;
+    if (mobileSurveyCurrent === screen) {
+        mobileSurveySync(def, screen);
+        return;
+    }
+    mobileSurveyClick=null;
+    mobileSurveyCurrent=screen;
+    const root=mobileSurveyRoot();
+    const content=root.querySelector('#esm-content');
+    const footer=root.querySelector('#esm-footer');
+    content.replaceChildren(); footer.replaceChildren();
+    if (def.fixation) {
+        const cross=document.createElement('div');cross.className='esm-fixation';cross.textContent='＋';content.appendChild(cross);
+        footer.hidden=true;
+        return;
+    }
+    footer.hidden=false;
+    const heading=document.createElement('h1');heading.className='esm-heading';
+    heading.textContent=mobileSurveyText(def.title);content.appendChild(heading);
+    if (def.paragraphs) {
+        const paragraphs=document.createElement('div'); paragraphs.className='esm-paragraphs';
+        def.paragraphs.forEach(stim => {
+            const p=document.createElement('p');p.className='esm-paragraph';p.textContent=mobileSurveyText(stim);
+            paragraphs.appendChild(p);
+        });
+        content.appendChild(paragraphs);
+    }
+    if (def.questions) {
+        def.questions.forEach(([question,slider],idx)=>{
+            const questionBox=document.createElement('section');questionBox.className='esm-question';
+            const prompt=document.createElement('h2');prompt.className='esm-prompt';
+            prompt.textContent=mobileSurveyText(question);questionBox.appendChild(prompt);
+            const ratingType=slider._style || slider.style || [];
+            if (ratingType.includes('SLIDER') && slider._ticks && slider._ticks.length===21) {
+                questionBox.appendChild(mobileSurveyRange(slider,def.endpoints));
+            } else {
+                questionBox.appendChild(mobileSurveyChoices(slider,idx));
+            }
+            content.appendChild(questionBox);
+        });
+    }
+    if (def.table) content.appendChild(mobileSurveyTable());
+    if (def.other) {
+        const extra=document.createElement('section');extra.className='esm-other';extra.id='esm-other-field';extra.hidden=true;
+        const prompt=document.createElement('label');prompt.textContent=mobileSurveyText(def.otherPrompt);
+        prompt.setAttribute('for','esm-other-input');
+        const input=document.createElement('input');input.id='esm-other-input';input.type='text';
+        input.maxLength=120;input.autocomplete='off'; input.value=mobileSurveyText(def.other);
+        input.addEventListener('input',()=>{ if(typeof def.other.setText==='function') def.other.setText(input.value); });
+        extra.append(prompt,input);content.appendChild(extra);mobileSurveyToggleOther();
+    }
+    if (def.hint) {
+        const p=document.createElement('p');p.className='esm-hint';p.textContent=mobileSurveyText(def.hint);content.appendChild(p);
+    }
+    const error=document.createElement('div');error.id='esm-error';error.className='esm-error';error.setAttribute('role','status');
+    error.setAttribute('aria-live','polite');footer.appendChild(error);
+    if (def.button) {
+        const next=document.createElement('button');next.className='esm-next';next.type='button';next.id='esm-next';
+        next.textContent=mobileSurveyText(def.button);
+        next.addEventListener('click',()=>{
+            if (def.upload && !dataUploadFinished) return;
+            // Preserve PsychoPy's own validation and ending logic.
+            mobileSurveyPulse(def.button);
+        });
+        footer.appendChild(next);
+    }
+    content.scrollTop=0;
+    mobileSurveySync(def,screen);
+}
+function mobileSurveySync(def, screen) {
+    if (!mobileSurveyMode || !def || mobileSurveyCurrent!==screen) return;
+    const error=document.getElementById('esm-error');
+    if (error) {
+        const msg=def.error==='comprehension' ? comprehension_error : (def.error==='validation'?validation_message:'');
+        error.textContent=msg ? String(msg) : '';
+    }
+    if (def.upload) {
+        const heading=document.querySelector('#esm-content .esm-heading');
+        const message=document.querySelector('#esm-content .esm-paragraph');
+        const button=document.getElementById('esm-next');
+        if (heading) heading.textContent=mobileSurveyText(end_title);
+        if (message) message.textContent=mobileSurveyText(end_message);
+        if (button) {
+            button.textContent=dataUploadFinished && !dataUploadSucceeded ? '再送信':'終了';
+            button.disabled=!dataUploadFinished;
+        }
+    }
 }
 
 function safeSetText(component, text) {
@@ -795,7 +1072,7 @@ const psychoJS = new PsychoJS({
 
 // open window:
 psychoJS.openWindow({
-  fullscr: true,
+  fullscr: !mobileSurveyMode,
   color: new util.Color('white'),
   units: 'pix',
   waitBlanking: true,
@@ -4352,6 +4629,7 @@ function instructionRoutineEachFrame() {
     // get current time
     t = instructionClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('instruction');
     // update/draw components on each frame
     
     // *instruction_title* updates
@@ -4524,6 +4802,7 @@ function role_instructionRoutineEachFrame() {
     // get current time
     t = role_instructionClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('role_instruction');
     // update/draw components on each frame
     
     // *role_instruction_title* updates
@@ -4766,6 +5045,7 @@ function comprehension_checkRoutineEachFrame() {
     // get current time
     t = comprehension_checkClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('comprehension_check');
     // update/draw components on each frame
     
     // *comprehension_check_title* updates
@@ -5069,6 +5349,7 @@ function stimulus_guidanceRoutineEachFrame() {
     // get current time
     t = stimulus_guidanceClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('stimulus_guidance');
     // update/draw components on each frame
     
     // *stimulus_guidance_title* updates
@@ -5233,6 +5514,7 @@ function fixationRoutineEachFrame() {
     // get current time
     t = fixationClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('fixation');
     // update/draw components on each frame
     // is it time to end the Routine? (based on local clock)
     if (t > fixationMaxDuration) {
@@ -5459,6 +5741,7 @@ function stimulus_tableRoutineEachFrame() {
     // get current time
     t = stimulus_tableClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('stimulus_table');
     // update/draw components on each frame
     
     // *table_title* updates
@@ -7293,6 +7576,7 @@ function esg_performance_screenRoutineEachFrame() {
     // get current time
     t = esg_performance_screenClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('esg_performance_screen');
     // update/draw components on each frame
     
     // *esg_performance_screen_title* updates
@@ -7544,6 +7828,7 @@ function esg_difficulty_screenRoutineEachFrame() {
     // get current time
     t = esg_difficulty_screenClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('esg_difficulty_screen');
     // update/draw components on each frame
     
     // *esg_difficulty_screen_title* updates
@@ -7795,6 +8080,7 @@ function label_difficulty_screenRoutineEachFrame() {
     // get current time
     t = label_difficulty_screenClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('label_difficulty_screen');
     // update/draw components on each frame
     
     // *label_difficulty_screen_title* updates
@@ -8046,6 +8332,7 @@ function investment_intention_screenRoutineEachFrame() {
     // get current time
     t = investment_intention_screenClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('investment_intention_screen');
     // update/draw components on each frame
     
     // *investment_intention_screen_title* updates
@@ -8297,6 +8584,7 @@ function perceived_standardization_screenRoutineEachFrame() {
     // get current time
     t = perceived_standardization_screenClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('perceived_standardization_screen');
     // update/draw components on each frame
     
     // *perceived_standardization_screen_title* updates
@@ -8545,6 +8833,7 @@ function esg_familiarity_screenRoutineEachFrame() {
     // get current time
     t = esg_familiarity_screenClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('esg_familiarity_screen');
     // update/draw components on each frame
     
     // *esg_familiarity_screen_title* updates
@@ -8762,6 +9051,7 @@ function gri_familiarity_screenRoutineEachFrame() {
     // get current time
     t = gri_familiarity_screenClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('gri_familiarity_screen');
     // update/draw components on each frame
     
     // *gri_familiarity_screen_title* updates
@@ -8980,6 +9270,7 @@ function investment_experienceRoutineEachFrame() {
     // get current time
     t = investment_experienceClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('investment_experience');
     // update/draw components on each frame
     
     // *investment_experience_title* updates
@@ -9205,6 +9496,7 @@ function investment_yearsRoutineEachFrame() {
     // get current time
     t = investment_yearsClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('investment_years');
     // update/draw components on each frame
     
     // *investment_years_title* updates
@@ -9423,6 +9715,7 @@ function finance_educationRoutineEachFrame() {
     // get current time
     t = finance_educationClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('finance_education');
     // update/draw components on each frame
     
     // *finance_education_title* updates
@@ -9667,6 +9960,7 @@ function demographics_1RoutineEachFrame() {
     // get current time
     t = demographics_1Clock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('demographics_1');
     // update/draw components on each frame
     
     // *demographics_1_title* updates
@@ -10030,6 +10324,7 @@ function demographics_2RoutineEachFrame() {
     // get current time
     t = demographics_2Clock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('demographics_2');
     // update/draw components on each frame
     
     // *demographics_2_title* updates
@@ -10291,6 +10586,7 @@ function endRoutineEachFrame() {
     // get current time
     t = endClock.getTime();
     frameN = frameN + 1;// number of completed frames (so 0 is the first frame)
+    mobileSurveyShow('end');
     // update/draw components on each frame
     startDataUploadIfNeeded();
     updateEndUploadDisplay();
