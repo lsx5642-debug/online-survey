@@ -96,6 +96,26 @@
 }
 @media (max-width:370px) { .esm-data-values {grid-template-columns:1fr;} .esm-range-labels{padding:0 54px;font-size:12px} }
 
+
+/* Mobile v25: full-width, 21-step native range; no separate score card. */
+.esm-range-row { display:block; width:100%; }
+.esm-range-row .esm-range { display:block; width:100%; }
+.esm-ticks { display:grid; grid-template-columns:repeat(21,minmax(0,1fr));
+             align-items:start; margin:-6px 13px 5px; height:12px; }
+.esm-tick { justify-self:center; width:1px; height:9px; }
+.esm-tick.major {width:2px;height:12px;}
+.esm-range-labels { display:grid; grid-template-columns:repeat(21,minmax(0,1fr));
+                    margin:0 13px 20px; padding:0; gap:0;
+                    font-size:clamp(8px,2.2vw,11px); line-height:1.6; }
+.esm-range-labels span {text-align:center;white-space:nowrap;transform:translateX(0);}
+.esm-range-labels span:first-child {text-align:center;transform:translateX(0);}
+.esm-range-labels span:last-child {text-align:center;transform:translateX(0);}
+.esm-endpoints {margin:18px 0 14px;}
+.esm-adjust {display:flex;justify-content:space-between;gap:14px;margin-top:13px;}
+.esm-adjust .esm-step {flex:0 0 92px;}
+.esm-selected-value {display:none!important;}
+@media (max-width:370px) { .esm-range-labels {padding:0;margin:0 13px 20px;font-size:8px;} }
+
 </style>
 </head>
   <body>
@@ -103,8 +123,8 @@
     <script src="./lib/jquery-3.6.0.min.js"></script>
     <script src="./lib/jquery-ui-1.12.1.min.js"></script>
     <script src="./lib/preloadjs-1.0.1.min.js"></script>
-    <script src="./ESG_online_survey_v1.js?v=20261008-mobile24" type="module"></script>
+    <script src="./ESG_online_survey_v1.js?v=20261008-mobile25" type="module"></script>
     <script src="./lib/psychojs-2026.1.3.iife.js" nomodule></script>
-    <script src="./ESG_online_survey_v1-legacy-browsers.js?v=20261008-mobile24" nomodule></script>
+    <script src="./ESG_online_survey_v1-legacy-browsers.js?v=20261008-mobile25" nomodule></script>
   </body>
 </html>
