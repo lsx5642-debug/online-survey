@@ -2,19 +2,105 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ESG online survey v1 [PsychoPy]</title>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="./lib/jquery-ui-1.12.1.min.css">
     <link rel="stylesheet" href="./lib/psychojs-2026.1.3.css">
-  </head>
+  <style>
+
+/* Phone/tablet-only survey layout, preserving the original PsychoJS on desktops. */
+#esg-mobile-survey { display:none; }
+#esg-mobile-survey *, #esg-mobile-survey *::before, #esg-mobile-survey *::after {box-sizing:border-box;}
+.esg-mobile-mode body { margin:0; background:#fff; }
+.esg-mobile-mode #root { pointer-events:none; opacity:0; }
+.esg-mobile-mode #esg-mobile-survey {
+ display:flex; flex-direction:column; position:fixed; z-index:99999; inset:0;
+ background:#fff; color:#172033; font:400 17px/1.65 Meiryo,"Yu Gothic","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+ -webkit-font-smoothing:antialiased; }
+.esm-main { flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain;
+ padding:clamp(20px,4vw,42px) clamp(16px,4.5vw,48px) 38px;
+ margin:0 auto; width:100%; max-width:900px; -webkit-overflow-scrolling:touch; }
+.esm-heading { font-size:clamp(23px,5vw,32px); text-align:center; line-height:1.4; margin:0 0 30px; font-weight:600; }
+.esm-paragraphs { max-width:780px; margin:0 auto; }
+.esm-paragraph { margin:0 0 22px; white-space:pre-line; overflow-wrap:anywhere; line-height:1.85; }
+.esm-question { margin:0 auto 34px; max-width:780px; }
+.esm-prompt { font-size:clamp(18px,4.3vw,23px); font-weight:500; margin:0 0 20px; line-height:1.65; white-space:pre-line; overflow-wrap:anywhere; }
+.esm-options { display:grid; grid-template-columns:1fr; gap:12px; }
+.esm-option { display:flex; align-items:center; text-align:left; padding:13px 16px; min-height:54px;
+ border-radius:12px; border:2px solid #c5d0db; background:white; color:#172033;
+ font:500 17px/1.5 inherit; font-family:inherit; font-size:16px; cursor:pointer; overflow-wrap:anywhere; }
+.esm-option::before { content:""; flex:0 0 22px; height:22px; box-sizing:border-box;
+ border:2px solid #90a6be; background:#fff; border-radius:50%; margin-right:13px; }
+.esm-option.selected { background:#e8f0f9; border-color:#3E6591; }
+.esm-option.selected::before { border:6px solid #3E6591; }
+.esm-footer { flex:0 0 auto; display:flex; flex-direction:column; align-items:center;
+ padding:10px 16px max(12px,env(safe-area-inset-bottom));
+ border-top:1px solid #dce5ee; background:#fff; box-shadow:0 -4px 12px rgba(31,61,95,.05); }
+.esm-footer[hidden] {display:none}
+.esm-next { width:min(100%,540px); min-height:50px; border:0; border-radius:9px;
+ background:#3E6591; color:white; font:700 18px Meiryo,system-ui,sans-serif; cursor:pointer; }
+.esm-next:disabled {opacity:.45;cursor:wait}
+.esm-error { color:#b42318; font-size:14px; text-align:center; line-height:1.4; white-space:pre-line; margin-bottom:5px; }
+.esm-error:empty {display:none}
+.esm-hint { color:#536477; font-size:14px; text-align:center; margin:15px 0 0; }
+.esm-fixation { min-height:100%; display:flex; align-items:center; justify-content:center; font-size:60px; }
+.esm-rating { margin:24px auto 16px; max-width:670px; }
+.esm-endpoints { display:flex; align-items:start; justify-content:space-between; gap:16px;
+ margin-bottom:20px; color:#172033; font-size:14px; line-height:1.6; }
+.esm-endpoints>span { flex:1; }
+.esm-endpoints>span:last-child {text-align:right}
+.esm-range-row { display:grid; grid-template-columns:50px minmax(0,1fr) 50px; gap:8px; align-items:center; }
+.esm-step { min-height:48px; border-radius:9px; border:1px solid #9fb2c8;
+ background:#f4f7fb; color:#1F5D99; font:700 17px system-ui; }
+.esm-range { width:100%; height:44px; appearance:none; -webkit-appearance:none; background:transparent;
+ margin:0; cursor:pointer; touch-action:pan-y; }
+.esm-range::-webkit-slider-runnable-track {height:5px;border-radius:4px;background:#53657A}
+.esm-range::-moz-range-track {height:5px;border-radius:4px;background:#53657A}
+.esm-range::-webkit-slider-thumb { appearance:none; -webkit-appearance:none; width:26px; height:26px;
+ border:3px solid white; box-shadow:0 0 0 2px #1F5D99; border-radius:50%; background:#1F5D99; margin-top:-10px; }
+.esm-range::-moz-range-thumb { width:24px;height:24px;border:3px solid white;border-radius:50%;background:#1F5D99;box-shadow:0 0 0 2px #1F5D99; }
+.esm-range.untouched::-webkit-slider-thumb {opacity:0}
+.esm-range.untouched::-moz-range-thumb {opacity:0}
+/* 21 explicit positions, one for every 5 points. */
+.esm-ticks {display:flex; justify-content:space-between; align-items:flex-start; margin:-7px 58px 7px; height:12px; pointer-events:none;}
+.esm-tick {width:1px; height:8px; background:#667c94;}
+.esm-tick.major {width:2px; height:12px; background:#3e6591;}
+.esm-range-labels { display:flex;justify-content:space-between;font-size:13px;padding:0 58px; margin:0 0 10px; }
+.esm-selected-value {display:block; text-align:center; font-size:15px; color:#365c84; margin-top:12px; min-height:26px;}
+.esm-data-card { border:1px solid #d1dce7; border-radius:12px; margin:0 0 14px; padding:14px 15px; background:#fff; }
+.esm-data-meta { color:#3e6591;font-weight:700;font-size:14px; margin-bottom:6px; }
+.esm-data-label { display:flex; flex-direction:column; margin-bottom:10px; }
+.esm-data-label>span,.esm-data-values span {color:#58697c;font-size:13px;}
+.esm-data-label strong {font-size:16px;font-weight:600;line-height:1.55;overflow-wrap:anywhere;}
+.esm-data-values {display:grid; grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+.esm-data-values>div {display:flex;flex-direction:column;gap:4px;min-width:0;}
+.esm-data-values strong {font-size:14px;font-weight:500;line-height:1.5;overflow-wrap:anywhere;}
+.esm-other {margin:18px auto 0;max-width:780px;}
+.esm-other[hidden] {display:none}
+.esm-other label {display:block;margin-bottom:8px;}
+.esm-other input {width:100%;font:inherit;border:1px solid #9fb2c8;border-radius:10px;padding:12px;min-height:50px;}
+@media (orientation:landscape) and (max-width:1180px) {
+ .esm-main {padding-top:14px; padding-bottom:20px;}
+ .esm-heading {font-size:24px;margin-bottom:17px;}
+ .esm-options {grid-template-columns:repeat(2,minmax(0,1fr));}
+ .esm-question {margin-bottom:20px;}
+ .esm-paragraph {margin-bottom:12px;}
+ .esm-data-values strong {font-size:16px;}
+ .esm-footer {padding-top:7px;padding-bottom:max(7px,env(safe-area-inset-bottom));}
+ .esm-next {min-height:44px;}
+}
+@media (max-width:370px) { .esm-data-values {grid-template-columns:1fr;} .esm-range-labels{padding:0 54px;font-size:12px} }
+
+</style>
+</head>
   <body>
     <div id="root"></div>
     <script src="./lib/jquery-3.6.0.min.js"></script>
     <script src="./lib/jquery-ui-1.12.1.min.js"></script>
     <script src="./lib/preloadjs-1.0.1.min.js"></script>
-    <script src="./ESG_online_survey_v1.js?v=20261006-slider22" type="module"></script>
+    <script src="./ESG_online_survey_v1.js?v=20261008-mobile23" type="module"></script>
     <script src="./lib/psychojs-2026.1.3.iife.js" nomodule></script>
-    <script src="./ESG_online_survey_v1-legacy-browsers.js?v=20261006-slider22" nomodule></script>
+    <script src="./ESG_online_survey_v1-legacy-browsers.js?v=20261008-mobile23" nomodule></script>
   </body>
 </html>
