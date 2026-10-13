@@ -33,6 +33,12 @@ var pupil_pub_port;
 var pupil_clock_sync_error;
 var send_pupil_annotation;
 var stimulus_clock;
+// Values frozen when the participant leaves each relevant Routine (seconds).
+// Do not read the live PsychoJS clocks again when uploading the final JSON.
+var stimulusViewTimeFinal = null;
+var esgPerformancePageTimeFinal = null;
+var esgDifficultyPageTimeFinal = null;
+var labelDifficultyPageTimeFinal = null;
 var investment_yes;
 var age_text;
 var age_text_normalized;
@@ -912,13 +918,16 @@ function buildExperimentData() {
         screen_height: (window.screen ? window.screen.height : ""),
         window_inner_width: window.innerWidth,
         window_inner_height: window.innerHeight,
-        stimulus_view_time: (stimulus_clock ? stimulus_clock.getTime() : ""),
+        stimulus_view_time: (stimulusViewTimeFinal === null ? "" : stimulusViewTimeFinal),
         esg_performance: getSliderRating(esg_performance),
         esg_performance_rt: getSliderRT(esg_performance),
+        esg_performance_page_time: (esgPerformancePageTimeFinal === null ? "" : esgPerformancePageTimeFinal),
         esg_difficulty: getSliderRating(esg_difficulty),
         esg_difficulty_rt: getSliderRT(esg_difficulty),
+        esg_difficulty_page_time: (esgDifficultyPageTimeFinal === null ? "" : esgDifficultyPageTimeFinal),
         label_difficulty: getSliderRating(label_difficulty),
         label_difficulty_rt: getSliderRT(label_difficulty),
+        label_difficulty_page_time: (labelDifficultyPageTimeFinal === null ? "" : labelDifficultyPageTimeFinal),
         investment_intention: getSliderRating(investment_intention),
         investment_intention_rt: getSliderRT(investment_intention),
         perceived_standardization: getSliderRating(perceived_standardization),
@@ -5635,6 +5644,7 @@ function stimulus_tableRoutineBegin(snapshot) {
     // Run 'Begin Routine' code from stimulus_timing
     stimulus_clock = new util.Clock();
     stimulus_clock.reset();
+    stimulusViewTimeFinal = null;
     // Run 'Begin Routine' code from label_text_setup
     label_01.setText(current_labels[0]);
     label_02.setText(current_labels[1]);
@@ -7536,7 +7546,8 @@ function stimulus_tableRoutineEnd(snapshot) {
     psychoJS.experiment.addData('stimulus_table.stopped', globalClock.getTime());
     // Run 'End Routine' code from stimulus_timing
     psychoJS.experiment.addData("condition", condition);
-    psychoJS.experiment.addData("stimulus_view_time", stimulus_clock.getTime());
+    stimulusViewTimeFinal = stimulus_clock.getTime();
+    psychoJS.experiment.addData("stimulus_view_time", stimulusViewTimeFinal);
     psychoJS.experiment.addData("pupil_connected", pupil_connected);
     psychoJS.experiment.addData("pupil_connection_error", pupil_connection_error);
     psychoJS.experiment.addData("pupil_time_offset", pupil_time_offset);
@@ -7570,6 +7581,7 @@ function esg_performance_screenRoutineBegin(snapshot) {
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
     esg_performance_screenClock.reset();
+    esgPerformancePageTimeFinal = null;
     routineTimer.reset();
     esg_performance_screenMaxDurationReached = false;
     // update component parameters for each repeat
@@ -7791,6 +7803,8 @@ function esg_performance_screenRoutineEnd(snapshot) {
       }
     });
     psychoJS.experiment.addData('esg_performance_screen.stopped', globalClock.getTime());
+    esgPerformancePageTimeFinal = esg_performance_screenClock.getTime();
+    psychoJS.experiment.addData("esg_performance_page_time", esgPerformancePageTimeFinal);
     psychoJS.experiment.addData('esg_performance.response', esg_performance.getRating());
     psychoJS.experiment.addData('esg_performance.rt', esg_performance.getRT());
     psychoJS.experiment.addData('esg_performance_screen_next_button.numClicks', esg_performance_screen_next_button.numClicks);
@@ -7823,6 +7837,7 @@ function esg_difficulty_screenRoutineBegin(snapshot) {
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
     esg_difficulty_screenClock.reset();
+    esgDifficultyPageTimeFinal = null;
     routineTimer.reset();
     esg_difficulty_screenMaxDurationReached = false;
     // update component parameters for each repeat
@@ -8044,6 +8059,8 @@ function esg_difficulty_screenRoutineEnd(snapshot) {
       }
     });
     psychoJS.experiment.addData('esg_difficulty_screen.stopped', globalClock.getTime());
+    esgDifficultyPageTimeFinal = esg_difficulty_screenClock.getTime();
+    psychoJS.experiment.addData("esg_difficulty_page_time", esgDifficultyPageTimeFinal);
     psychoJS.experiment.addData('esg_difficulty.response', esg_difficulty.getRating());
     psychoJS.experiment.addData('esg_difficulty.rt', esg_difficulty.getRT());
     psychoJS.experiment.addData('esg_difficulty_screen_next_button.numClicks', esg_difficulty_screen_next_button.numClicks);
@@ -8076,6 +8093,7 @@ function label_difficulty_screenRoutineBegin(snapshot) {
     // keep track of whether this Routine was forcibly ended
     routineForceEnded = false;
     label_difficulty_screenClock.reset();
+    labelDifficultyPageTimeFinal = null;
     routineTimer.reset();
     label_difficulty_screenMaxDurationReached = false;
     // update component parameters for each repeat
@@ -8297,6 +8315,8 @@ function label_difficulty_screenRoutineEnd(snapshot) {
       }
     });
     psychoJS.experiment.addData('label_difficulty_screen.stopped', globalClock.getTime());
+    labelDifficultyPageTimeFinal = label_difficulty_screenClock.getTime();
+    psychoJS.experiment.addData("label_difficulty_page_time", labelDifficultyPageTimeFinal);
     psychoJS.experiment.addData('label_difficulty.response', label_difficulty.getRating());
     psychoJS.experiment.addData('label_difficulty.rt', label_difficulty.getRT());
     psychoJS.experiment.addData('label_difficulty_screen_next_button.numClicks', label_difficulty_screen_next_button.numClicks);
