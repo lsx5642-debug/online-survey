@@ -688,7 +688,7 @@ function mobileSurveyShow(screen) {
         const next=document.createElement('button');next.className='esm-next';next.type='button';next.id='esm-next';
         next.textContent=mobileSurveyText(def.button);
         next.addEventListener('click',()=>{
-            if (def.upload && !dataUploadFinished) return;
+            if (def.upload && (!dataUploadFinished || dataUploadSucceeded)) return;
             // Preserve PsychoPy's own validation and ending logic.
             mobileSurveyPulse(def.button);
         });
@@ -712,8 +712,11 @@ function mobileSurveySync(def, screen) {
         if (message) message.textContent=mobileSurveyText(end_message);
         if (button) {
             button.textContent=dataUploadFinished && !dataUploadSucceeded ? '再送信':'終了';
-            button.disabled=!dataUploadFinished;
+            button.disabled=!dataUploadFinished || dataUploadSucceeded;
+            button.hidden=Boolean(dataUploadSucceeded);
         }
+        const footer=document.getElementById('esm-footer');
+        if (footer) footer.hidden=Boolean(dataUploadSucceeded);
     }
 }
 
@@ -1021,20 +1024,14 @@ function startDataUploadIfNeeded() {
     dataUploadFinished = false;
     dataUploadSucceeded = false;
     dataUploadError = "";
-    anonymousParticipantId = anonymousParticipantId || getOrCreateAnonymousParticipantId();
-    completionCode = completionCode || getOrCreateCompletionCode();
-    const completedRecord = getCompletedSubmissionRecord();
-    if (completedRecord && completedRecord.anonymous_participant_id === anonymousParticipantId && completedRecord.completion_code) {
-        completionCode = completedRecord.completion_code;
-        dataUploadResult = {
-            filename: completedRecord.filename || "",
-            status: "already_completed"
-        };
-        dataUploadSucceeded = true;
-        dataUploadFinished = true;
-        return;
+    // Every newly completed questionnaire must actually contact DataPipe.
+    // Never infer a fresh server upload from a previous browser-local receipt.
+    // Reuse the identical payload and filename only when retrying this run.
+    if (!experimentData) {
+        anonymousParticipantId = createAnonymousParticipantId();
+        completionCode = createCompletionCode();
+        experimentData = buildExperimentData();
     }
-    experimentData = buildExperimentData();
     dataUploadPromise = uploadExperimentData(experimentData).then((result) => {
         dataUploadResult = result;
         saveCompletedSubmissionRecord({
@@ -1043,6 +1040,8 @@ function startDataUploadIfNeeded() {
             completion_status: "completed",
             completion_code: completionCode,
             filename: result.filename,
+            experiment_id: getDataPipeExperimentId(),
+            datapipe_http_status: result.status,
             completed_at: new Date().toISOString()
         });
         dataUploadSucceeded = true;
@@ -1073,8 +1072,16 @@ function updateEndUploadDisplay() {
     setOptionalOpacity(finish_button, 1.0);
     if (dataUploadSucceeded) {
         safeSetText(end_title, "実験終了");
-        safeSetText(end_message, "ご協力いただき、ありがとうございます。");
-        safeSetText(finish_button, "終了");
+        const queued = dataUploadResult && dataUploadResult.status === 202;
+        safeSetText(end_message, queued
+            ? "回答データは受け付けられました。保存先への反映に時間がかかる場合があります。\nご協力いただき、ありがとうございます。\nこのページを閉じて終了してください。"
+            : "回答データの送信が完了しました。\nご協力いただき、ありがとうございます。\nこのページを閉じて終了してください。");
+        // Do not invoke PsychoJS's normal quit/save path on a successful upload:
+        // in a standalone GitHub Pages experiment it can offer a CSV download.
+        // The participant can simply close this tab instead.
+        if (finish_button.status === PsychoJS.Status.STARTED) {
+            finish_button.setAutoDraw(false);
+        }
         return;
     }
     safeSetText(end_title, "データ送信エラー");
@@ -10595,6 +10602,7 @@ function endRoutineBegin(snapshot) {
     dataUploadError = "";
     dataUploadResult = undefined;
     dataUploadPromise = undefined;
+    experimentData = undefined;
     safeSetText(end_title, "データ送信中");
     safeSetText(end_message, "回答データを送信しています。\nこの画面を閉じずにお待ちください。");
     safeSetText(finish_button, "終了");
@@ -10658,7 +10666,7 @@ function endRoutineEachFrame() {
     
     
     // *finish_button* updates
-    if (t >= 0 && finish_button.status === PsychoJS.Status.NOT_STARTED) {
+    if (t >= 0 && !dataUploadSucceeded && finish_button.status === PsychoJS.Status.NOT_STARTED) {
       // keep track of start time/frame for later
       finish_button.tStart = t;  // (not accounting for frame time here)
       finish_button.frameNStart = frameN;  // exact frame index
@@ -10684,10 +10692,9 @@ function endRoutineEachFrame() {
           finish_button.timesOff[finish_button.timesOff.length - 1] = finish_button.clock.getTime();
         }
         if (!finish_button.wasClicked) {
-          if (dataUploadFinished && dataUploadSucceeded) {
-            // end routine only after the TEST data upload has succeeded
-            continueRoutine = false;
-          } else if (dataUploadFinished && !dataUploadSucceeded) {
+          // Retry only on error. Successful submissions have no Finish button;
+          // the participant closes the page, avoiding local CSV downloads.
+          if (dataUploadFinished && !dataUploadSucceeded) {
             retryDataUpload();
           }
           
