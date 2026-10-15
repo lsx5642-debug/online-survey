@@ -903,6 +903,37 @@ function clearPendingExperimentData() {
         console.warn("Could not clear pending experiment data.", error);
     }
 }
+// Classify device type using browser-provided hints without recording the raw user agent.
+// This is an estimate; display_mode below records the layout actually selected.
+function detectSurveyDeviceType() {
+    const ua = String(navigator.userAgent || "");
+    const platform = String(navigator.platform || "");
+    const touchPoints = Number(navigator.maxTouchPoints || 0);
+    // iPadOS may identify itself as a desktop Mac in Safari.
+    if (/iPad/i.test(ua) || (/Mac/i.test(platform) && touchPoints > 1)) {
+        return "tablet";
+    }
+    if (/iPhone|iPod|Windows Phone/i.test(ua)) {
+        return "smartphone";
+    }
+    if (/Android/i.test(ua)) {
+        return /Mobile/i.test(ua) ? "smartphone" : "tablet";
+    }
+    if (/Tablet|Kindle|Silk|PlayBook/i.test(ua)) {
+        return "tablet";
+    }
+    if (navigator.userAgentData && navigator.userAgentData.mobile === true) {
+        return "smartphone";
+    }
+    if (/Mobile|Mobi/i.test(ua)) {
+        return "smartphone";
+    }
+    if (/Windows|Macintosh|Linux|CrOS|X11/i.test(ua)) {
+        return "pc";
+    }
+    return "unknown";
+}
+
 function buildExperimentData() {
     const ageRawText = ((age_text === undefined || age_text === null) ? getTextboxText(age_textbox) : String(age_text).trim());
     const normalizedAge = normalize_age_text ? normalize_age_text(ageRawText) : ageRawText;
@@ -922,6 +953,8 @@ function buildExperimentData() {
         completion_status: "completed",
         completion_code: completionCode,
         condition: condition,
+        device_type: detectSurveyDeviceType(),
+        display_mode: (mobileSurveyMode ? "mobile" : "pc"),
         screen_width: (window.screen ? window.screen.width : ""),
         screen_height: (window.screen ? window.screen.height : ""),
         window_inner_width: window.innerWidth,
