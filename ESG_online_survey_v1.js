@@ -1111,8 +1111,98 @@ function retryDataUpload() {
     dataUploadResult = undefined;
     dataUploadPromise = undefined;
 }
+function hideCompletionCodePanel() {
+    const panel = document.getElementById("esg-completion-code-panel");
+    if (panel) {
+        panel.hidden = true;
+    }
+}
+function copyCompletionCode(code, statusElement) {
+    const reportSuccess = () => {
+        statusElement.textContent = "完了コードをコピーしました。";
+    };
+    const reportFailure = () => {
+        statusElement.textContent = "コピーできませんでした。コードを選択してコピーしてください。";
+    };
+    if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        navigator.clipboard.writeText(code).then(reportSuccess).catch(() => {
+            copyCompletionCodeFallback(code) ? reportSuccess() : reportFailure();
+        });
+        return;
+    }
+    copyCompletionCodeFallback(code) ? reportSuccess() : reportFailure();
+}
+function copyCompletionCodeFallback(code) {
+    const textarea = document.createElement("textarea");
+    textarea.value = code;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    textarea.setSelectionRange(0, code.length);
+    let copied = false;
+    try {
+        copied = document.execCommand("copy");
+    } catch (error) {
+        copied = false;
+    }
+    textarea.remove();
+    return copied;
+}
+function showCompletionCodePanel() {
+    // Read the code from the exact object serialized and sent to DataPipe.
+    // Never create a second code for the completion screen.
+    const uploadedCompletionCode = experimentData && experimentData.completion_code;
+    if (!uploadedCompletionCode) {
+        return;
+    }
+    let panel = document.getElementById("esg-completion-code-panel");
+    if (!panel) {
+        panel = document.createElement("section");
+        panel.id = "esg-completion-code-panel";
+        panel.setAttribute("role", "region");
+        panel.setAttribute("aria-label", "完了コード");
+        Object.assign(panel.style, {
+            position: "fixed", zIndex: "100001", left: "50%", bottom: "max(24px, env(safe-area-inset-bottom))",
+            transform: "translateX(-50%)", boxSizing: "border-box", width: "min(92vw, 560px)",
+            padding: "20px", border: "2px solid #3E6591", borderRadius: "14px", background: "#ffffff",
+            color: "#172033", textAlign: "center", fontFamily: "Meiryo, 'Yu Gothic', system-ui, sans-serif",
+            boxShadow: "0 8px 30px rgba(23, 32, 51, 0.22)"
+        });
+        const guidance = document.createElement("p");
+        guidance.textContent = "Yahoo!クラウドソーシングの作業ページに戻り、次の完了コードを入力してください。";
+        Object.assign(guidance.style, {margin: "0 0 12px", fontSize: "16px", lineHeight: "1.6"});
+        const codeElement = document.createElement("strong");
+        codeElement.id = "esg-completion-code-value";
+        Object.assign(codeElement.style, {
+            display: "block", margin: "0 0 14px", fontSize: "clamp(22px, 6vw, 32px)",
+            lineHeight: "1.3", letterSpacing: "0.08em", userSelect: "all", overflowWrap: "anywhere"
+        });
+        const copyButton = document.createElement("button");
+        copyButton.type = "button";
+        copyButton.textContent = "完了コードをコピー";
+        Object.assign(copyButton.style, {
+            width: "min(100%, 360px)", minHeight: "48px", padding: "10px 18px", border: "0",
+            borderRadius: "9px", background: "#3E6591", color: "#ffffff", cursor: "pointer",
+            font: "700 17px Meiryo, 'Yu Gothic', system-ui, sans-serif"
+        });
+        const copyStatus = document.createElement("p");
+        copyStatus.id = "esg-completion-copy-status";
+        copyStatus.setAttribute("role", "status");
+        copyStatus.setAttribute("aria-live", "polite");
+        Object.assign(copyStatus.style, {minHeight: "1.5em", margin: "8px 0 0", fontSize: "14px"});
+        copyButton.addEventListener("click", () => copyCompletionCode(codeElement.textContent, copyStatus));
+        panel.append(guidance, codeElement, copyButton, copyStatus);
+        document.body.appendChild(panel);
+    }
+    panel.querySelector("#esg-completion-code-value").textContent = String(uploadedCompletionCode);
+    panel.querySelector("#esg-completion-copy-status").textContent = "";
+    panel.hidden = false;
+}
 function updateEndUploadDisplay() {
     if (!dataUploadFinished) {
+        hideCompletionCodePanel();
         safeSetText(end_title, "データ送信中");
         safeSetText(end_message, "回答データを送信しています。\nこの画面を閉じずにお待ちください。");
         safeSetText(finish_button, "終了");
@@ -1132,8 +1222,10 @@ function updateEndUploadDisplay() {
         if (finish_button.status === PsychoJS.Status.STARTED) {
             finish_button.setAutoDraw(false);
         }
+        showCompletionCodePanel();
         return;
     }
+    hideCompletionCodePanel();
     safeSetText(end_title, "データ送信エラー");
     safeSetText(end_message, `回答データの送信が完了していません。\n回答はこのブラウザ内に一時保存されています。\n通信状況を確認してから、再送信してください。\n\nエラー: ${dataUploadError}`);
     safeSetText(finish_button, "再送信");
