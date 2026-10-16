@@ -70,6 +70,7 @@ var dataUploadError;
 var dataUploadResult;
 var dataUploadPromise;
 var completionCode;
+const FIXED_COMPLETION_CODE = "YC-N7QK-4M2X-R9VP";
 const ZERO_HUNDRED_SLIDER_TICKS = [
     0, 5, 10, 15, 20,
     25, 30, 35, 40,
@@ -807,34 +808,12 @@ function getOrCreateAnonymousParticipantId() {
     }
 }
 function createCompletionCode() {
-    const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-    let codeBody = "";
-    if (window.crypto && typeof window.crypto.getRandomValues === "function") {
-        const values = new Uint8Array(12);
-        window.crypto.getRandomValues(values);
-        for (const value of values) {
-            codeBody += alphabet[value % alphabet.length];
-        }
-    } else {
-        for (let i = 0; i < 12; i += 1) {
-            codeBody += alphabet[Math.floor(Math.random() * alphabet.length)];
-        }
-    }
-    return `YC-${codeBody.slice(0, 4)}-${codeBody.slice(4, 8)}-${codeBody.slice(8, 12)}`;
+    return FIXED_COMPLETION_CODE;
 }
 function getOrCreateCompletionCode() {
-    const storageKey = "esg_online_survey_v1_completion_code";
-    try {
-        const existingCode = window.sessionStorage.getItem(storageKey);
-        if (existingCode) {
-            return existingCode;
-        }
-        const newCode = createCompletionCode();
-        window.sessionStorage.setItem(storageKey, newCode);
-        return newCode;
-    } catch (error) {
-        return createCompletionCode();
-    }
+    // Always use the centrally defined code, including in browser sessions
+    // that may still contain a completion code from an older deployment.
+    return FIXED_COMPLETION_CODE;
 }
 function getCompletedSubmissionRecord() {
     try {
