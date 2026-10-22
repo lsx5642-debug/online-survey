@@ -1188,7 +1188,7 @@ function showSubmissionCredentialsPanel(queued) {
         queueNote.id = "esg-datapipe-queue-note";
         Object.assign(queueNote.style, {margin: "0 0 10px", color: "#536477", fontSize: "14px", lineHeight: "1.5"});
         const guidance = document.createElement("p");
-        guidance.textContent = "Yahoo!クラウドソーシングの画面に戻り、以下のユーザーIDと完了キーワードを入力してください。";
+        guidance.textContent = "Yahoo!クラウドソーシングの画面に戻り、以下のユーザーIDと完了コードを入力してください。";
         Object.assign(guidance.style, {margin: "0 0 14px", fontSize: "16px", lineHeight: "1.6"});
         const createCredentialArea = (labelText, valueId, statusId) => {
             const area = document.createElement("section");
@@ -1212,10 +1212,10 @@ function showSubmissionCredentialsPanel(queued) {
             area.append(label, valueElement, copyButton, copyStatus);
             return area;
         };
-        const userArea = createCredentialArea("ユーザーID（参加者ごとに異なります）", "esg-user-id-value", "esg-user-id-copy-status");
-        const keywordArea = createCredentialArea("完了キーワード（全員共通）", "esg-completion-code-value", "esg-completion-copy-status");
+        const userArea = createCredentialArea("ユーザーID", "esg-user-id-value", "esg-user-id-copy-status");
+        const keywordArea = createCredentialArea("完了コード", "esg-completion-code-value", "esg-completion-copy-status");
         const reminder = document.createElement("p");
-        reminder.textContent = "※ユーザーIDと完了キーワードの両方を正確に入力してください。";
+        reminder.textContent = "※ユーザーIDと完了コードの両方を正確に入力してください。";
         Object.assign(reminder.style, {margin: "4px 0 0", fontSize: "14px", fontWeight: "700", lineHeight: "1.5"});
         panel.append(heading, thanks, queueNote, guidance, userArea, keywordArea, reminder);
         document.body.appendChild(panel);
