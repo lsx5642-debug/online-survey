@@ -63,6 +63,7 @@ var demographics_1_next_clicked;
 var demographics_2_next_clicked;
 var experimentData;
 var anonymousParticipantId;
+var userId;
 var dataUploadStarted;
 var dataUploadFinished;
 var dataUploadSucceeded;
@@ -807,6 +808,36 @@ function getOrCreateAnonymousParticipantId() {
         return createAnonymousParticipantId();
     }
 }
+function createUserId() {
+    const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+    let idBody = "";
+    if (window.crypto && typeof window.crypto.getRandomValues === "function") {
+        const values = new Uint8Array(12);
+        window.crypto.getRandomValues(values);
+        for (const value of values) {
+            idBody += alphabet[value % alphabet.length];
+        }
+    } else {
+        for (let i = 0; i < 12; i += 1) {
+            idBody += alphabet[Math.floor(Math.random() * alphabet.length)];
+        }
+    }
+    return `P-${idBody}`;
+}
+function getOrCreateUserId() {
+    const storageKey = "esg_online_survey_v1_user_id";
+    try {
+        const existingId = window.sessionStorage.getItem(storageKey);
+        if (existingId) {
+            return existingId;
+        }
+        const newId = createUserId();
+        window.sessionStorage.setItem(storageKey, newId);
+        return newId;
+    } catch (error) {
+        return createUserId();
+    }
+}
 function createCompletionCode() {
     return FIXED_COMPLETION_CODE;
 }
@@ -914,6 +945,7 @@ function buildExperimentData() {
     const occupationTextValue = getOccupationTextFromRating(occupationRating);
     const occupationOtherText = (occupationTextValue === "その他" ? getTextboxText(occupation_other_textbox) : "");
     anonymousParticipantId = anonymousParticipantId || getOrCreateAnonymousParticipantId();
+    userId = userId || getOrCreateUserId();
     completionCode = completionCode || getOrCreateCompletionCode();
     return {
         schema_version: "2026-09-28-test-v1",
@@ -921,6 +953,7 @@ function buildExperimentData() {
         experiment_name: expName,
         completed_at: new Date().toISOString(),
         anonymous_participant_id: anonymousParticipantId,
+        user_id: userId,
         completion_status: "completed",
         completion_code: completionCode,
         condition: condition,
@@ -1050,6 +1083,7 @@ function startDataUploadIfNeeded() {
     // Reuse the identical payload and filename only when retrying this run.
     if (!experimentData) {
         anonymousParticipantId = createAnonymousParticipantId();
+        userId = getOrCreateUserId();
         completionCode = createCompletionCode();
         experimentData = buildExperimentData();
     }
@@ -1057,6 +1091,7 @@ function startDataUploadIfNeeded() {
         dataUploadResult = result;
         saveCompletedSubmissionRecord({
             anonymous_participant_id: anonymousParticipantId,
+            user_id: userId,
             condition: condition,
             completion_status: "completed",
             completion_code: completionCode,
@@ -1082,36 +1117,36 @@ function retryDataUpload() {
     dataUploadResult = undefined;
     dataUploadPromise = undefined;
 }
-function hideCompletionCodePanel() {
-    const panel = document.getElementById("esg-completion-code-panel");
+function hideSubmissionCredentialsPanel() {
+    const panel = document.getElementById("esg-submission-credentials-panel");
     if (panel) {
         panel.hidden = true;
     }
 }
-function copyCompletionCode(code, statusElement) {
+function copySubmissionValue(value, statusElement, valueLabel) {
     const reportSuccess = () => {
-        statusElement.textContent = "完了コードをコピーしました。";
+        statusElement.textContent = `${valueLabel}をコピーしました。`;
     };
     const reportFailure = () => {
-        statusElement.textContent = "コピーできませんでした。コードを選択してコピーしてください。";
+        statusElement.textContent = "コピーできませんでした。表示された文字を選択してコピーしてください。";
     };
     if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
-        navigator.clipboard.writeText(code).then(reportSuccess).catch(() => {
-            copyCompletionCodeFallback(code) ? reportSuccess() : reportFailure();
+        navigator.clipboard.writeText(value).then(reportSuccess).catch(() => {
+            copySubmissionValueFallback(value) ? reportSuccess() : reportFailure();
         });
         return;
     }
-    copyCompletionCodeFallback(code) ? reportSuccess() : reportFailure();
+    copySubmissionValueFallback(value) ? reportSuccess() : reportFailure();
 }
-function copyCompletionCodeFallback(code) {
+function copySubmissionValueFallback(value) {
     const textarea = document.createElement("textarea");
-    textarea.value = code;
+    textarea.value = value;
     textarea.setAttribute("readonly", "");
     textarea.style.position = "fixed";
     textarea.style.opacity = "0";
     document.body.appendChild(textarea);
     textarea.select();
-    textarea.setSelectionRange(0, code.length);
+    textarea.setSelectionRange(0, value.length);
     let copied = false;
     try {
         copied = document.execCommand("copy");
@@ -1121,59 +1156,82 @@ function copyCompletionCodeFallback(code) {
     textarea.remove();
     return copied;
 }
-function showCompletionCodePanel() {
-    // Read the code from the exact object serialized and sent to DataPipe.
-    // Never create a second code for the completion screen.
+function showSubmissionCredentialsPanel(queued) {
+    // Read both values from the exact object serialized and sent to DataPipe.
+    // Never generate replacement credentials for the completion screen.
+    const uploadedUserId = experimentData && experimentData.user_id;
     const uploadedCompletionCode = experimentData && experimentData.completion_code;
-    if (!uploadedCompletionCode) {
+    if (!uploadedUserId || !uploadedCompletionCode) {
         return;
     }
-    let panel = document.getElementById("esg-completion-code-panel");
+    let panel = document.getElementById("esg-submission-credentials-panel");
     if (!panel) {
         panel = document.createElement("section");
-        panel.id = "esg-completion-code-panel";
+        panel.id = "esg-submission-credentials-panel";
         panel.setAttribute("role", "region");
-        panel.setAttribute("aria-label", "完了コード");
+        panel.setAttribute("aria-label", "回答完了情報");
         Object.assign(panel.style, {
-            position: "fixed", zIndex: "100001", left: "50%", bottom: "max(24px, env(safe-area-inset-bottom))",
-            transform: "translateX(-50%)", boxSizing: "border-box", width: "min(92vw, 560px)",
-            padding: "20px", border: "2px solid #3E6591", borderRadius: "14px", background: "#ffffff",
+            position: "fixed", zIndex: "100001", left: "50%", top: "50%",
+            transform: "translate(-50%, -50%)", boxSizing: "border-box", width: "min(94vw, 620px)",
+            maxHeight: "calc(100vh - 24px)", overflowY: "auto", padding: "clamp(16px, 4vw, 24px)",
+            border: "2px solid #3E6591", borderRadius: "14px", background: "#ffffff",
             color: "#172033", textAlign: "center", fontFamily: "Meiryo, 'Yu Gothic', system-ui, sans-serif",
             boxShadow: "0 8px 30px rgba(23, 32, 51, 0.22)"
         });
+        const heading = document.createElement("h1");
+        heading.textContent = "回答が完了しました";
+        Object.assign(heading.style, {margin: "0 0 12px", fontSize: "clamp(23px, 5vw, 30px)", lineHeight: "1.4"});
+        const thanks = document.createElement("p");
+        thanks.textContent = "アンケートへのご協力ありがとうございました。";
+        Object.assign(thanks.style, {margin: "0 0 10px", fontSize: "16px", lineHeight: "1.6"});
+        const queueNote = document.createElement("p");
+        queueNote.id = "esg-datapipe-queue-note";
+        Object.assign(queueNote.style, {margin: "0 0 10px", color: "#536477", fontSize: "14px", lineHeight: "1.5"});
         const guidance = document.createElement("p");
-        guidance.textContent = "Yahoo!クラウドソーシングの作業ページに戻り、次の完了コードを入力してください。";
-        Object.assign(guidance.style, {margin: "0 0 12px", fontSize: "16px", lineHeight: "1.6"});
-        const codeElement = document.createElement("strong");
-        codeElement.id = "esg-completion-code-value";
-        Object.assign(codeElement.style, {
-            display: "block", margin: "0 0 14px", fontSize: "clamp(22px, 6vw, 32px)",
-            lineHeight: "1.3", letterSpacing: "0.08em", userSelect: "all", overflowWrap: "anywhere"
-        });
-        const copyButton = document.createElement("button");
-        copyButton.type = "button";
-        copyButton.textContent = "完了コードをコピー";
-        Object.assign(copyButton.style, {
-            width: "min(100%, 360px)", minHeight: "48px", padding: "10px 18px", border: "0",
-            borderRadius: "9px", background: "#3E6591", color: "#ffffff", cursor: "pointer",
-            font: "700 17px Meiryo, 'Yu Gothic', system-ui, sans-serif"
-        });
-        const copyStatus = document.createElement("p");
-        copyStatus.id = "esg-completion-copy-status";
-        copyStatus.setAttribute("role", "status");
-        copyStatus.setAttribute("aria-live", "polite");
-        Object.assign(copyStatus.style, {minHeight: "1.5em", margin: "8px 0 0", fontSize: "14px"});
-        copyButton.addEventListener("click", () => copyCompletionCode(codeElement.textContent, copyStatus));
-        panel.append(guidance, codeElement, copyButton, copyStatus);
+        guidance.textContent = "Yahoo!クラウドソーシングの画面に戻り、以下のユーザーIDと完了キーワードを入力してください。";
+        Object.assign(guidance.style, {margin: "0 0 14px", fontSize: "16px", lineHeight: "1.6"});
+        const createCredentialArea = (labelText, valueId, statusId) => {
+            const area = document.createElement("section");
+            Object.assign(area.style, {margin: "0 0 12px", padding: "14px", borderRadius: "12px", background: "#eef4fa", border: "1px solid #c5d5e5"});
+            const label = document.createElement("h2");
+            label.textContent = labelText;
+            Object.assign(label.style, {margin: "0 0 8px", fontSize: "clamp(16px, 4vw, 19px)", lineHeight: "1.5"});
+            const valueElement = document.createElement("strong");
+            valueElement.id = valueId;
+            Object.assign(valueElement.style, {display: "block", margin: "0 0 10px", fontSize: "clamp(20px, 5.5vw, 28px)", lineHeight: "1.35", letterSpacing: "0.06em", userSelect: "all", overflowWrap: "anywhere", wordBreak: "break-word"});
+            const copyButton = document.createElement("button");
+            copyButton.type = "button";
+            copyButton.textContent = "コピー";
+            Object.assign(copyButton.style, {width: "min(100%, 320px)", minHeight: "46px", padding: "9px 16px", border: "0", borderRadius: "9px", background: "#3E6591", color: "#ffffff", cursor: "pointer", font: "700 16px Meiryo, 'Yu Gothic', system-ui, sans-serif"});
+            const copyStatus = document.createElement("p");
+            copyStatus.id = statusId;
+            copyStatus.setAttribute("role", "status");
+            copyStatus.setAttribute("aria-live", "polite");
+            Object.assign(copyStatus.style, {minHeight: "1.4em", margin: "6px 0 0", fontSize: "13px"});
+            copyButton.addEventListener("click", () => copySubmissionValue(valueElement.textContent, copyStatus, labelText.split("（")[0]));
+            area.append(label, valueElement, copyButton, copyStatus);
+            return area;
+        };
+        const userArea = createCredentialArea("ユーザーID（参加者ごとに異なります）", "esg-user-id-value", "esg-user-id-copy-status");
+        const keywordArea = createCredentialArea("完了キーワード（全員共通）", "esg-completion-code-value", "esg-completion-copy-status");
+        const reminder = document.createElement("p");
+        reminder.textContent = "※ユーザーIDと完了キーワードの両方を正確に入力してください。";
+        Object.assign(reminder.style, {margin: "4px 0 0", fontSize: "14px", fontWeight: "700", lineHeight: "1.5"});
+        panel.append(heading, thanks, queueNote, guidance, userArea, keywordArea, reminder);
         document.body.appendChild(panel);
     }
+    const queueNote = panel.querySelector("#esg-datapipe-queue-note");
+    queueNote.textContent = queued ? "回答データは受け付けられました。保存先への反映に時間がかかる場合があります。" : "";
+    queueNote.hidden = !queued;
+    panel.querySelector("#esg-user-id-value").textContent = String(uploadedUserId);
     panel.querySelector("#esg-completion-code-value").textContent = String(uploadedCompletionCode);
+    panel.querySelector("#esg-user-id-copy-status").textContent = "";
     panel.querySelector("#esg-completion-copy-status").textContent = "";
     panel.hidden = false;
 }
 function updateEndUploadDisplay() {
     if (!dataUploadFinished) {
-        hideCompletionCodePanel();
+        hideSubmissionCredentialsPanel();
         safeSetText(end_title, "データ送信中");
         safeSetText(end_message, "回答データを送信しています。\nこの画面を閉じずにお待ちください。");
         safeSetText(finish_button, "終了");
@@ -1182,21 +1240,21 @@ function updateEndUploadDisplay() {
     }
     setOptionalOpacity(finish_button, 1.0);
     if (dataUploadSucceeded) {
-        safeSetText(end_title, "実験終了");
+        safeSetText(end_title, "回答が完了しました");
         const queued = dataUploadResult && dataUploadResult.status === 202;
         safeSetText(end_message, queued
-            ? "回答データは受け付けられました。保存先への反映に時間がかかる場合があります。\nご協力いただき、ありがとうございます。\nこのページを閉じて終了してください。"
-            : "回答データの送信が完了しました。\nご協力いただき、ありがとうございます。\nこのページを閉じて終了してください。");
+            ? "回答データは受け付けられました。保存先への反映に時間がかかる場合があります。\nアンケートへのご協力ありがとうございました。"
+            : "アンケートへのご協力ありがとうございました。");
         // Do not invoke PsychoJS's normal quit/save path on a successful upload:
         // in a standalone GitHub Pages experiment it can offer a CSV download.
         // The participant can simply close this tab instead.
         if (finish_button.status === PsychoJS.Status.STARTED) {
             finish_button.setAutoDraw(false);
         }
-        showCompletionCodePanel();
+        showSubmissionCredentialsPanel(queued);
         return;
     }
-    hideCompletionCodePanel();
+    hideSubmissionCredentialsPanel();
     safeSetText(end_title, "データ送信エラー");
     safeSetText(end_message, `回答データの送信が完了していません。\n回答はこのブラウザ内に一時保存されています。\n通信状況を確認してから、再送信してください。\n\nエラー: ${dataUploadError}`);
     safeSetText(finish_button, "再送信");
