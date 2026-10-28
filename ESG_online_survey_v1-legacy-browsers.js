@@ -72,6 +72,7 @@ var dataUploadResult;
 var dataUploadPromise;
 var completionCode;
 const FIXED_COMPLETION_CODE = "YC-N7QK-4M2X-R9VP";
+const ASSIGNMENT_MODE = "B_ONLY"; // Change to "DATAPIPE_ALTERNATING" to restore A/B sequencing.
 const ZERO_HUNDRED_SLIDER_TICKS = [
     0, 5, 10, 15, 20,
     25, 30, 35, 40,
@@ -747,6 +748,12 @@ function getConditionOverride() {
     return (["A", "B"].includes(override) ? override : "");
 }
 async function assignConditionBeforeStart() {
+    if (ASSIGNMENT_MODE === "B_ONLY") {
+        condition = "B";
+        expInfo["condition"] = condition;
+        expInfo["condition_assignment_source"] = "assignment_mode_b_only";
+        return Scheduler.Event.NEXT;
+    }
     const override = getConditionOverride();
     if (override) {
         condition = override;
