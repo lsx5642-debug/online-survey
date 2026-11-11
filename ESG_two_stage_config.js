@@ -1,50 +1,385 @@
-(function () {
-  "use strict";
-
-  window.ESG_TWO_STAGE_CONFIG = Object.freeze({
-    schemaVersion: "2026-11-11-two-stage-v1",
-    experimentName: "ESG_two_company_search_compare",
-    fixedCompletionCode: "YC-N7QK-4M2X-R9VP",
-    assignmentMode: "DATAPIPE_FOUR_GROUP",
-    conditionCount: 4,
-    searchValueInputEnabled: true,
-    day2StartLoggingEnabled: true,
-    day2ExitLoggingEnabled: true,
-    metrics: [
-      { id: "energy", gri: "302-1", standardLabel: "組織内のエネルギー消費量", labels: { A: "組織内の総エネルギー使用量", B: "事業活動におけるエネルギー消費（組織内）" }, values: { A: "240,704 MWh", B: "241,380 MWh" }, numeric: { A: 240704, B: 241380 }, favorableDirection: "lower" },
-      { id: "energy_reduction", gri: "302-4", standardLabel: "エネルギー消費量の削減", labels: { A: "省エネ施策によるエネルギー削減実績", B: "省エネ活動による年間削減量" }, values: { A: "5,150 MWh", B: "4,700 MWh" }, numeric: { A: 5150, B: 4700 }, favorableDirection: "higher" },
-      { id: "scope1", gri: "305-1", standardLabel: "直接的な温室効果ガス（GHG）排出量（スコープ1）", labels: { A: "GHG排出量（Scope 1）", B: "直接排出量（Scope1）" }, values: { A: "4,006 t-CO₂e", B: "4,721 t-CO₂e" }, numeric: { A: 4006, B: 4721 }, favorableDirection: "lower" },
-      { id: "scope2", gri: "305-2", standardLabel: "間接的な温室効果ガス（GHG）排出量（スコープ2）", labels: { A: "GHG排出量（Scope 2・市場基準）", B: "購入エネルギー由来の間接排出（市場基準）" }, values: { A: "128,650 t-CO₂e", B: "131,400 t-CO₂e" }, numeric: { A: 128650, B: 131400 }, favorableDirection: "lower" },
-      { id: "ghg_intensity", gri: "305-4", standardLabel: "温室効果ガス（GHG）排出原単位", labels: { A: "売上高あたりGHG排出量", B: "売上高当たり温室効果ガス排出原単位" }, values: { A: "4.88 t-CO₂e/百万円", B: "5.15 t-CO₂e/百万円" }, numeric: { A: 4.88, B: 5.15 }, favorableDirection: "lower" },
-      { id: "ghg_reduction", gri: "305-5", standardLabel: "温室効果ガス（GHG）排出量の削減", labels: { A: "GHG排出削減対策による削減量", B: "温室効果ガス削減施策の年間効果" }, values: { A: "7,100 t-CO₂e", B: "6,500 t-CO₂e" }, numeric: { A: 7100, B: 6500 }, favorableDirection: "higher" },
-      { id: "waste", gri: "306-3", standardLabel: "発生した廃棄物", labels: { A: "廃棄物総発生量", B: "事業活動による廃棄物発生量" }, values: { A: "14,267 t", B: "14,580 t" }, numeric: { A: 14267, B: 14580 }, favorableDirection: "lower" },
-      { id: "employment", gri: "401-1", standardLabel: "従業員の新規雇用者と離職", labels: { A: "採用人数・離職率", B: "新規雇用者数／退職率" }, values: { A: "採用68人／離職率1.8%", B: "採用60人／離職率2.1%" }, numeric: { A: { hires: 68, turnover: 1.8 }, B: { hires: 60, turnover: 2.1 } }, favorableDirection: "context" },
-      { id: "parental_leave", gri: "401-3", standardLabel: "育児休暇", labels: { A: "育児休業取得人数", B: "育児休暇を取得した従業員数" }, values: { A: "668人", B: "641人" }, numeric: { A: 668, B: 641 }, favorableDirection: "context" },
-      { id: "injury", gri: "403-9", standardLabel: "労働関連の傷害", labels: { A: "労災発生度数率", B: "労働関連傷害の度数率" }, values: { A: "6.80件/百万h", B: "6.92件/百万h" }, numeric: { A: 6.8, B: 6.92 }, favorableDirection: "lower" },
-      { id: "training", gri: "404-1", standardLabel: "従業員一人当たりの年間平均研修時間", labels: { A: "従業員1人平均研修時間", B: "社員1人当たりの年間教育研修時間" }, values: { A: "49時間/人", B: "46時間/人" }, numeric: { A: 49, B: 46 }, favorableDirection: "higher" },
-      { id: "pay_ratio", gri: "405-2", standardLabel: "基本給と報酬総額の男女比", labels: { A: "男女の基本給・報酬比（女性／男性）", B: "女性の基本給・総報酬の対男性比率" }, values: { A: "67.8%", B: "66.9%" }, numeric: { A: 67.8, B: 66.9 }, favorableDirection: "closer_to_100" }
-    ],
-    nonstandardOrders: {
-      A: ["waste", "energy", "parental_leave", "scope2", "energy_reduction", "training", "ghg_intensity", "injury", "scope1", "employment", "pay_ratio", "ghg_reduction"],
-      B: ["scope2", "energy_reduction", "waste", "energy", "ghg_intensity", "scope1", "ghg_reduction", "training", "parental_leave", "pay_ratio", "employment", "injury"]
+/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=dcccedd366f068936db23a1b53ef9abf23a8e0808b74cf9a04b32998a8da24b1 */
+window.ESG_TWO_STAGE_CONFIG={
+  "schemaVersion": "2026-11-11-two-stage-v1",
+  "experimentName": "ESG_two_company_search_compare",
+  "fixedCompletionCode": "YC-N7QK-4M2X-R9VP",
+  "assignmentMode": "DATAPIPE_FOUR_GROUP",
+  "conditionCount": 4,
+  "searchValueInputEnabled": true,
+  "day2StartLoggingEnabled": true,
+  "day2ExitLoggingEnabled": true,
+  "metrics": [
+    {
+      "id": "energy",
+      "gri": "302-1",
+      "standardLabel": "組織内のエネルギー消費量",
+      "labels": {
+        "A": "組織内の総エネルギー使用量",
+        "B": "事業活動におけるエネルギー消費（組織内）"
+      },
+      "values": {
+        "A": "240,704 MWh",
+        "B": "241,380 MWh"
+      },
+      "numeric": {
+        "A": 240704,
+        "B": 241380
+      },
+      "favorableDirection": "lower"
     },
-    groups: {
-      1: { format: "standardized", left: "A", right: "B" },
-      2: { format: "standardized", left: "B", right: "A" },
-      3: { format: "nonstandardized", left: "A", right: "B" },
-      4: { format: "nonstandardized", left: "B", right: "A" }
+    {
+      "id": "energy_reduction",
+      "gri": "302-4",
+      "standardLabel": "エネルギー消費量の削減",
+      "labels": {
+        "A": "省エネ施策によるエネルギー削減実績",
+        "B": "省エネ活動による年間削減量"
+      },
+      "values": {
+        "A": "5,150 MWh",
+        "B": "4,700 MWh"
+      },
+      "numeric": {
+        "A": 5150,
+        "B": 4700
+      },
+      "favorableDirection": "higher"
     },
-    searchTasks: [
-      { id: "L1", company: "A", metricId: "scope1", prompt: "直接排出した温室効果ガス（スコープ1）の量", unit: "t-CO₂e" },
-      { id: "L2", company: "B", metricId: "waste", prompt: "発生した廃棄物の総量", unit: "t" },
-      { id: "L3", company: "A", metricId: "parental_leave", prompt: "育児休業を取得した従業員の人数", unit: "人" },
-      { id: "L4", company: "B", metricId: "training", prompt: "従業員1人当たりの年間平均研修時間", unit: "時間／人" }
+    {
+      "id": "scope1",
+      "gri": "305-1",
+      "standardLabel": "直接的な温室効果ガス（GHG）排出量（スコープ1）",
+      "labels": {
+        "A": "GHG排出量（Scope 1）",
+        "B": "直接排出量（Scope1）"
+      },
+      "values": {
+        "A": "4,006 t-CO₂e",
+        "B": "4,721 t-CO₂e"
+      },
+      "numeric": {
+        "A": 4006,
+        "B": 4721
+      },
+      "favorableDirection": "lower"
+    },
+    {
+      "id": "scope2",
+      "gri": "305-2",
+      "standardLabel": "間接的な温室効果ガス（GHG）排出量（スコープ2）",
+      "labels": {
+        "A": "GHG排出量（Scope 2・市場基準）",
+        "B": "購入エネルギー由来の間接排出（市場基準）"
+      },
+      "values": {
+        "A": "128,650 t-CO₂e",
+        "B": "131,400 t-CO₂e"
+      },
+      "numeric": {
+        "A": 128650,
+        "B": 131400
+      },
+      "favorableDirection": "lower"
+    },
+    {
+      "id": "ghg_intensity",
+      "gri": "305-4",
+      "standardLabel": "温室効果ガス（GHG）排出原単位",
+      "labels": {
+        "A": "売上高あたりGHG排出量",
+        "B": "売上高当たり温室効果ガス排出原単位"
+      },
+      "values": {
+        "A": "4.88 t-CO₂e/百万円",
+        "B": "5.15 t-CO₂e/百万円"
+      },
+      "numeric": {
+        "A": 4.88,
+        "B": 5.15
+      },
+      "favorableDirection": "lower"
+    },
+    {
+      "id": "ghg_reduction",
+      "gri": "305-5",
+      "standardLabel": "温室効果ガス（GHG）排出量の削減",
+      "labels": {
+        "A": "GHG排出削減対策による削減量",
+        "B": "温室効果ガス削減施策の年間効果"
+      },
+      "values": {
+        "A": "7,100 t-CO₂e",
+        "B": "6,500 t-CO₂e"
+      },
+      "numeric": {
+        "A": 7100,
+        "B": 6500
+      },
+      "favorableDirection": "higher"
+    },
+    {
+      "id": "waste",
+      "gri": "306-3",
+      "standardLabel": "発生した廃棄物",
+      "labels": {
+        "A": "廃棄物総発生量",
+        "B": "事業活動による廃棄物発生量"
+      },
+      "values": {
+        "A": "14,267 t",
+        "B": "14,580 t"
+      },
+      "numeric": {
+        "A": 14267,
+        "B": 14580
+      },
+      "favorableDirection": "lower"
+    },
+    {
+      "id": "employment",
+      "gri": "401-1",
+      "standardLabel": "従業員の新規雇用者と離職",
+      "labels": {
+        "A": "採用人数・離職率",
+        "B": "新規雇用者数／退職率"
+      },
+      "values": {
+        "A": "採用68人／離職率1.8%",
+        "B": "採用60人／離職率2.1%"
+      },
+      "numeric": {
+        "A": {
+          "hires": 68,
+          "turnover": 1.8
+        },
+        "B": {
+          "hires": 60,
+          "turnover": 2.1
+        }
+      },
+      "favorableDirection": "context"
+    },
+    {
+      "id": "parental_leave",
+      "gri": "401-3",
+      "standardLabel": "育児休暇",
+      "labels": {
+        "A": "育児休業取得人数",
+        "B": "育児休暇を取得した従業員数"
+      },
+      "values": {
+        "A": "668人",
+        "B": "641人"
+      },
+      "numeric": {
+        "A": 668,
+        "B": 641
+      },
+      "favorableDirection": "context"
+    },
+    {
+      "id": "injury",
+      "gri": "403-9",
+      "standardLabel": "労働関連の傷害",
+      "labels": {
+        "A": "労災発生度数率",
+        "B": "労働関連傷害の度数率"
+      },
+      "values": {
+        "A": "6.80件/百万h",
+        "B": "6.92件/百万h"
+      },
+      "numeric": {
+        "A": 6.8,
+        "B": 6.92
+      },
+      "favorableDirection": "lower"
+    },
+    {
+      "id": "training",
+      "gri": "404-1",
+      "standardLabel": "従業員一人当たりの年間平均研修時間",
+      "labels": {
+        "A": "従業員1人平均研修時間",
+        "B": "社員1人当たりの年間教育研修時間"
+      },
+      "values": {
+        "A": "49時間/人",
+        "B": "46時間/人"
+      },
+      "numeric": {
+        "A": 49,
+        "B": 46
+      },
+      "favorableDirection": "higher"
+    },
+    {
+      "id": "pay_ratio",
+      "gri": "405-2",
+      "standardLabel": "基本給と報酬総額の男女比",
+      "labels": {
+        "A": "男女の基本給・報酬比（女性／男性）",
+        "B": "女性の基本給・総報酬の対男性比率"
+      },
+      "values": {
+        "A": "67.8%",
+        "B": "66.9%"
+      },
+      "numeric": {
+        "A": 67.8,
+        "B": 66.9
+      },
+      "favorableDirection": "closer_to_100"
+    }
+  ],
+  "nonstandardOrders": {
+    "A": [
+      "waste",
+      "energy",
+      "parental_leave",
+      "scope2",
+      "energy_reduction",
+      "training",
+      "ghg_intensity",
+      "injury",
+      "scope1",
+      "employment",
+      "pay_ratio",
+      "ghg_reduction"
     ],
-    comparisonTasks: [
-      { id: "C1", metricId: "energy", prompt: "2025年度に、組織内で消費したエネルギーの総量が多いのは、どちらの会社ですか。", valuePart: "value", correctAnswer: "株式会社B" },
-      { id: "C2", metricId: "scope2", prompt: "2025年度の間接的な温室効果ガス排出量（スコープ2）が多いのは、どちらの会社ですか。", valuePart: "value", correctAnswer: "株式会社B" },
-      { id: "C3", metricId: "employment", prompt: "2025年度の従業員の離職率が高いのは、どちらの会社ですか。", valuePart: "turnover", correctAnswer: "株式会社B" },
-      { id: "C4", metricId: "employment", prompt: "2025年度の新規採用人数が多いのは、どちらの会社ですか。", valuePart: "hires", correctAnswer: "株式会社A" }
+    "B": [
+      "scope2",
+      "energy_reduction",
+      "waste",
+      "energy",
+      "ghg_intensity",
+      "scope1",
+      "ghg_reduction",
+      "training",
+      "parental_leave",
+      "pay_ratio",
+      "employment",
+      "injury"
     ]
-  });
-})();
+  },
+  "groups": {
+    "1": {
+      "format": "standardized",
+      "left": "A",
+      "right": "B"
+    },
+    "2": {
+      "format": "standardized",
+      "left": "B",
+      "right": "A"
+    },
+    "3": {
+      "format": "nonstandardized",
+      "left": "A",
+      "right": "B"
+    },
+    "4": {
+      "format": "nonstandardized",
+      "left": "B",
+      "right": "A"
+    }
+  },
+  "searchTasks": [
+    {
+      "id": "L1",
+      "company": "A",
+      "metricId": "scope1",
+      "prompt": "直接排出した温室効果ガス（スコープ1）の量",
+      "unit": "t-CO₂e"
+    },
+    {
+      "id": "L2",
+      "company": "B",
+      "metricId": "waste",
+      "prompt": "発生した廃棄物の総量",
+      "unit": "t"
+    },
+    {
+      "id": "L3",
+      "company": "A",
+      "metricId": "parental_leave",
+      "prompt": "育児休業を取得した従業員の人数",
+      "unit": "人"
+    },
+    {
+      "id": "L4",
+      "company": "B",
+      "metricId": "training",
+      "prompt": "従業員1人当たりの年間平均研修時間",
+      "unit": "時間／人"
+    }
+  ],
+  "comparisonTasks": [
+    {
+      "id": "C1",
+      "metricId": "energy",
+      "prompt": "2025年度に、組織内で消費したエネルギーの総量が多いのは、どちらの会社ですか。",
+      "valuePart": "value",
+      "correctAnswer": "株式会社B"
+    },
+    {
+      "id": "C2",
+      "metricId": "scope2",
+      "prompt": "2025年度の間接的な温室効果ガス排出量（スコープ2）が多いのは、どちらの会社ですか。",
+      "valuePart": "value",
+      "correctAnswer": "株式会社B"
+    },
+    {
+      "id": "C3",
+      "metricId": "employment",
+      "prompt": "2025年度の従業員の離職率が高いのは、どちらの会社ですか。",
+      "valuePart": "turnover",
+      "correctAnswer": "株式会社B"
+    },
+    {
+      "id": "C4",
+      "metricId": "employment",
+      "prompt": "2025年度の新規採用人数が多いのは、どちらの会社ですか。",
+      "valuePart": "hires",
+      "correctAnswer": "株式会社A"
+    }
+  ],
+  "ui": {
+    "screen": {
+      "width": 1280,
+      "height": 720
+    },
+    "font": "Meiryo",
+    "colors": {
+      "ink": "#10264a",
+      "blue": "#406f9f",
+      "blueDark": "#285781",
+      "pale": "#edf5fc",
+      "line": "#bfd3e7",
+      "background": "#f7fafc"
+    },
+    "layout": {
+      "contentWidth": 1120,
+      "margin": 24,
+      "companyGap": 18,
+      "tableHeaderHeight": 32,
+      "rowHeight": 32,
+      "buttonHeight": 50
+    },
+    "intro": {
+      "title": "実験について",
+      "paragraphs": [
+        "この実験では、株式会社Aと株式会社BのESG情報をもとに、いくつかの質問に回答していただきます。",
+        "各問題では、ボタンを押すと、2社のESG主要指標を確認できます。表示された情報をもとに、指定された数値を探す作業や、2社の数値を比較する作業を行っていただきます。",
+        "その後、作業の難しさや投資意欲などについて回答していただきます。"
+      ]
+    },
+    "buttons": {
+      "view": "ESG情報を見る",
+      "found": "見つけた",
+      "back": "問題に戻る",
+      "next": "次へ"
+    }
+  },
+  "masterConfigHash": "dcccedd366f068936db23a1b53ef9abf23a8e0808b74cf9a04b32998a8da24b1"
+};
