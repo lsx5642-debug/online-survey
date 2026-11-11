@@ -1,0 +1,5 @@
+const fs=require("fs"),vm=require("vm"),path=require("path");
+const root=path.resolve(__dirname,"..");const sandbox={window:{}};vm.createContext(sandbox);vm.runInContext(fs.readFileSync(path.join(root,"ESG_two_stage_config.js"),"utf8"),sandbox);
+const c=JSON.parse(JSON.stringify(sandbox.window.ESG_TWO_STAGE_CONFIG));
+c.ui={screen:{width:1280,height:720},font:"Meiryo",colors:{ink:"#10264a",blue:"#406f9f",blueDark:"#285781",pale:"#edf5fc",line:"#bfd3e7",background:"#f7fafc"},layout:{contentWidth:1120,margin:24,companyGap:18,tableHeaderHeight:32,rowHeight:32,buttonHeight:50},intro:{title:"実験について",paragraphs:["この実験では、株式会社Aと株式会社BのESG情報をもとに、いくつかの質問に回答していただきます。","各問題では、ボタンを押すと、2社のESG主要指標を確認できます。表示された情報をもとに、指定された数値を探す作業や、2社の数値を比較する作業を行っていただきます。","その後、作業の難しさや投資意欲などについて回答していただきます。"]},buttons:{view:"ESG情報を見る",found:"見つけた",back:"問題に戻る",next:"次へ"}};
+const out=process.argv[2]||path.join(root,"shared","esg_experiment_config.json");fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,JSON.stringify(c,null,2),"utf8");console.log(out);
