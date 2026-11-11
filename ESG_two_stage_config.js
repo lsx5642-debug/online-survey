@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=d535537bb6603adc0177b1fb9eb42d5362ada0d8a9636eb66762d203b955b266 */
+/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=0abb6e1c9d379c0b3bcb3516852cbfd0a3fc8b398d95b893e8cfd4b651a126c8 */
 window.ESG_TWO_STAGE_CONFIG={
   "schemaVersion": "2026-11-11-two-stage-v1",
   "experimentName": "ESG_two_company_search_compare",
@@ -389,6 +389,11 @@ window.ESG_TWO_STAGE_CONFIG={
         "はい"
       ]
     },
+    "allocation": {
+      "title": "投資資金の配分",
+      "question": "提示されたESG情報をもとに、株式会社Aと株式会社Bに投資すると仮定した場合、投資資金をそれぞれ何％ずつ配分しますか。",
+      "instruction": "合計が100％になるように回答してください。"
+    },
     "buttons": {
       "view": "ESG情報を見る",
       "found": "見つけた",
@@ -396,5 +401,5 @@ window.ESG_TWO_STAGE_CONFIG={
       "next": "次へ"
     }
   },
-  "masterConfigHash": "d535537bb6603adc0177b1fb9eb42d5362ada0d8a9636eb66762d203b955b266"
+  "masterConfigHash": "0abb6e1c9d379c0b3bcb3516852cbfd0a3fc8b398d95b893e8cfd4b651a126c8"
 };
