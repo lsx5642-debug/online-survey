@@ -18,6 +18,9 @@ data/
 *_lastrun.py
 __pycache__/
 .pytest_cache/
+node_modules/
+*.bundle.json
+*_preview.png
 
 # Secrets and local configuration
 .env
