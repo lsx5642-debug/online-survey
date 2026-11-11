@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=dcccedd366f068936db23a1b53ef9abf23a8e0808b74cf9a04b32998a8da24b1 */
+/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=d535537bb6603adc0177b1fb9eb42d5362ada0d8a9636eb66762d203b955b266 */
 window.ESG_TWO_STAGE_CONFIG={
   "schemaVersion": "2026-11-11-two-stage-v1",
   "experimentName": "ESG_two_company_search_compare",
@@ -374,6 +374,21 @@ window.ESG_TWO_STAGE_CONFIG={
         "その後、作業の難しさや投資意欲などについて回答していただきます。"
       ]
     },
+    "comprehension": {
+      "title": "理解確認",
+      "questions": [
+        "Q1　探索課題では、指定された数値を表の中から探します。",
+        "Q2　比較課題では、A社とB社の同じ指標を比べます。"
+      ],
+      "options": [
+        "はい",
+        "いいえ"
+      ],
+      "correctAnswers": [
+        "はい",
+        "はい"
+      ]
+    },
     "buttons": {
       "view": "ESG情報を見る",
       "found": "見つけた",
@@ -381,5 +396,5 @@ window.ESG_TWO_STAGE_CONFIG={
       "next": "次へ"
     }
   },
-  "masterConfigHash": "dcccedd366f068936db23a1b53ef9abf23a8e0808b74cf9a04b32998a8da24b1"
+  "masterConfigHash": "d535537bb6603adc0177b1fb9eb42d5362ada0d8a9636eb66762d203b955b266"
 };
