@@ -1,8 +1,9 @@
-/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=e87cab9e791a02f81a9813b13114de28f7cef0b56cc143a52b1667b18be62c12 */
+/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=d3e6c14cad4eb6cce6312cc07eb4adcbb5c1cc2dfcbdeebc9a84ee76c8a01319 */
 window.ESG_TWO_STAGE_CONFIG={
   "schemaVersion": "2026-11-11-two-stage-v1",
   "experimentName": "ESG_two_company_search_compare",
-  "fixedCompletionCode": "YC-N7QK-4M2X-R9VP",
+  "day1CompletionCode": "YC-3YGB-UJ29-NFXC",
+  "day2CompletionCode": "YC-N7QK-4M2X-R9VP",
   "assignmentMode": "DATAPIPE_FOUR_GROUP",
   "conditionCount": 4,
   "searchValueInputEnabled": true,
@@ -425,5 +426,8 @@ window.ESG_TWO_STAGE_CONFIG={
       "next": "次へ"
     }
   },
-  "masterConfigHash": "e87cab9e791a02f81a9813b13114de28f7cef0b56cc143a52b1667b18be62c12"
+  "masterConfigHash": "d3e6c14cad4eb6cce6312cc07eb4adcbb5c1cc2dfcbdeebc9a84ee76c8a01319"
+};
+window.ESG_WEB_RUNTIME_CONFIG={
+  "defaultDataPipeExperimentId": "iW2hkdaVf5pA"
 };

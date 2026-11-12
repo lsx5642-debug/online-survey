@@ -14,7 +14,7 @@
     }
     const root=document.getElementById("root"); if(root)root.hidden=true;
     const script=document.createElement("script");
-    script.src="ESG_two_stage_survey.js?v=20261112-single-screen-v1";
+    script.src="ESG_two_stage_survey.js?v=20261112-datapipe-fallback-v1";
     script.onerror=function(){document.getElementById("app").innerHTML='<section class="card"><p class="error">実験プログラムを読み込めませんでした。ページを再読み込みしてください。</p></section>'};
     document.body.appendChild(script);
   },{once:true});
