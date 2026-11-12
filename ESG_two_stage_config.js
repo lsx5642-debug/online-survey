@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=0abb6e1c9d379c0b3bcb3516852cbfd0a3fc8b398d95b893e8cfd4b651a126c8 */
+/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=7db6cd0748ac806bbb309854c40aa1249a6bed683979c84a7c6cf8614b86bc99 */
 window.ESG_TWO_STAGE_CONFIG={
   "schemaVersion": "2026-11-11-two-stage-v1",
   "experimentName": "ESG_two_company_search_compare",
@@ -264,24 +264,44 @@ window.ESG_TWO_STAGE_CONFIG={
   },
   "groups": {
     "1": {
+      "groupId": "G1",
       "format": "standardized",
       "left": "A",
-      "right": "B"
+      "right": "B",
+      "displayNames": {
+        "A": "株式会社A",
+        "B": "株式会社B"
+      }
     },
     "2": {
+      "groupId": "G2",
       "format": "standardized",
       "left": "B",
-      "right": "A"
+      "right": "A",
+      "displayNames": {
+        "A": "会社1",
+        "B": "会社0"
+      }
     },
     "3": {
+      "groupId": "G3",
       "format": "nonstandardized",
       "left": "A",
-      "right": "B"
+      "right": "B",
+      "displayNames": {
+        "A": "株式会社A",
+        "B": "株式会社B"
+      }
     },
     "4": {
+      "groupId": "G4",
       "format": "nonstandardized",
       "left": "B",
-      "right": "A"
+      "right": "A",
+      "displayNames": {
+        "A": "会社1",
+        "B": "会社0"
+      }
     }
   },
   "searchTasks": [
@@ -320,28 +340,32 @@ window.ESG_TWO_STAGE_CONFIG={
       "metricId": "energy",
       "prompt": "2025年度に、組織内で消費したエネルギーの総量が多いのは、どちらの会社ですか。",
       "valuePart": "value",
-      "correctAnswer": "株式会社B"
+      "correctAnswer": "株式会社B",
+      "correctOriginal": "B"
     },
     {
       "id": "C2",
       "metricId": "scope2",
       "prompt": "2025年度の間接的な温室効果ガス排出量（スコープ2）が多いのは、どちらの会社ですか。",
       "valuePart": "value",
-      "correctAnswer": "株式会社B"
+      "correctAnswer": "株式会社B",
+      "correctOriginal": "B"
     },
     {
       "id": "C3",
       "metricId": "employment",
       "prompt": "2025年度の従業員の離職率が高いのは、どちらの会社ですか。",
       "valuePart": "turnover",
-      "correctAnswer": "株式会社B"
+      "correctAnswer": "株式会社B",
+      "correctOriginal": "B"
     },
     {
       "id": "C4",
       "metricId": "employment",
       "prompt": "2025年度の新規採用人数が多いのは、どちらの会社ですか。",
       "valuePart": "hires",
-      "correctAnswer": "株式会社A"
+      "correctAnswer": "株式会社A",
+      "correctOriginal": "A"
     }
   ],
   "ui": {
@@ -401,5 +425,5 @@ window.ESG_TWO_STAGE_CONFIG={
       "next": "次へ"
     }
   },
-  "masterConfigHash": "0abb6e1c9d379c0b3bcb3516852cbfd0a3fc8b398d95b893e8cfd4b651a126c8"
+  "masterConfigHash": "7db6cd0748ac806bbb309854c40aa1249a6bed683979c84a7c6cf8614b86bc99"
 };

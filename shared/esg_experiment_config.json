@@ -263,24 +263,32 @@
   },
   "groups": {
     "1": {
+      "groupId": "G1",
       "format": "standardized",
       "left": "A",
-      "right": "B"
+      "right": "B",
+      "displayNames": {"A": "株式会社A", "B": "株式会社B"}
     },
     "2": {
+      "groupId": "G2",
       "format": "standardized",
       "left": "B",
-      "right": "A"
+      "right": "A",
+      "displayNames": {"A": "会社1", "B": "会社0"}
     },
     "3": {
+      "groupId": "G3",
       "format": "nonstandardized",
       "left": "A",
-      "right": "B"
+      "right": "B",
+      "displayNames": {"A": "株式会社A", "B": "株式会社B"}
     },
     "4": {
+      "groupId": "G4",
       "format": "nonstandardized",
       "left": "B",
-      "right": "A"
+      "right": "A",
+      "displayNames": {"A": "会社1", "B": "会社0"}
     }
   },
   "searchTasks": [
@@ -319,28 +327,32 @@
       "metricId": "energy",
       "prompt": "2025年度に、組織内で消費したエネルギーの総量が多いのは、どちらの会社ですか。",
       "valuePart": "value",
-      "correctAnswer": "株式会社B"
+      "correctAnswer": "株式会社B",
+      "correctOriginal": "B"
     },
     {
       "id": "C2",
       "metricId": "scope2",
       "prompt": "2025年度の間接的な温室効果ガス排出量（スコープ2）が多いのは、どちらの会社ですか。",
       "valuePart": "value",
-      "correctAnswer": "株式会社B"
+      "correctAnswer": "株式会社B",
+      "correctOriginal": "B"
     },
     {
       "id": "C3",
       "metricId": "employment",
       "prompt": "2025年度の従業員の離職率が高いのは、どちらの会社ですか。",
       "valuePart": "turnover",
-      "correctAnswer": "株式会社B"
+      "correctAnswer": "株式会社B",
+      "correctOriginal": "B"
     },
     {
       "id": "C4",
       "metricId": "employment",
       "prompt": "2025年度の新規採用人数が多いのは、どちらの会社ですか。",
       "valuePart": "hires",
-      "correctAnswer": "株式会社A"
+      "correctAnswer": "株式会社A",
+      "correctOriginal": "A"
     }
   ],
   "ui": {
