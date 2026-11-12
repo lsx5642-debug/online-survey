@@ -4,3 +4,4 @@
 .modal{width:min(1180px,100%)}.modal table{min-width:0;table-layout:fixed}.modal th:first-child,.modal td:first-child{width:13%}.modal th:last-child,.modal td:last-child{width:30%}.modal td.value{white-space:normal;overflow-wrap:anywhere}
 .participant-info{text-align:center}.participant-info ol{display:inline-block;max-width:900px;text-align:left}.participant-info .note{text-align:center}
 .field .unit{display:inline-block;margin-left:10px;font-weight:700}.timed-table-modal{height:min(92vh,900px);display:flex;flex-direction:column;overflow:hidden}.timed-table-modal>h2{flex:none}.timed-table-modal .table-scroll{flex:1;min-height:0;overflow:auto;padding:2px}.timed-table-modal .table-actions{flex:none;background:#fff;margin:0;padding:14px 0 0;box-shadow:0 -8px 14px rgba(255,255,255,.94)}
+.note{border-left:0!important}

@@ -217,7 +217,7 @@ async function quitPsychoJS(message, isCompleted) {
     psychoJS.experiment.nextEntry();
   }
   psychoJS.window.close();
-  psychoJS.quit({message: message, isCompleted: isCompleted});
+  if (!window.ESG_WEB_ADAPTER_ACTIVE) psychoJS.quit({message: message, isCompleted: isCompleted});
   
   return Scheduler.Event.QUIT;
 }
