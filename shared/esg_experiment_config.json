@@ -1,7 +1,8 @@
 {
   "schemaVersion": "2026-11-11-two-stage-v1",
   "experimentName": "ESG_two_company_search_compare",
-  "fixedCompletionCode": "YC-N7QK-4M2X-R9VP",
+  "day1CompletionCode": "YC-3YGB-UJ29-NFXC",
+  "day2CompletionCode": "YC-N7QK-4M2X-R9VP",
   "assignmentMode": "DATAPIPE_FOUR_GROUP",
   "conditionCount": 4,
   "searchValueInputEnabled": true,
@@ -267,28 +268,40 @@
       "format": "standardized",
       "left": "A",
       "right": "B",
-      "displayNames": {"A": "株式会社A", "B": "株式会社B"}
+      "displayNames": {
+        "A": "株式会社A",
+        "B": "株式会社B"
+      }
     },
     "2": {
       "groupId": "G2",
       "format": "standardized",
       "left": "B",
       "right": "A",
-      "displayNames": {"A": "会社1", "B": "会社0"}
+      "displayNames": {
+        "A": "会社1",
+        "B": "会社0"
+      }
     },
     "3": {
       "groupId": "G3",
       "format": "nonstandardized",
       "left": "A",
       "right": "B",
-      "displayNames": {"A": "株式会社A", "B": "株式会社B"}
+      "displayNames": {
+        "A": "株式会社A",
+        "B": "株式会社B"
+      }
     },
     "4": {
       "groupId": "G4",
       "format": "nonstandardized",
       "left": "B",
       "right": "A",
-      "displayNames": {"A": "会社1", "B": "会社0"}
+      "displayNames": {
+        "A": "会社1",
+        "B": "会社0"
+      }
     }
   },
   "searchTasks": [
@@ -391,8 +404,14 @@
         "Q1　探索課題では、指定された数値を表の中から探します。",
         "Q2　比較課題では、A社とB社の同じ指標を比べます。"
       ],
-      "options": ["はい", "いいえ"],
-      "correctAnswers": ["はい", "はい"]
+      "options": [
+        "はい",
+        "いいえ"
+      ],
+      "correctAnswers": [
+        "はい",
+        "はい"
+      ]
     },
     "allocation": {
       "title": "投資資金の配分",
