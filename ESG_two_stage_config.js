@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=7db6cd0748ac806bbb309854c40aa1249a6bed683979c84a7c6cf8614b86bc99 */
+/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=e87cab9e791a02f81a9813b13114de28f7cef0b56cc143a52b1667b18be62c12 */
 window.ESG_TWO_STAGE_CONFIG={
   "schemaVersion": "2026-11-11-two-stage-v1",
   "experimentName": "ESG_two_company_search_compare",
@@ -386,8 +386,8 @@ window.ESG_TWO_STAGE_CONFIG={
       "contentWidth": 1120,
       "margin": 24,
       "companyGap": 18,
-      "tableHeaderHeight": 32,
-      "rowHeight": 32,
+      "tableHeaderHeight": 24,
+      "rowHeight": 27,
       "buttonHeight": 50
     },
     "intro": {
@@ -425,5 +425,5 @@ window.ESG_TWO_STAGE_CONFIG={
       "next": "次へ"
     }
   },
-  "masterConfigHash": "7db6cd0748ac806bbb309854c40aa1249a6bed683979c84a7c6cf8614b86bc99"
+  "masterConfigHash": "e87cab9e791a02f81a9813b13114de28f7cef0b56cc143a52b1667b18be62c12"
 };

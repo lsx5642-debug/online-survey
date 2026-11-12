@@ -373,8 +373,8 @@
       "contentWidth": 1120,
       "margin": 24,
       "companyGap": 18,
-      "tableHeaderHeight": 32,
-      "rowHeight": 32,
+      "tableHeaderHeight": 24,
+      "rowHeight": 27,
       "buttonHeight": 50
     },
     "intro": {

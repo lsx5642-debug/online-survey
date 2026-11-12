@@ -30,7 +30,8 @@ async function advanceToTasks(page) {
     await page.click("#open");
     aoi.groups[`group${group}`] = await page.evaluate(() => {
       const box = el => { const r = el.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; };
-      return { scroll_height: document.querySelector(".modal").scrollHeight, viewport_height: document.querySelector(".modal").clientHeight, companies: [...document.querySelectorAll(".modal .company-card")].map(card => ({
+      const modal = document.querySelector(".modal"), tableScroll = document.querySelector(".table-scroll");
+      return { scroll_height: modal.scrollHeight, viewport_height: modal.clientHeight, table_scroll_height: tableScroll.scrollHeight, table_viewport_height: tableScroll.clientHeight, companies: [...document.querySelectorAll(".modal .company-card")].map(card => ({
         company: card.querySelector("h3").textContent.trim(),
         company_original: card.dataset.companyOriginal,
         company_header: box(card.querySelector("h3")),
@@ -40,15 +41,7 @@ async function advanceToTasks(page) {
         })
       })) };
     });
-    await page.locator(".table-actions").evaluate(el => { el.style.visibility = "hidden"; });
-    for (const [segment, fraction] of [["top", 0], ["middle", 0.5], ["bottom", 1]]) {
-      await page.locator(".modal").evaluate((el, f) => { el.scrollTop = (el.scrollHeight - el.clientHeight) * f; }, fraction);
-      await page.waitForTimeout(100);
-      const scrollTop = await page.locator(".modal").evaluate(el => el.scrollTop);
-      await page.screenshot({ path: path.join(out, `03_esg_information_group${group}_${segment}.png`) });
-      aoi.groups[`group${group}`][segment] = { scroll_top: scrollTop };
-    }
-    await page.locator(".table-actions").evaluate(el => { el.style.visibility = "visible"; });
+    await page.screenshot({ path: path.join(out, `03_esg_information_group${group}.png`) });
     await page.click("#close");
     for (let i = 0; i < 4; i++) {
       await page.click("#open"); await page.click("#found");
