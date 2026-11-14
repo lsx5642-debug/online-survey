@@ -1,4 +1,4 @@
-/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=d3e6c14cad4eb6cce6312cc07eb4adcbb5c1cc2dfcbdeebc9a84ee76c8a01319 */
+/* AUTO-GENERATED from PsychoPy master; do not edit. sha256=d07e2a5f0a7b2d8090710cbeb005cb99536216308a2fce6b3456c7054ef91ec4 */
 window.ESG_TWO_STAGE_CONFIG={
   "schemaVersion": "2026-11-11-two-stage-v1",
   "experimentName": "ESG_two_company_search_compare",
@@ -280,8 +280,8 @@ window.ESG_TWO_STAGE_CONFIG={
       "left": "B",
       "right": "A",
       "displayNames": {
-        "A": "会社1",
-        "B": "会社0"
+        "A": "株式会社１",
+        "B": "株式会社０"
       }
     },
     "3": {
@@ -300,8 +300,8 @@ window.ESG_TWO_STAGE_CONFIG={
       "left": "B",
       "right": "A",
       "displayNames": {
-        "A": "会社1",
-        "B": "会社0"
+        "A": "株式会社１",
+        "B": "株式会社０"
       }
     }
   },
@@ -426,7 +426,7 @@ window.ESG_TWO_STAGE_CONFIG={
       "next": "次へ"
     }
   },
-  "masterConfigHash": "d3e6c14cad4eb6cce6312cc07eb4adcbb5c1cc2dfcbdeebc9a84ee76c8a01319"
+  "masterConfigHash": "d07e2a5f0a7b2d8090710cbeb005cb99536216308a2fce6b3456c7054ef91ec4"
 };
 window.ESG_WEB_RUNTIME_CONFIG={
   "defaultDataPipeExperimentId": "iW2hkdaVf5pA"

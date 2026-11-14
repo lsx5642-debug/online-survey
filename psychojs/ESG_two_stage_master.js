@@ -123,7 +123,7 @@ function launch_shared_experimentRoutineBegin(snapshot) {
     launch_shared_experimentMaxDurationReached = false;
     // update component parameters for each repeat
     // Run 'Begin Routine' code from launch_shared_experiment_code
-    window.dispatchEvent(new CustomEvent('esg-psychopy-ready', {detail: {source: 'ESG_two_stage_master.psyexp', configHash: 'd3e6c14cad4eb6cce6312cc07eb4adcbb5c1cc2dfcbdeebc9a84ee76c8a01319'}}));
+    window.dispatchEvent(new CustomEvent('esg-psychopy-ready', {detail: {source: 'ESG_two_stage_master.psyexp', configHash: 'd07e2a5f0a7b2d8090710cbeb005cb99536216308a2fce6b3456c7054ef91ec4'}}));
     continueRoutine = false;
     
     psychoJS.experiment.addData('launch_shared_experiment.started', globalClock.getTime());
